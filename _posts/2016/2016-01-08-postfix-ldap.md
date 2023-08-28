@@ -1,5 +1,5 @@
 ---
-title: 'Setup Postfix with LDAP'
+title: 'Postfix with LDAP'
 date: 2016-01-08
 ---
 
