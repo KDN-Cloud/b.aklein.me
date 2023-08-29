@@ -13,7 +13,7 @@ plugins:
 - jekyll-feed
 - jekyll-seo-tag
 
-theme: minima
+remote_theme: jekyll/minima
 minima:
   skin: dark
   # Minima date format.
