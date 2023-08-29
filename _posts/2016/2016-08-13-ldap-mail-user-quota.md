@@ -1,7 +1,7 @@
 ---
 title: 'Setup user specific mail quotas with LDAP'
 date: 2016-08-13
-description: Setting mail quotes with LDAP
+description: Setting mail quotes with OpenLDAP.
 tags:
 - Mail
 - LDAP

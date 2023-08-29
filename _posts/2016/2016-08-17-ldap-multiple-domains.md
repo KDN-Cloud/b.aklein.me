@@ -1,6 +1,6 @@
 ---
 title: 'Adding multiple mail domains in LDAP'
-published: true
+description: Setup multiple domains in OpenLDAP.
 date: 2016-08-17
 tags:
 - LDAP
