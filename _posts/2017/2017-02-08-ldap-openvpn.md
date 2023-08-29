@@ -1,6 +1,11 @@
 ---
 title: 'Using LDAP authentication with OpenVPN'
 date: 2017-02-08
+description: OpenVPN with OpenLDAP auth.
+tags:
+- LDAP
+- Linux
+- OpenVPN
 ---
 
 # Intro
