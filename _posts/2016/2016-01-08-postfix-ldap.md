@@ -1,6 +1,12 @@
 ---
 title: 'Postfix with LDAP'
 date: 2016-01-08
+description: Setting up Postfix with OpenLDAP.
+tags:
+- LDAP
+- Linux
+- Mail
+- Postfix 
 ---
 
 # Intro
