@@ -1,5 +1,5 @@
 ---
-title: AK's tech blog
+title: AK's notes
 author: Anthony Klein
 description: AK's tech space to jot notes
 ---
