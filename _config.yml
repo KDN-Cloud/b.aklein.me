@@ -9,7 +9,7 @@ description: >
   results) and in your feed.xml site description.
 
 collections:
-  - Stuff
+  - stuff
   
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
