@@ -4,9 +4,8 @@ author:
   email: variablenix@aklein.me
 
 description: >
-  Write an awesome description for your new site here. You can edit this line
-  in _config.yml. It will appear in your document head meta (for Google search
-  results) and in your feed.xml site description.
+  A place to post notes. Most of the notes found here are sysadmin related. 
+  General notes and posts might be included.
 
 collections:
   - stuff
