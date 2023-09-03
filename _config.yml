@@ -6,9 +6,6 @@ author:
 description: >
   A place to jot notes. Most of the notes found here are sysadmin related. 
   General notes and posts might be included.
-
-collections:
-  - stuff
   
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
