@@ -15,6 +15,11 @@ plugins:
 - jekyll-feed
 - jekyll-seo-tag
 
+social:
+  type: Decentralized Social Network
+  name: AK
+  links: https://aklein.pro
+
 remote_theme: jekyll/minima
 minima:
   skin: dark
