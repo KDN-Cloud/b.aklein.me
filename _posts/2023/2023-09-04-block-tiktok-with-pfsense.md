@@ -16,7 +16,7 @@ Netgate has a <a href="https://forum.netgate.com/topic/154408/firefox-users-and-
 
 **pfSense**
 
-Block DNS over HTTPS nonsense. DoH (firefox uses DoH, so could still reach TikTok)
+Block DNS over HTTPS nonsense. DoH (firefox uses DoH, so could still reach TikTok). See <a href="https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/" target="_blank">this page</a> to learn more about DNS over HTTP.
 
 https://pfsense.local/pfblockerng/pfblockerng_category_edit.php?type=dnsbl&rowid=5
 
