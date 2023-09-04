@@ -14,9 +14,12 @@ The <a href="https://coygeek.com/docs/pfsense-tiktok/" target="_blank">coygeek p
 
 Netgate has a <a href="https://forum.netgate.com/topic/154408/firefox-users-and-doh/15" target="_blank">forum post</a> has some pretty good info about blocking Firefox DoH (DNS over HTTP). To me I would rather block DoH to decrease the attack surface.
 
-**pfSense** - block DNS over HTTPS nonsense
-DoH (firefox uses DoH, so could still reach TikTok) 
+**pfSense**
+
+Block DNS over HTTPS nonsense. DoH (firefox uses DoH, so could still reach TikTok)
+
 https://pfsense.local/pfblockerng/pfblockerng_category_edit.php?type=dnsbl&rowid=5
 
 **DNS Groups**
+
 https://pfsense.local/pfblockerng/pfblockerng_category.php?type=dnsbl
