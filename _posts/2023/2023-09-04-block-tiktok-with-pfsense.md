@@ -21,3 +21,5 @@ https://pfsense.local/pfblockerng/pfblockerng_category_edit.php?type=dnsbl&rowid
 
 #### **DNS Groups**
 https://pfsense.local/pfblockerng/pfblockerng_category.php?type=dnsbl
+
+<img src="https://raw.githubusercontent.com/KDN-Cloud/b.aklein.me/main/img/tiktok-blocked.png" alt="tiktok blocked">
