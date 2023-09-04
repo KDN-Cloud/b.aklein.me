@@ -17,10 +17,10 @@ Netgate has a <a href="https://forum.netgate.com/topic/154408/firefox-users-and-
 #### **pfSense**
 Block DNS over HTTPS nonsense. DoH (firefox uses DoH, so could still reach TikTok). See this <a href="https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/" target="_blank">Cloudflare page</a> to learn more about DNS over HTTPS.
 
-https://pfsense.local/pfblockerng/pfblockerng_category_edit.php?type=dnsbl&rowid=5
+`https://pfsense.local/pfblockerng/pfblockerng_category_edit.php?type=dnsbl&rowid=5`
 
 #### **DNS Groups**
-https://pfsense.local/pfblockerng/pfblockerng_category.php?type=dnsbl
+`https://pfsense.local/pfblockerng/pfblockerng_category.php?type=dnsbl`
 
 Going to `tiktok.com` will show it is now blocked.
 
