@@ -22,8 +22,8 @@ social:
 
 remote_theme: jekyll/minima
 minima:
-  skin: dark
-  # Minima date format.
+  skin: solarized-dark
+  # Minima date format. https://github.com/jekyll/minima
   # Refer to https://shopify.github.io/liquid/filters/date/ if you want to customize this.
   #
   # date_format: "%b %-d, %Y"
