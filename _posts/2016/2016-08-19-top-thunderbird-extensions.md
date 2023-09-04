@@ -24,9 +24,6 @@ This is a nice extension to display your mail quota. I use quotas on my mail ser
 ### [Enigmail](https://addons.thunderbird.net/en-US/thunderbird/addon/enigmail/)
 This is a must have extension all Thunderbird users should have. It does a great job at what it was intended to do - sign & encrypt email messages. From my experience it has been quite stable.
 
-### [ImportExportTools](https://addons.thunderbird.net/en-US/thunderbird/addon/importexporttools/)
-This extension is great for those looking to import or export folders and messages. There are plenty of available options.
-
 ### [Manually sort folders](https://addons.thunderbird.net/en-US/thunderbird/addon/manually-sort-folders/)
 I'm not sure why Thunderbird does not have native support for manually sorting folders, but this extension really does deliver. You can sort manually or automatically and re-order accounts in the folder pane. Definitely worth having. 
 
