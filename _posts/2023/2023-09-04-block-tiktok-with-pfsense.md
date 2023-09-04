@@ -8,7 +8,7 @@ tags:
 - pfblocker
 ---
 
-The <a href="https://www.netify.ai/resources/applications/tiktok" target="_blank">following page</a> provides details on domains, platforms, networks and IPs used by TikTok.
+The following page on <a href="https://www.netify.ai/resources/applications/tiktok" target="_blank">netify.ai</a> provides details on domains, platforms, networks and IPs used by TikTok.
 
 The <a href="https://coygeek.com/docs/pfsense-tiktok/" target="_blank">coygeek page</a> provides detailed steps to add the list of TikTok resources to a custom block list.
 
