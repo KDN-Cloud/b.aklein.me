@@ -23,6 +23,14 @@ The core of the lab runs on **Proxmox VE**. Several VMs and LXC containers live 
 
 Routing and firewall duties are handled by **pfSense Plus** on a Netgate 6100. It's been rock solid. Combined with a full **UniFi** setup — CloudKey, switches, APs — the network is properly segmented with VLANs for different device classes and trust levels. IoT stuff lives in its own corner, lab infrastructure in another, and the family devices somewhere in between.
 
+## Cloudflare: DNS, Tunnels, and Workers
+
+Most of my domains are managed through **Cloudflare DNS**, which makes handling multiple domains straightforward — DNS records, proxying, and security settings all in one place.
+
+For one public-facing communication service, I use **cloudflared** to run a Cloudflare Tunnel. No open inbound ports on the firewall, no exposed public IP — the tunnel originates from inside the network and Cloudflare handles the public side. It's a clean way to selectively expose something without touching the broader network posture.
+
+On the static site side, a few things run on **Cloudflare Workers** — this blog included, via GitHub Pages, but other lightweight static projects live entirely on Workers with no origin server needed. Fast, free at small scale, and zero maintenance overhead.
+
 ## WireGuard for the Family
 
 One of the more satisfying things I've built is the **WireGuard VPN setup**. Peers are provisioned through pfSense, and the whole workflow — IP assignment, config generation, QR codes — is automated via an **Ansible playbook**. The `ops_automation` project has grown into a proper multi-role structure handling everything from WireGuard peer creation to dotfiles to Docker stack management.
@@ -38,4 +46,3 @@ None of it is particularly groundbreaking — these are all well-known open sour
 ---
 
 More detail on specific setups coming. There's plenty to write about.
-
