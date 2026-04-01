@@ -5,28 +5,26 @@ author:
   github: KDN-Cloud
 
 description: >
-  A place to jot notes. Most of the notes found here are sysadmin related. 
+  A place to jot notes. Most of the notes found here are sysadmin related.
   General notes and posts might be included.
-  
+
 repository: "KDN-Cloud/b.aklein.me"
 
 plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
-- jekyll-feed
-- jekyll-seo-tag
+  - jekyll-remote-theme
+  - jekyll-feed
+  - jekyll-seo-tag
 
 social:
   type: Decentralized Social Network
   name: AK
   links: https://aklein.pro
 
-# https://github.com/jekyll/minima
-#remote_theme: jekyll/minima
 remote_theme: jekyll/minima@master
 minima:
-  skin: dark # auto, dark, light, solarized
+  skin: dark
   social_links:
-    - { platform: github,  user_url: "https://github.com/variablenix" }
+    - { platform: github, user_url: "https://github.com/KDN-Cloud/" }
 
 defaults:
   - scope:
@@ -34,28 +32,3 @@ defaults:
       type: posts
     values:
       layout: post
-
-  # Minima date format.
-  # Refer to https://shopify.github.io/liquid/filters/date/ if you want to customize this.
-  #
-  # date_format: "%b %-d, %Y"
-
-  # Generate social links in footer.
-  #
-social_links:
-  #- { platform: devto,          user_url: "https://dev.to/jekyll" }
-  #   - { platform: dribbble,       user_url: "https://dribbble.com/jekyll" }
-  #   - { platform: facebook,       user_url: "https://www.facebook.com/jekyll" }
-  #   - { platform: flickr,         user_url: "https://www.flickr.com/photos/jekyll" }
-  - { platform: github,         user_url: "https://github.com/KDN-Cloud/" }
-  #   - { platform: google_scholar, user_url: "https://scholar.google.com/citations?user=qc6CJjYAAAAJ" }
-  #   - { platform: instagram,      user_url: "https://www.instagram.com/jekyll" }
-  #   - { platform: keybase,        user_url: "https://keybase.io/jekyll" }
-  #   - { platform: linkedin,       user_url: "https://www.linkedin.com/in/jekyll" }
-  #   - { platform: microdotblog,   user_url: "https://micro.blog/jekyll" }
-  - { platform: Linktree,   user_url: "https://links.aklein.pro" }
-  #   - { platform: pinterest,      user_url: "https://www.pinterest.com/jekyll" }
-  #   - { platform: stackoverflow,  user_url: "https://stackoverflow.com/users/1234567/jekyll" }
-  #   - { platform: telegram,       user_url: "https://t.me/jekyll" }
-  #   - { platform: twitter,        user_url: "https://twitter.com/jekyllrb" }
-  #   - { platform: youtube,        user_url: "https://www.youtube.com/jekyll" }
