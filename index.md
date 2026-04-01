@@ -1,4 +1,5 @@
 ---
+layout: default
 title: AK's notes
 author: Anthony Klein
 description: AK's tech space to jot notes
