@@ -1,4 +1,4 @@
-title:
+title: AK's notes
 author:
   name: AK
   email: github@aklein.pro
@@ -8,10 +8,12 @@ description: >
   A place to jot notes. Most of the notes found here are sysadmin related.
   General notes and posts might be included.
 
+url: https://b.aklein.me
 repository: "KDN-Cloud/b.aklein.me"
 
+theme: jekyll-theme-hacker
+
 plugins:
-  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-seo-tag
 
@@ -19,12 +21,6 @@ social:
   type: Decentralized Social Network
   name: AK
   links: https://aklein.pro
-
-remote_theme: jekyll/minima@master
-minima:
-  skin: dark
-  social_links:
-    - { platform: github, user_url: "https://github.com/KDN-Cloud/" }
 
 defaults:
   - scope:
