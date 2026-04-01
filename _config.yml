@@ -1,7 +1,7 @@
 title:
 author:
   name: AK
-  email: variablenix@aklein.me
+  email: github@aklein.pro
   github: KDN-Cloud
 
 description: >
@@ -21,7 +21,8 @@ social:
   links: https://aklein.pro
 
 # https://github.com/jekyll/minima
-remote_theme: jekyll/minima
+#remote_theme: jekyll/minima
+remote_theme: jekyll/minima@master
 minima:
   skin: auto # auto, dark, light, solarized
   social_links:
