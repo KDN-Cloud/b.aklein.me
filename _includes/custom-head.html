@@ -1,0 +1,25 @@
+<style>
+  #theme-toggle {
+    cursor: pointer;
+    background: none;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    color: inherit;
+    opacity: 0.6;
+    margin-left: 1rem;
+  }
+  #theme-toggle:hover {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  (function() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
