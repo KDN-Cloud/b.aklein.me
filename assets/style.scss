@@ -1,0 +1,12 @@
+---
+---
+@import "{{ site.theme }}";
+
+/* Pushes [ ARCHIVE_LOGS ] and other headers down for a cleaner terminal look */
+article h3, h3 {
+  margin-top: 45px !important;
+  margin-bottom: 20px !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
