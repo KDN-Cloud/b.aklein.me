@@ -18,6 +18,7 @@ Whether it's deep-dives into Proxmox virtualization, CrowdSec implementations, o
 * **Host:** [GitHub Pages](https://github.com/KDN-Cloud/b.aklein.me)
 * **Workflow:** GitOps / Static Deployment
 
+---
 
 {% for post in site.posts %}
 - [{{ post.title }}]({{ post.url }}) — <small>{{ post.date | date: "%b %d, %Y" }}</small>
