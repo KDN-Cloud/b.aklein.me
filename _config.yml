@@ -1,12 +1,12 @@
-title: AK's notes
+title: "AK // INFRASTRUCTURE LOG"
 author:
-  name: AK
+  name: "Anthony Klein"
   email: github@aklein.pro
   github: KDN-Cloud
 
 description: >
-  A place to jot notes. Most of the notes found here are sysadmin related.
-  General notes and posts might be included.
+  A centralized repository for technical documentation, systems administration 
+  workflows, and infrastructure engineering insights.
 
 url: https://b.aklein.me
 repository: "KDN-Cloud/b.aklein.me"
