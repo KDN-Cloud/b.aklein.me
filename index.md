@@ -11,7 +11,7 @@ description: Systems administration workflows and technical documentation.
 
 Whether it's deep-dives into Proxmox virtualization, CrowdSec implementations, or general infrastructure logic, this log is where I archive proven workflows and technical observations.
 
-*Note: Entries dated prior to 2020 are maintained primarily for historical reference and should be considered **legacy documentation**. While these archives reflect past workflows, some external links or dependencies may be deprecated.*
+_**Note:** Entries dated prior to 2020 are maintained primarily for historical reference and should be considered **legacy documentation**. While these archives reflect past workflows, some external links or dependencies may be deprecated._
 
 ---
 
