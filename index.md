@@ -7,7 +7,7 @@ description: Systems administration workflows and technical documentation.
 
 ### [ SYSTEM_STATUS: ONLINE ]
 
-Welcome to my centralized technical repository. This space serves as a living document for my work in systems administration, network architecture, and automation engineering. 
+**Welcome** to my centralized technical repository. This space serves as a living document for my work in systems administration, network architecture, and automation engineering.
 
 Whether it's deep-dives into Proxmox virtualization, CrowdSec implementations, or general infrastructure logic, this log is where I archive proven workflows and technical observations.
 
