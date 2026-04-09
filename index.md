@@ -23,7 +23,6 @@ _**Note:** Entries dated prior to 2020 are maintained primarily for historical r
 * **Workflow:** GitOps / Static Deployment
 
 ---
-
 <br>
 ### [ ARCHIVE_LOGS ]
 
