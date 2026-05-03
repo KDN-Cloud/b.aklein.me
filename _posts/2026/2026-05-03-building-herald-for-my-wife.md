@@ -189,6 +189,21 @@ After everything is said and done, Herald is:
 - Integrated into the homelab monitoring stack — Prometheus, Grafana, Graylog
 - Reporting daily to Telegram
 
+## Backups
+
+One thing I didn't want to skip on: backups. Vultr offers automated VPS snapshots 
+for $4 a month — an almost embarrassingly good deal when you consider what's running 
+on the machine. My wife's client contacts, business relationships, and communication 
+history are worth more than $4. We have automated snapshots enabled at the Vultr 
+level, which handles the infrastructure layer. On top of that, PostgreSQL's data 
+volume is a named Docker volume that gets captured in the snapshot, so the database 
+comes along for the ride without any extra configuration.
+
+For a brand new business where every client relationship matters, having that safety 
+net in place before anything else goes live wasn't optional. It took thirty seconds 
+to enable in the Vultr dashboard and it's one of those things you only think about 
+when you need it — and you really don't want to need it without it.    
+
 My wife has a CRM for her business. It's fast, it's private, the data is ours, and it's secured the same way I'd secure anything else I care about. That felt worth doing right.
 
 ---
