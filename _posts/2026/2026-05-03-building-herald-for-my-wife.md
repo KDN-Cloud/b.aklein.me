@@ -31,8 +31,12 @@ hard pill to swallow before you've even landed your first clients.
 
 Self-hosting flips that calculus entirely. The infrastructure costs a fraction of 
 what SaaS charges, scales on our terms, and most importantly — the data is ours. 
-Client contacts, communication history, business relationships — none of that lives 
-on someone else's servers under someone else's terms of service. That matters.
+Client contacts, communication history, business relationships — none of that sits 
+inside a vendor's application under someone else's data policies or terms of service. 
+We run on Vultr's infrastructure, but we own and control everything above the 
+hypervisor — the OS, the database, the backups, the encryption. No vendor kill 
+switch, no surprise pricing changes, no wondering what the terms of service say 
+about your data. That matters.
 
 So instead of a monthly subscription, I spent a weekend building her something 
 properly — a self-hosted [Twenty CRM](https://twenty.com) instance on a fresh VPS, 
