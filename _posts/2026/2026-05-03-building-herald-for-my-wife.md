@@ -16,33 +16,33 @@ tags:
   - selfhosted
 ---
 
-My wife needed a CRM for her business. She didn't ask for anything elaborate — just 
-something to keep track of clients, follow-ups, and contacts. I could have pointed 
-her at HubSpot or any number of SaaS options and called it a day. But if you know 
+My wife needed a CRM for her business. She didn't ask for anything elaborate — just
+something to keep track of clients, follow-ups, and contacts. I could have pointed
+her at HubSpot or any number of SaaS options and called it a day. But if you know
 me, you know that's not how this goes.
 
-She had just gotten her license and was standing up her business from scratch. When 
-you're in that position, every dollar matters. The problem with most modern CRM 
-platforms is that they're priced per seat — which sounds reasonable until you start 
-doing the math. Add a few team members as the business grows and you're looking at 
-hundreds of dollars a month, thousands over a year, for software that holds your 
-data hostage the moment you stop paying. For someone just getting started, that's a 
+She had just gotten her license and was standing up her business from scratch. When
+you're in that position, every dollar matters. The problem with most modern CRM
+platforms is that they're priced per seat — which sounds reasonable until you start
+doing the math. Add a few team members as the business grows and you're looking at
+hundreds of dollars a month, thousands over a year, for software that holds your
+data hostage the moment you stop paying. For someone just getting started, that's a
 hard pill to swallow before you've even landed your first clients.
 
-Self-hosting flips that calculus entirely. The infrastructure costs a fraction of 
-what SaaS charges, scales on our terms, and most importantly — the data is ours. 
-Client contacts, communication history, business relationships — none of that sits 
-inside a vendor's application under someone else's data policies or terms of service. 
-We run on Vultr's infrastructure, but we own and control everything above the 
-hypervisor — the OS, the database, the backups, the encryption. No vendor kill 
-switch, no surprise pricing changes, no wondering what the terms of service say 
+Self-hosting flips that calculus entirely. The infrastructure costs a fraction of
+what SaaS charges, scales on our terms, and most importantly — the data is ours.
+Client contacts, communication history, business relationships — none of that sits
+inside a vendor's application under someone else's data policies or terms of service.
+We run on Vultr's infrastructure, but we own and control everything above the
+hypervisor — the OS, the database, the backups, the encryption. No vendor kill
+switch, no surprise pricing changes, no wondering what the terms of service say
 about your data. That matters.
 
-So instead of a per-seat SaaS subscription that scales against you, I spent a 
-weekend building her something properly — a self-hosted 
-[Twenty CRM](https://twenty.com/) instance on a fresh VPS, provisioned with 
-Terraform, configured with Ansible, secured with CrowdSec and Cloudflare, and 
-wired into my existing homelab monitoring stack. This is the story of how Herald 
+So instead of a per-seat SaaS subscription that scales against you, I spent a
+weekend building her something properly — a self-hosted
+[Twenty CRM](https://twenty.com/) instance on a fresh VPS, provisioned with
+Terraform, configured with Ansible, secured with CrowdSec and Cloudflare, and
+wired into my existing homelab monitoring stack. This is the story of how Herald
 was born.
 
 ![Herald high-level architecture diagram](/assets/images/herald-redacted-architecture.png)
@@ -129,12 +129,6 @@ On Herald specifically:
 
 The moment Herald was registered with GateKeeper, it inherited the fleet's full decision set — over 32,000 IPs actively blocked at the iptables level, sourced from the CrowdSec community blocklist, firehol_greensnow, OTX web scanners, and Tor exit nodes. A brand new node with zero history immediately benefits from the collective intelligence of the entire CrowdSec network. That's the part I find genuinely elegant about this architecture.
 
-### Cloudflare WAF Rate Limiting
-
-Since Twenty uses GraphQL for its API (specifically hitting `/metadata` for auth operations and `/graphql` for authenticated calls), I added a Cloudflare WAF rate limiting rule covering both endpoints plus the OAuth token endpoint. The rule blocks any IP sending more than 20 POST requests in 10 seconds — generous enough for normal use, aggressive enough to stop any automated brute force attempt cold.
-
-The free Cloudflare plan gives you one rate limiting rule, so I combined all three endpoints with `or` conditions into a single rule. It covers the attack surface without burning multiple rule slots.
-
 ### The Cloudflare Bouncer on Nexus
 
 Running alongside everything is a CrowdSec Cloudflare bouncer on **Nexus**, my other VPS. This bouncer pushes ban decisions from GateKeeper directly into Cloudflare's firewall via the API, meaning known bad IPs get blocked at the Cloudflare edge — before they even reach the tunnel. The community blocklist, Tor exit nodes, and any locally detected attackers all flow through this path automatically.
@@ -155,7 +149,19 @@ labels:
   crowdsec.labels.type: "http"
 ```
 
-One honest limitation: Twenty's default Docker deployment produces no HTTP access logs. The server outputs NestJS framework logs — route mapping, startup events, i18n warnings — but no structured access log with IP addresses, methods, and status codes. This means CrowdSec can't do HTTP-level detection from Twenty's logs alone. The Cloudflare WAF and the host-level SSH/system detection cover the gaps, but it's worth knowing if you're planning a similar setup.
+One honest limitation: Twenty's default Docker deployment produces no HTTP access logs. The server outputs NestJS framework logs — route mapping, startup events, i18n warnings — but no structured access log with IP addresses, methods, and status codes. This means CrowdSec can't do HTTP-level detection from Twenty's logs alone. The Cloudflare bot protection and the host-level SSH/system detection cover the gaps, but it's worth knowing if you're planning a similar setup.
+
+**Rate limiting** is configured directly in the Compose environment rather than via Twenty's Admin Panel. Twenty exposes rate limiting config through a database-backed Admin Panel UI, but hardcoding the values in `docker-compose.yml` is more reliable — it guarantees the values survive redeployments and aren't silently overridden:
+
+```yaml
+environment:
+  API_RATE_LIMITING_LONG_LIMIT: "5000"
+  API_RATE_LIMITING_LONG_TTL: "60000"
+  API_RATE_LIMITING_SHORT_LIMIT: "5000"
+  API_RATE_LIMITING_SHORT_TTL: "1000"
+```
+
+The defaults (100 requests per 60 seconds) are too conservative for normal CRM usage — loading a People or Companies view fires multiple concurrent GraphQL requests, and a busy page load can easily exceed the default ceiling. Bumping these to 5000 gives plenty of headroom for legitimate usage while keeping the limiter in place as a backstop.
 
 ## Debugging a Twenty Performance Issue
 
@@ -191,24 +197,23 @@ After everything is said and done, Herald is:
 - Running Twenty CRM via Docker Compose with Google OAuth
 - Exposed exclusively via Cloudflare tunnel — no open inbound ports
 - Protected by CrowdSec's community blocklist (32,000+ IPs blocked at iptables)
-- Protected by Cloudflare WAF rate limiting on the auth endpoints
 - Integrated into the homelab monitoring stack — Prometheus, Grafana, Graylog
 - Reporting daily to Telegram
 
 ## Backups
 
-One thing I didn't want to skip on: backups. Vultr offers automated VPS snapshots 
-for $4 a month — an almost embarrassingly good deal when you consider what's running 
-on the machine. My wife's client contacts, business relationships, and communication 
-history are worth more than $4. We have automated snapshots enabled at the Vultr 
-level, which handles the infrastructure layer. On top of that, PostgreSQL's data 
-volume is a named Docker volume that gets captured in the snapshot, so the database 
+One thing I didn't want to skip on: backups. Vultr offers automated VPS snapshots
+for $4 a month — an almost embarrassingly good deal when you consider what's running
+on the machine. My wife's client contacts, business relationships, and communication
+history are worth more than $4. We have automated snapshots enabled at the Vultr
+level, which handles the infrastructure layer. On top of that, PostgreSQL's data
+volume is a named Docker volume that gets captured in the snapshot, so the database
 comes along for the ride without any extra configuration.
 
-For a brand new business where every client relationship matters, having that safety 
-net in place before anything else goes live wasn't optional. It took thirty seconds 
-to enable in the Vultr dashboard and it's one of those things you only think about 
-when you need it — and you really don't want to need it without it.    
+For a brand new business where every client relationship matters, having that safety
+net in place before anything else goes live wasn't optional. It took thirty seconds
+to enable in the Vultr dashboard and it's one of those things you only think about
+when you need it — and you really don't want to need it without it.
 
 My wife has a CRM for her business. It's fast, it's private, the data is ours, and it's secured the same way I'd secure anything else I care about. That felt worth doing right.
 
