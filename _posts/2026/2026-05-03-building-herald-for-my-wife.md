@@ -45,6 +45,10 @@ Terraform, configured with Ansible, secured with CrowdSec and Cloudflare, and
 wired into my existing homelab monitoring stack. This is the story of how Herald 
 was born.
 
+![Redacted Herald architecture diagram](/assets/images/herald-redacted-architecture.png)
+*High-level redacted architecture for Herald: public edge, secure tunnel, private services, monitoring, and backups.*
+
+
 ## Why Twenty CRM
 
 Twenty is an open-source CRM built on NestJS and React, self-hostable via Docker Compose, and genuinely modern-looking. It supports Google OAuth, has a clean GraphQL API, and feels like a product someone actually put thought into rather than an afterthought. For a small business use case with one or two users it's a great fit, and the fact that we own the data matters.
