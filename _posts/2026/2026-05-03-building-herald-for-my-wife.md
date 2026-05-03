@@ -16,9 +16,30 @@ tags:
   - selfhosted
 ---
 
-My wife needed a CRM for her business. She didn't ask for anything elaborate — just something to keep track of clients, follow-ups, and contacts. I could have pointed her at HubSpot or any number of SaaS options and called it a day. But if you know me, you know that's not how this goes.
+My wife needed a CRM for her business. She didn't ask for anything elaborate — just 
+something to keep track of clients, follow-ups, and contacts. I could have pointed 
+her at HubSpot or any number of SaaS options and called it a day. But if you know 
+me, you know that's not how this goes.
 
-Instead I spent a weekend building her something properly — a self-hosted [Twenty CRM](https://twenty.com) instance on a fresh VPS, provisioned with Terraform, configured with Ansible, secured with CrowdSec and Cloudflare, and wired into my existing homelab monitoring stack. This is the story of how Herald was born.
+She had just gotten her license and was standing up her business from scratch. When 
+you're in that position, every dollar matters. The problem with most modern CRM 
+platforms is that they're priced per seat — which sounds reasonable until you start 
+doing the math. Add a few team members as the business grows and you're looking at 
+hundreds of dollars a month, thousands over a year, for software that holds your 
+data hostage the moment you stop paying. For someone just getting started, that's a 
+hard pill to swallow before you've even landed your first clients.
+
+Self-hosting flips that calculus entirely. The infrastructure costs a fraction of 
+what SaaS charges, scales on our terms, and most importantly — the data is ours. 
+Client contacts, communication history, business relationships — none of that lives 
+on someone else's servers under someone else's terms of service. That matters.
+
+So instead of a monthly subscription, I spent a weekend building her something 
+properly — a self-hosted [Twenty CRM](https://twenty.com) instance on a fresh VPS, 
+provisioned with Terraform, configured with Ansible, secured with CrowdSec and 
+Cloudflare, and wired into my existing homelab monitoring stack. This is the story 
+of how Herald was born.
+
 
 ## Why Twenty CRM
 
