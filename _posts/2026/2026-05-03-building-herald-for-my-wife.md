@@ -87,6 +87,8 @@ Herald reports into the same monitoring stack as every other lab node. The Ansib
 
 Grafana dashboards on the lab pick Herald up automatically once the scrape config is in place. One thing worth noting: cAdvisor has a habit of spiking CPU during its scrape cycle on a 2-core machine. It looks alarming in htop — one core suddenly pegged — but it's periodic and brief. Normal behavior, not a cause for concern.
 
+Uptime Kuma rounds out the monitoring picture — it watches Herald's services from the outside, alerting if Twenty CRM becomes unreachable or the Cloudflare tunnel drops. Where Grafana tells you how the system is performing, Uptime Kuma tells you whether it's actually up from an end-user perspective. Both questions matter when you're running something for someone else's business.
+
 ### Log Forwarding to Graylog
 
 Every node in the fleet forwards its auth and system logs to a centralized Graylog instance running on moonlab, backed by OpenSearch on NFS storage. The Ansible rsyslog role drops a config in `/etc/rsyslog.d/` that forwards `auth,authpriv.*` and syslog traffic over TCP to Graylog's GELF input.
