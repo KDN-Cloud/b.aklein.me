@@ -10,7 +10,7 @@ tags:
   - cloudflare
   - twenty-crm
   - homelab
-  - devops
+  - sre
   - wireguard
   - security
   - selfhosted
