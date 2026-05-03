@@ -45,8 +45,8 @@ Terraform, configured with Ansible, secured with CrowdSec and Cloudflare, and
 wired into my existing homelab monitoring stack. This is the story of how Herald 
 was born.
 
-![Redacted Herald architecture diagram](/assets/images/herald-redacted-architecture.png)
-*High-level redacted architecture for Herald: public edge, secure tunnel, private services, monitoring, and backups.*
+![Herald high-level architecture diagram](/assets/images/herald-redacted-architecture.png)
+*High-level architecture for Herald: public edge, secure tunnel, private services, monitoring, and backups.*
 
 
 ## Why Twenty CRM
