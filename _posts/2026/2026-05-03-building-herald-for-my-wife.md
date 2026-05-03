@@ -38,12 +38,12 @@ hypervisor — the OS, the database, the backups, the encryption. No vendor kill
 switch, no surprise pricing changes, no wondering what the terms of service say 
 about your data. That matters.
 
-So instead of a monthly subscription, I spent a weekend building her something 
-properly — a self-hosted [Twenty CRM](https://twenty.com) instance on a fresh VPS, 
-provisioned with Terraform, configured with Ansible, secured with CrowdSec and 
-Cloudflare, and wired into my existing homelab monitoring stack. This is the story 
-of how Herald was born.
-
+So instead of a per-seat SaaS subscription that scales against you, I spent a 
+weekend building her something properly — a self-hosted 
+[Twenty CRM](https://twenty.com/) instance on a fresh VPS, provisioned with 
+Terraform, configured with Ansible, secured with CrowdSec and Cloudflare, and 
+wired into my existing homelab monitoring stack. This is the story of how Herald 
+was born.
 
 ## Why Twenty CRM
 
