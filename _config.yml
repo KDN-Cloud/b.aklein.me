@@ -28,3 +28,6 @@ defaults:
       type: posts
     values:
       layout: post
+
+google_analytics: G-17GC5WKY29
+
