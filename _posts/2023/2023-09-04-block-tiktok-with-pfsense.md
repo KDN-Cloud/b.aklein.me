@@ -1,7 +1,7 @@
 ---
 title: Block TikTok with pfSense + pfBlockerNG
 date: 2023-08-27
-updated: 2026-06-01
+lastmod: 2026-06-01
 description: Block TikTok on your network using pfSense and pfBlockerNG — DNSBL, IP blocklists, DoH blocking, and ASN-level coverage.
 tags:
 - tiktok
