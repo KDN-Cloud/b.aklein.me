@@ -27,8 +27,8 @@ Some fun projects of services I have deployed in no particular order.
 
 🔘 [Minecraft](https://minecraft.gg0x.games/) - a GG0x Minecraft Bedrock server
 
-~~🔘 **KIM** - a federated end-to-end encrypted Matrix messaging homeserver~~
+🔘 **KIM** - a federated end-to-end encrypted Matrix messaging homeserver
 
-~~🔘 **Searx** - a privacy-respecting metasearch engine~~
+🔘 **Searx** - a privacy-respecting metasearch engine
 
-~~🔘 **Tor Bridge** - an obfs4 bridge to <a href="https://blog.torproject.org/run-tor-bridges-defend-open-internet" target="_blank">help</a> censored users connect to the open internet through Tor when users are being oppressed in countries like China, Iran, and Kazakhstan that exercise information control by trying to block Tor~~
+🔘 **Tor Bridge** - an obfs4 bridge to <a href="https://blog.torproject.org/run-tor-bridges-defend-open-internet" target="_blank">help</a> censored users connect to the open internet through Tor when users are being oppressed in countries like China, Iran, and Kazakhstan that exercise information control by trying to block Tor
