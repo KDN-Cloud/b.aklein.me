@@ -13,7 +13,7 @@ tags:
 
 Not everything I build involves Ansible or a terminal window.
 
-**Klein Drops** is the other store — the one that exists because music, space, and the general weirdness of the universe needed somewhere to go. It lives at [merch.aklein.pro](https://merch.aklein.pro), runs on Dashery, and covers territory that DeployOnFriday doesn't touch: DJ and music culture, UFO and alien themes, cosmic and space aesthetics, and the broader creative space in between.
+**Klein Drops** is the other store — the one that exists because music, space, and the general weirdness of the universe needed somewhere to go. It lives at [merch.aklein.pro](https://merch.aklein.pro), runs on Dashery, and covers territory that DeployOnFriday doesn't touch: DJ and music culture, UFO and ET themes, cosmic and space aesthetics, and the broader creative space in between.
 
 The vibe is deliberate. Where DeployOnFriday is green-on-black CLI energy, Klein Drops runs purple — deeper, moodier, less likely to care about your uptime SLA. Same attention to design quality, different universe entirely.
 
