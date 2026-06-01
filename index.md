@@ -1,8 +1,8 @@
 ---
 layout: default
-title: AK // INFRASTRUCTURE LOG
+title: AK // SYS LOG
 author: Anthony Klein
-description: Systems administration workflows and technical documentation.
+description: Technical documentation, architecture blueprints, and operational deep-dives into scalable, resilient infrastructure.
 ---
 
 ### [ SYSTEM_STATUS: ONLINE ]
