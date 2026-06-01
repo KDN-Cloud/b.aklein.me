@@ -1,0 +1,16 @@
+---
+layout: default
+---
+<small>{{ page.date | date: "%-d %B %Y" }}</small>
+{% if page.lastmod %}
+  <small> · <em>Updated {{ page.lastmod | date: "%-d %B %Y" }}</em></small>
+{% endif %}
+<h1>{{ page.title }}</h1>
+
+<p class="view">by {{ site.author }}</p>
+
+{{ content }}
+
+{% if page.tags %}
+  <small>tags: {% for tag in page.tags %}<em>{{ tag }}</em>{% unless forloop.last %} - {% endunless %}{% endfor %}</small>
+{% endif %}
