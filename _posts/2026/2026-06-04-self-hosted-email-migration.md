@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "15 Years of Self-Hosted Email. Here's Why I Stopped."
-date: 2026-06-03
+date: 2026-06-04
 description: I ran Postfix, Dovecot, Rspamd, OpenDMARC, and a replicated OpenLDAP backend for fifteen years. Here's the honest reason I handed it all to Fastmail.
 tags:
   - email
