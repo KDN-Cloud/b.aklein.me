@@ -17,7 +17,7 @@ I 💙 and respect <a href="https://en.wikipedia.org/wiki/Free_and_open-source_s
 
 Some fun projects of services I have deployed in no particular order. 
 
-🔘 **Strfry** - <a href="https://github.com/hoytech/strfry" target="_blank">strfry</a> is a relay for the nostr protocol that supports LMDB - a lightning fast database manager that is also used in OpenLDAP. This relay is using Docker and Nginx.
+🔘 **Strfry** - Strfry is a relay for the nostr protocol that supports LMDB - a lightning fast database manager that is also used in OpenLDAP. This relay is using Docker and Nginx.
 
 🔘 **PrivateBin** - a minimalist, open source online pastebin where the server has zero knowledge of pasted data. Data is encrypted/decrypted in the browser using 256 bits AES 
 
