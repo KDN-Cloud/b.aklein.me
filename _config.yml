@@ -11,6 +11,7 @@ description: >
 url: https://b.aklein.me
 repository: "KDN-Cloud/b.aklein.me"
 
+future: true  # default, change to true to force publish
 timezone: America/Los_Angeles
 
 theme: jekyll-theme-hacker
