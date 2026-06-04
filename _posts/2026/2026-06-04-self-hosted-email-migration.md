@@ -9,6 +9,7 @@ tags:
   - fastmail
   - postfix
   - dovecot
+  - rspamd
   - infrastructure
   - homelab
 ---
