@@ -42,4 +42,3 @@ To be clear — fifteen years of running your own mail stack teaches you how ema
 But knowing how something works doesn't mean you have to keep running it yourself forever. Sometimes the most senior engineering decision you can make is recognizing when a system has served its purpose, handing it off to someone whose entire job it is, and directing that reclaimed time toward something that actually needs you.
 
 The homelab is still very much alive. It's just one less thing that can wake me up at night.
-
