@@ -117,7 +117,7 @@ If you change your domain later, update this file and push.
 
 ## DNS in Cloudflare: Why You Turn the Proxy Off
 
-This is the part that seems to trip people up. If you're managing DNS in Cloudflare your instinct might be to enable the proxy (orange cloud) for everything: DDoS protection, hidden origin IP, caching. Generally correct.
+This is the part that trips people up. If you're managing DNS in Cloudflare your instinct is to enable the proxy (orange cloud) for everything: DDoS protection, hidden origin IP, caching. Generally correct.
 
 For GitHub Pages with a custom domain it creates a problem. GitHub Pages verifies your domain by checking that DNS resolves to their servers. The Cloudflare proxy intercepts that check and GitHub sees Cloudflare's IP rather than its own, which breaks verification and can cause certificate provisioning to fail.
 
@@ -152,7 +152,7 @@ My links page lives at `linktree.aklein.pro` as the canonical URL, but `links.ak
 
 Nothing. GitHub Pages is free for public repositories. The only costs are whatever you already pay for your domain and DNS. If you're on Cloudflare's free tier, that's zero.
 
-Compare that to Linktree Pro at $9/month for custom domains and analytics, or any of the other link-in-bio SaaS options that want a recurring subscription for what is, again, a static HTML file.
+Compare that to Linktree's paid plans: Starter runs $8/month ($6 annually), Pro is $15/month ($12 annually), and Premium hits $35/month ($30 annually). SEO settings — the thing that makes your page actually discoverable — are locked behind Pro. That's $12/month minimum just to control your own meta description on a page that's essentially a list of links.
 
 ## The End State
 
