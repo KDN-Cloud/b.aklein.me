@@ -160,6 +160,8 @@ For an apex domain (`yourdomain.com` with no subdomain), use `A` records pointin
 
 **SEO and meta tags** are handled by the generator's Page Setup tab. Fill in the fields, copy the output, paste it into the `<head>` of your `index.html`. The meta tag block covers primary description, canonical URL, Open Graph (title, description, image with dimensions, profile type, first/last name, username), and Twitter Card. The JSON-LD block generates a `ProfilePage` schema with a nested `Person` entity including job title, bio, `sameAs` profile URLs, `worksFor` organization, and address. Both outputs are independently copyable.
 
+**Google Analytics** is included in the template via two script tags at the bottom of the `<head>`. I keep it because I genuinely want to know who's landing on my links page — where they're coming from, what they're clicking, whether anyone is actually finding it. It's a static HTML file with no backend, so GA4 is the only way to get that visibility. If you don't want analytics, delete both script tags and the `gtag.js` file from the repo root. The page works fine without them.
+
 ## The Alias Domain
 
 My links page lives at `linktree.aklein.pro` as the canonical URL, but `links.aklein.pro` points to the same place. GitHub Pages serves one domain per repo, so the second one is a redirect rule at your DNS provider: `links.aklein.pro/*` to `https://linktree.aklein.pro/$1` with a 301. Most DNS providers support this natively — Cloudflare calls it a Redirect Rule and it takes about thirty seconds to set up.
