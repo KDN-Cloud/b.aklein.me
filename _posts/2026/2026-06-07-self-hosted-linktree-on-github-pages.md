@@ -79,7 +79,7 @@ Character counters on title and description fields keep you within search engine
 
 **Link Generator** handles individual link entries. Pick one of eight template styles, fill in the label, URL, icon class, and category, and it outputs the HTML snippet ready to paste into `index.html`. There's a live preview that updates as you type, a history panel for saving links mid-session, and a Snippet vs. Full block toggle depending on whether you're adding to an existing category or starting a new section.
 
-**Export** — once you've filled in your details and saved your links to history, hit the **Export index.html** button in the topbar. It assembles a complete, ready-to-deploy `index.html` and downloads it directly. No copy/paste required. Build each link, hit Save, then export when you're done.
+**Export** — once you've filled in your details and built your links, hit the **Export index.html** button in the topbar. It assembles a complete, ready-to-deploy `index.html` and downloads it directly. The export pulls from the history panel, so use the Save button next to each generated link snippet to add it to history before exporting. Build a link, save it, repeat, then export when you're done.
 
 **Eight template styles:**
 - **AK / Terminal:** dark mono card with icon, label, and optional `//` suffix
