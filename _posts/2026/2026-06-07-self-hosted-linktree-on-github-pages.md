@@ -115,7 +115,7 @@ If you change your domain later, update this file and push.
 
 ## DNS in Cloudflare: Why You Turn the Proxy Off
 
-This is the part that trips people up. If you're managing DNS in Cloudflare your instinct is to enable the proxy (orange cloud) for everything: DDoS protection, hidden origin IP, caching. Generally correct.
+This is the part that seems to trip people up. If you're managing DNS in Cloudflare your instinct might be to enable the proxy (orange cloud) for everything: DDoS protection, hidden origin IP, caching. Generally correct.
 
 For GitHub Pages with a custom domain it creates a problem. GitHub Pages verifies your domain by checking that DNS resolves to their servers. The Cloudflare proxy intercepts that check and GitHub sees Cloudflare's IP rather than its own, which breaks verification and can cause certificate provisioning to fail.
 
