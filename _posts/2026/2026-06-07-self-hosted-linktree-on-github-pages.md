@@ -84,8 +84,8 @@ The generator has two tabs:
 - **Corporate:** white card with icon, label, and optional sublabel
 
 **Icon sources (both free, both loaded):**
-- Font Awesome free tier: [fontawesome.com/search?m=free](https://fontawesome.com/search?m=free) — `fa-brands fa-github`, `fa-solid fa-music`, etc.
-- Bootstrap Icons, entirely free: [icons.getbootstrap.com](https://icons.getbootstrap.com) — `bi bi-github`, `bi bi-music-note`, etc.
+- Font Awesome free tier: [fontawesome.com/search?m=free](https://fontawesome.com/search?m=free), e.g. `fa-brands fa-github`, `fa-solid fa-music`
+- Bootstrap Icons, entirely free: [icons.getbootstrap.com](https://icons.getbootstrap.com), e.g. `bi bi-github`, `bi bi-music-note`
 
 The generator ships with four UI themes (light, GitHub dark, navy, and purple), switchable from the topbar. It's a local tool and isn't deployed publicly.
 
@@ -117,7 +117,7 @@ If you change your domain later, update this file and push.
 
 ## DNS in Cloudflare: Why You Turn the Proxy Off
 
-This is the part that trips people up. If you're managing DNS in Cloudflare your instinct is to enable the proxy (orange cloud) for everything: DDoS protection, hidden origin IP, caching. Generally correct.
+This is the part that seems to trip people up. If you're managing DNS in Cloudflare your instinct might be to enable the proxy (orange cloud) for everything: DDoS protection, hidden origin IP, caching. Generally correct.
 
 For GitHub Pages with a custom domain it creates a problem. GitHub Pages verifies your domain by checking that DNS resolves to their servers. The Cloudflare proxy intercepts that check and GitHub sees Cloudflare's IP rather than its own, which breaks verification and can cause certificate provisioning to fail.
 
@@ -132,13 +132,13 @@ Target:  kdn-cloud.github.io
 Proxy:   DNS only (gray cloud)
 ```
 
-The target is your GitHub Pages base hostname — `<your-org-or-username>.github.io`. Not the repo name, not the full site URL.
+The target is your GitHub Pages base hostname: `<your-org-or-username>.github.io`. Not the repo name, not the full site URL.
 
 For an apex domain (`yourdomain.com` with no subdomain), use `A` records pointing to GitHub's IPs. Those are documented in GitHub's Pages docs and occasionally change, so verify there rather than copying from a blog post.
 
 ## Customizing the Page
 
-**The profile image** is a URL. I use my GitHub avatar (`https://avatars.githubusercontent.com/u/YOUR_USER_ID`) because it's always available, always current, and I don't have to manage another asset.
+**The profile image** is a URL. I use my GitHub avatar at `https://avatars.githubusercontent.com/u/YOUR_USER_ID` because it's always available, always current, and I don't have to manage another asset.
 
 **Category labels** aren't part of the original template. I added them to group links into sections: "The Command Center" for professional and infrastructure links, "The Sound Booth" for music and creative stuff, "Active Uplinks" for communication channels. It's a `<div>` with a class and some CSS. The generator handles this automatically via the category selector.
 
