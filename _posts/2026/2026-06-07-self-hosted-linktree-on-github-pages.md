@@ -101,6 +101,8 @@ A few notes on setup that aren't immediately obvious:
 
 **Enforce HTTPS** is a checkbox in the same screen. Check it. GitHub handles the TLS certificate automatically via Let's Encrypt once your DNS is verified.
 
+![GitHub Pages Overview](GitHub-Pages.png)
+
 ## The CNAME File
 
 This file does one job: tells GitHub Pages what custom domain to answer for. The entire content is just your domain name:
