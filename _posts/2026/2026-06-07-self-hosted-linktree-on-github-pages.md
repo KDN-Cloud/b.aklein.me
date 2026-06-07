@@ -6,8 +6,8 @@ author: Anthony Klein
 description: >
   Linktree is fine until it isn't. Here's how I forked an open source alternative,
   customized it to match my own ecosystem, and deployed it free on GitHub Pages
-  with a custom domain through Cloudflare — including a local generator tool for
-  building links and full SEO meta tags without touching code.
+  with a custom domain and any DNS provider — including a local generator for
+  building links, SEO meta tags, full page export, and JSON-LD schema without touching code.
 tags:
   - github-pages
   - linktree
@@ -69,9 +69,17 @@ Rather than hand-editing HTML every time you add a link or set up a new fork, I 
 
 The generator has two tabs:
 
-**Page Setup & SEO** handles everything that goes in the `<head>` of your `index.html`. Fill in your name, job title, bio, canonical URL, profile image, and organization details, and it generates two ready-to-paste outputs. The first is a full meta tag block covering primary SEO, Open Graph, and Twitter Card. The second is a JSON-LD schema block with `ProfilePage` and `Person` structured data including `sameAs` URLs, location, and `worksFor`. Both are copyable independently. Character counters on title and description fields keep you within search engine limits.
+**Page Setup & SEO** handles everything that goes in the `<head>` of your `index.html`, plus the profile block that goes in the `<body>`. Fill in your name, job title, bio, canonical URL, profile image, quote, organization details, and optional footer hashtag, and it generates three ready-to-paste outputs:
+
+- **Meta tags** — full `<head>` block covering primary SEO, Open Graph, and Twitter Card
+- **JSON-LD schema** — structured data with `ProfilePage` and `Person` schema including `sameAs` URLs, location, and `worksFor`
+- **Profile block** — the `<header>` HTML with your profile image, username, optional quote, and footer hashtag
+
+Character counters on title and description fields keep you within search engine limits. Both meta outputs are independently copyable.
 
 **Link Generator** handles individual link entries. Pick one of eight template styles, fill in the label, URL, icon class, and category, and it outputs the HTML snippet ready to paste into `index.html`. There's a live preview that updates as you type, a history panel for saving links mid-session, and a Snippet vs. Full block toggle depending on whether you're adding to an existing category or starting a new section.
+
+**Export** — once you've filled in your details and saved your links to history, hit the **Export index.html** button in the topbar. It assembles a complete, ready-to-deploy `index.html` and downloads it directly. No copy/paste required. Build each link, hit Save, then export when you're done.
 
 **Eight template styles:**
 - **AK / Terminal:** dark mono card with icon, label, and optional `//` suffix
@@ -115,38 +123,46 @@ No `https://`, no trailing slash. Push it and GitHub Pages picks it up automatic
 
 If you change your domain later, update this file and push.
 
-## DNS in Cloudflare: Why You Turn the Proxy Off
+## DNS Setup: The Custom Domain Gotcha
 
-This is the part that seems to trip people up. If you're managing DNS in Cloudflare your instinct might be to enable the proxy (orange cloud) for everything: DDoS protection, hidden origin IP, caching. Generally correct.
+Any DNS provider works here — Cloudflare, Namecheap, Route 53, Porkbun, whatever you're already using. The only requirement is that you can create a `CNAME` record (or `A` records for an apex domain) pointing to GitHub Pages.
 
-For GitHub Pages with a custom domain it creates a problem. GitHub Pages verifies your domain by checking that DNS resolves to their servers. The Cloudflare proxy intercepts that check and GitHub sees Cloudflare's IP rather than its own, which breaks verification and can cause certificate provisioning to fail.
-
-The fix is straightforward: set your DNS record to **DNS only** (gray cloud, not orange). GitHub Pages already sits behind a CDN with HTTPS enforced, so you're not giving up meaningful protection.
-
-For a subdomain like mine (`linktree.aklein.pro`):
+For a subdomain like mine (`linktree.aklein.pro`), the generic setup looks like this:
 
 ```
 Type:    CNAME
 Name:    linktree
 Target:  kdn-cloud.github.io
-Proxy:   DNS only (gray cloud)
 ```
 
-The target is your GitHub Pages base hostname: `<your-org-or-username>.github.io`. Not the repo name, not the full site URL.
+If you're on **Cloudflare**, there's one extra thing to know. Cloudflare adds a proxy setting to every DNS record — the orange cloud. Your instinct is probably to leave it on since it gives you DDoS protection, hides your origin IP, and adds caching. For GitHub Pages it creates a problem: GitHub verifies your domain by checking that DNS resolves to their servers, but the Cloudflare proxy intercepts that check and GitHub sees Cloudflare's IP instead of its own, which breaks verification and can cause certificate provisioning to fail.
 
-For an apex domain (`yourdomain.com` with no subdomain), use `A` records pointing to GitHub's IPs. Those are documented in GitHub's Pages docs and occasionally change, so verify there rather than copying from a blog post.
+The fix is to set it to **DNS only** (gray cloud):
+
+```
+Type:    CNAME
+Name:    linktree
+Target:  kdn-cloud.github.io
+Proxy:   DNS only (gray cloud — NOT orange)
+```
+
+You're not giving up much here. GitHub Pages already sits behind a CDN with HTTPS enforced, so traffic is encrypted regardless.
+
+The target in both cases is your GitHub Pages base hostname: `<your-org-or-username>.github.io`. Not the repo name, not the full site URL.
+
+For an apex domain (`yourdomain.com` with no subdomain), use `A` records pointing to GitHub's IPs instead of a CNAME. Those are documented in GitHub's Pages docs and occasionally change, so verify there rather than copying from a blog post.
 
 ## Customizing the Page
 
 **The profile image** is a URL. I use my GitHub avatar at `https://avatars.githubusercontent.com/u/YOUR_USER_ID` because it's always available, always current, and I don't have to manage another asset.
 
-**Category labels** aren't part of the original template. I added them to group links into sections: "The Command Center" for professional and infrastructure links, "The Sound Booth" for music and creative stuff, "Active Uplinks" for communication channels. It's a `<div>` with a class and some CSS. The generator handles this automatically via the category selector.
+**Category labels** aren't part of the original template. I added them to group links into sections: "The Command Center" for professional and infrastructure links, "The Sound Booth" for music and creative stuff, "Active Uplinks" for communication channels. It's a `<div>` with a class and some CSS. The generator handles this automatically via the category selector — create categories, assign links to them, and the Full block output includes the header.
 
 **SEO and meta tags** are handled by the generator's Page Setup tab. Fill in the fields, copy the output, paste it into the `<head>` of your `index.html`. The meta tag block covers primary description, canonical URL, Open Graph (title, description, image with dimensions, profile type, first/last name, username), and Twitter Card. The JSON-LD block generates a `ProfilePage` schema with a nested `Person` entity including job title, bio, `sameAs` profile URLs, `worksFor` organization, and address. Both outputs are independently copyable.
 
 ## The Alias Domain
 
-My links page lives at `linktree.aklein.pro` as the canonical URL, but `links.aklein.pro` points to the same place. GitHub Pages serves one domain per repo, so the second one is a Cloudflare Redirect Rule: `links.aklein.pro/*` to `https://linktree.aklein.pro/$1` with a 301. Thirty seconds to set up and gives you a shorter URL to hand out.
+My links page lives at `linktree.aklein.pro` as the canonical URL, but `links.aklein.pro` points to the same place. GitHub Pages serves one domain per repo, so the second one is a redirect rule at your DNS provider: `links.aklein.pro/*` to `https://linktree.aklein.pro/$1` with a 301. Most DNS providers support this natively — Cloudflare calls it a Redirect Rule and it takes about thirty seconds to set up.
 
 ## What This Costs
 
@@ -161,13 +177,12 @@ You end up with a links page that:
 - Lives in a git repository you own and control
 - Deploys automatically on every push
 - Serves over HTTPS with a certificate GitHub manages for you
-- Runs on your own domain
+- Runs on your own domain with any DNS provider
 - Has full SEO meta tags, Open Graph, Twitter Card, and JSON-LD schema
 - Costs nothing to host
 - Can be styled however you want across eight template options
 - Has no platform dependency that can sunset, reprice, or change terms on you
 
-The whole setup from fork to live site takes under an hour, most of which is waiting for DNS to propagate. The generator handles the parts that used to require hand-editing HTML: links, categories, SEO head tags, and structured data. You focus on the content.
+The whole setup from fork to live site takes under an hour, most of which is waiting for DNS to propagate. The generator handles the parts that used to require hand-editing HTML: links, categories, SEO head tags, structured data, profile block, and a full page export when you're ready to ship. You focus on the content.
 
 Source code for my version is at [github.com/KDN-Cloud/linktree](https://github.com/KDN-Cloud/linktree). The live result is at [links.aklein.pro](https://links.aklein.pro). Fork it, break it, make it yours.
-
