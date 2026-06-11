@@ -11,6 +11,8 @@ tags:
 - homelab
 - automation
 - self-hosted
+- linux
+- sysadmin-projects
 ---
 
 > I no longer run most of the projects listed here, but I leave them for historical reference.

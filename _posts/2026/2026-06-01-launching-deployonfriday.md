@@ -12,6 +12,8 @@ tags:
   - tech-humor
   - developer-culture
   - personal-brand
+  - print-on-demand
+  - engineering-humor
 ---
 
 I've been in infrastructure long enough to have opinions about Friday deployments. Strong ones. So when the idea for a tech humor merch store came up, the name wrote itself: **DeployOnFriday**.

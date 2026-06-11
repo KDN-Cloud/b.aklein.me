@@ -10,6 +10,8 @@ tags:
 - authentication
 - log-management
 - observability
+- splunk-enterprise
+- apache-auth
 ---
 # Intro
 

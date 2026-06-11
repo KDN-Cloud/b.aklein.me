@@ -10,6 +10,8 @@ tags:
 - email-client
 - productivity
 - open-source
+- email-productivity
+- open-source-email
 ---
 
 # Intro

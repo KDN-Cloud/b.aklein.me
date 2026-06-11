@@ -10,6 +10,8 @@ tags:
 - OpenLDAP
 - self-hosted-email
 - mail-server
+- mail-quota
+- mailbox-management
 ---
 
 # Intro

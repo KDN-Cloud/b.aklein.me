@@ -10,6 +10,8 @@ tags:
 - mail-server
 - virtual-mail-domains
 - domain-management
+- Postfix
+- self-hosted-email
 ---
 
 # Intro

@@ -13,6 +13,8 @@ tags:
   - cloudflare
   - information-architecture
   - personal-brand
+  - domain-locker
+  - personal-domains
 ---
 
 Most people buy a domain, point it somewhere, and call it done. Maybe they add a `www` subdomain if they're feeling ambitious. That's fine. It works. It's also how you end up with `myname.com` doing twelve different jobs and none of them particularly well.

@@ -12,6 +12,8 @@ tags:
   - dj-culture
   - creative-brand
   - personal-brand
+  - print-on-demand
+  - cosmic-aesthetic
 ---
 
 Not everything I build involves Ansible or a terminal window.

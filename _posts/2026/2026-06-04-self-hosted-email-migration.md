@@ -16,6 +16,8 @@ tags:
   - email-deliverability
   - email-migration
   - sysadmin
+  - dmarc
+  - email-hosting
 ---
 
 I ran my own email infrastructure for fifteen years. Postfix, Dovecot, Rspamd, OpenDMARC, and a replicated OpenLDAP backend holding it all together. It worked. Most of the time it worked really well. I knew every config file, every queue, every header that touched the system. I built it, I maintained it, and at a certain point I automated the whole stack — provisioning, configuration, updates — to cut down on the time it demanded. That bought me a few more years. For a long time I was genuinely proud of it.

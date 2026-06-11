@@ -9,6 +9,8 @@ tags:
 - email-security
 - self-hosted-email
 - Linux
+- pcre
+- mail-server
 ---
 
 This is an example of some <a href="http://www.postfix.org/header_checks.5.html" target="_blank" >Postfix Header Checks</a> which I use to help with mail spammers. This has been working as expected really well. One thing to note is that I did need to comment out `#/^Precedence:.*bulk/ REJECT We do not accept your spam` because it would prevent auto-reply emails from being sent such as vacation or out-of-office responses. 

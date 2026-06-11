@@ -11,6 +11,8 @@ tags:
 - IMAP
 - self-hosted-email
 - mail-server
+- imap-server
+- mail-authentication
 ---
 
 # Intro
