@@ -9,6 +9,10 @@ tags:
   - homelab
   - self-hosted
   - dns
+  - domain-management
+  - cloudflare
+  - information-architecture
+  - personal-brand
 ---
 
 Most people buy a domain, point it somewhere, and call it done. Maybe they add a `www` subdomain if they're feeling ambitious. That's fine. It works. It's also how you end up with `myname.com` doing twelve different jobs and none of them particularly well.
@@ -34,4 +38,3 @@ Four domains sounds manageable. Four domains with multiple subdomains each, spre
 I self-host [Domain Locker](https://github.com/lissy93/domain-locker) internally, an open source portfolio tracker that gives me a single dashboard for everything: expiration dates, registrar info, DNS records, SSL status, and uptime. The kind of thing you don't think you need until a domain quietly expires because you forgot which email address the renewal notice goes to.
 
 It runs in Docker, fits neatly into the existing lab stack, and takes about ten minutes to set up. If you're running more than two or three domains and you're not tracking them somewhere, you're one missed renewal away from an embarrassing outage. Domain Locker is the fix for that.
-

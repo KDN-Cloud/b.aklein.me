@@ -6,6 +6,10 @@ tags:
 - LDAP
 - Linux
 - OpenVPN
+- VPN
+- remote-access
+- authentication
+- OpenLDAP
 ---
 
 # Intro
@@ -73,4 +77,3 @@ At this point we can now have our VPN client authenticate with a username and pa
 127.0.0.1:60923 Data Channel Encrypt: Cipher 'AES-256-GCM' initialized with 256 bit key
 127.0.0.1:60923 Data Channel Decrypt: Cipher 'AES-256-GCM' initialized with 256 bit key
 ```
-

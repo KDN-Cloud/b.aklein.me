@@ -6,7 +6,11 @@ tags:
 - LDAP
 - Linux
 - Mail
-- Postfix 
+- Postfix
+- OpenLDAP
+- self-hosted-email
+- mail-server
+- sysadmin
 ---
 
 # Intro

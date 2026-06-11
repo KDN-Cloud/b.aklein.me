@@ -7,6 +7,10 @@ tags:
 - Projects
 - Passion
 - Sysadmin
+- infrastructure
+- homelab
+- automation
+- self-hosted
 ---
 
 > I no longer run most of the projects listed here, but I leave them for historical reference.

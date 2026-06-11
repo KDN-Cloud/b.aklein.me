@@ -7,6 +7,10 @@ tags:
 - Mail
 - Accounts
 - Aliases
+- OpenLDAP
+- self-hosted-email
+- mail-server
+- identity-management
 ---
 
 # Intro

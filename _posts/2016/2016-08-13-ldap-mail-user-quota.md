@@ -6,6 +6,10 @@ tags:
 - Mail
 - LDAP
 - Quota
+- Dovecot
+- OpenLDAP
+- self-hosted-email
+- mail-server
 ---
 
 # Intro

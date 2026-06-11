@@ -14,6 +14,9 @@ tags:
   - wireguard
   - security
   - selfhosted
+  - vultr
+  - infrastructure-as-code
+  - crm-hosting
 ---
 
 My wife needed a CRM for her business. She didn't ask for anything elaborate — just
@@ -220,4 +223,3 @@ My wife has a CRM for her business. It's fast, it's private, the data is ours, a
 ---
 
 *All infrastructure code lives in my private `ops_automation` Ansible repo and a Terraform module in the KDN Lab Gitea instance. If you're building something similar and want to talk through the architecture, [let's connect](https://aklein.pro).*
-

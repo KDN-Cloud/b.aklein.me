@@ -9,6 +9,9 @@ tags:
   - dashery
   - music
   - side-project
+  - dj-culture
+  - creative-brand
+  - personal-brand
 ---
 
 Not everything I build involves Ansible or a terminal window.
@@ -20,4 +23,3 @@ The vibe is deliberate. Where DeployOnFriday is green-on-black CLI energy, Klein
 I DJ and produce music outside of the IT and infrastructure work, so Klein Drops is partly a natural extension of that — a place where that side of things gets a physical form. Not everything has to compile.
 
 Browse it at [merch.aklein.pro](https://merch.aklein.pro).
-

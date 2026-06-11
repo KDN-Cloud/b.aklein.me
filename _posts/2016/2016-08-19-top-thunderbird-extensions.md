@@ -7,6 +7,9 @@ tags:
 - Thunderbird
 - Extensions
 - Top-Thunderbird-Mail-Extensions
+- email-client
+- productivity
+- open-source
 ---
 
 # Intro

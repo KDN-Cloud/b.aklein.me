@@ -11,6 +11,10 @@ tags:
   - wireguard
   - ansible
   - linux
+  - self-hosted
+  - network-infrastructure
+  - observability
+  - cloudflare
 ---
 
 It's been a while. A long while, actually — almost three years since the last post here. A lot has happened in that time, mostly in the form of a homelab that has grown well past "a few VMs" into something I spend a genuinely embarrassing number of evenings on. This is a quick overview. A longer write-up on specific pieces will follow.

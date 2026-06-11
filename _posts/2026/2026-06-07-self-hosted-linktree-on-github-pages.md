@@ -29,6 +29,7 @@ tags:
   - font-awesome
   - bootstrap-icons
   - personal-branding
+  - personal-brand
   - seo
   - json-ld
   - schema-org

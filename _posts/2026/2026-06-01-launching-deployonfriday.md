@@ -9,6 +9,9 @@ tags:
   - etsy
   - printify
   - side-project
+  - tech-humor
+  - developer-culture
+  - personal-brand
 ---
 
 I've been in infrastructure long enough to have opinions about Friday deployments. Strong ones. So when the idea for a tech humor merch store came up, the name wrote itself: **DeployOnFriday**.
@@ -20,4 +23,3 @@ The store runs on Etsy with Printify handling fulfillment — meaning I design i
 The aesthetic is terminal-forward — black canvas, green CLI-style text. The kind of design that looks at home on a hoodie in a data center or a mug on a standing desk. Simple, bold, text-driven. The designs don't try too hard. They just say the quiet part loud.
 
 If you work in tech and have ever silently judged a Friday deploy, there's probably something there for you: [deployonfriday.aklein.pro](https://deployonfriday.aklein.pro)
-

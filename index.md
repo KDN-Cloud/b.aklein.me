@@ -2,7 +2,7 @@
 layout: default
 title: AK // SYS LOG
 author: Anthony Klein
-description: Technical documentation, architecture blueprints, and operational deep-dives into scalable, resilient infrastructure.
+description: Technical documentation, architecture blueprints, and operational deep-dives into systems administration, IT infrastructure, SRE, and self-hosted platforms.
 keywords:
   - systems administration
   - IT infrastructure
@@ -10,23 +10,27 @@ keywords:
   - infrastructure engineering
   - network architecture
   - security automation
-  - self-hosting
-  - homelab
   - GitOps
-  - GitHub Pages
-  - Jekyll
   - Proxmox
   - pfSense
   - WireGuard
   - CrowdSec
   - Terraform
   - Ansible
-  - DNS
-  - Cloudflare
   - email infrastructure
   - OpenLDAP
   - Postfix
   - Dovecot
+  - automation
+  - self-hosting
+  - homelab
+  - linux
+  - observability
+  - network security
+  - DNS
+  - Cloudflare
+  - GitHub Pages
+  - Jekyll
 ---
 
 ### [ SYSTEM_STATUS: ONLINE ]

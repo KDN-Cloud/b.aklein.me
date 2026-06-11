@@ -9,6 +9,10 @@ tags:
   - security
   - kdn
   - announcement
+  - IT-consulting
+  - observability
+  - automation
+  - website-delivery
 ---
 
 I've been doing this work for a long time — long enough that "freelancing on the side" stopped being an accurate description of what was actually happening. Infrastructure audits, security tooling, CRM deployments, website builds for personal, brand, and business websites — the work was real, the clients were real, and at some point it made sense to make the business real too.
@@ -22,4 +26,3 @@ The consulting model is straightforward. Engagements start with a discovery call
 If you've got infrastructure that needs attention, security gaps that need closing, or you need a website that doesn't quietly ship your visitors' data to a third party — reach out at [aklein.pro](https://aklein.pro).
 
 KDN is open for business.
-

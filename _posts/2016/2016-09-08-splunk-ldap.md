@@ -5,6 +5,11 @@ date: 2017-03-08
 tags:
 - Splunk
 - Linux
+- LDAP
+- Apache
+- authentication
+- log-management
+- observability
 ---
 # Intro
 

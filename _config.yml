@@ -6,9 +6,14 @@ author:
   email: github@aklein.pro
   github: KDN-Cloud
   url: "https://www.aklein.me/"
-tagline: "Technical documentation, systems administration workflows, and infrastructure engineering insights."
+location:
+  name: "Las Vegas, Nevada, United States"
+  locality: "Las Vegas"
+  region: "Nevada"
+  country: "US"
+tagline: "Technical documentation across IT infrastructure, systems administration, SRE, automation, and self-hosted architecture."
 logo: /assets/favicon.svg
-image: "https://avatars.githubusercontent.com/u/117257206?s=1200&v=4"
+image: /assets/images/aklein-me-social-preview.png
 keywords:
   - systems administration
   - IT infrastructure
@@ -16,27 +21,35 @@ keywords:
   - infrastructure engineering
   - network architecture
   - security automation
-  - self-hosting
-  - homelab
   - GitOps
-  - GitHub Pages
-  - Jekyll
   - Proxmox
   - pfSense
   - WireGuard
   - CrowdSec
   - Terraform
   - Ansible
-  - DNS
-  - Cloudflare
   - email infrastructure
   - OpenLDAP
   - Postfix
   - Dovecot
+  - automation
+  - self-hosting
+  - homelab
+  - linux
+  - devops
+  - observability
+  - network security
+  - identity and access management
+  - cloudflare
+  - dns
+  - GitHub Pages
+  - Jekyll
+  - open source
 
 description: >
-  A centralized repository for technical documentation, systems administration 
-  workflows, and infrastructure engineering insights.
+  A technical blog covering systems administration, IT infrastructure, site
+  reliability engineering, homelab architecture, self-hosting, automation,
+  and practical security workflows.
 
 url: https://b.aklein.me
 repository: "KDN-Cloud/b.aklein.me"
@@ -54,12 +67,13 @@ plugins:
 social:
   name: "Anthony Klein"
   links:
+    - https://b.aklein.me/
     - https://www.aklein.me/
     - https://aklein.pro/
     - https://github.com/KDN-Cloud
 
 twitter:
-  card: summary
+  card: summary_large_image
 
 seo:
   type: Blog

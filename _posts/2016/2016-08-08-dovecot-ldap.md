@@ -7,6 +7,10 @@ tags:
 - Linux
 - Mail
 - Dovecot
+- OpenLDAP
+- IMAP
+- self-hosted-email
+- mail-server
 ---
 
 # Intro

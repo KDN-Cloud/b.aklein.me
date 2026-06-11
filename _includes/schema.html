@@ -3,6 +3,7 @@
 {% assign schema_image = page.image | default: site.image | absolute_url %}
 {% assign schema_author_url = site.author.url | default: site.url %}
 {% assign is_home = page.url == '/' or page.url == '/index.html' %}
+{% assign schema_location_name = site.location.name | default: nil %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -10,7 +11,17 @@
   "name": {{ site.author.name | jsonify }},
   "url": {{ schema_author_url | jsonify }},
   "image": {{ schema_image | jsonify }},
-  "email": {{ site.author.email | jsonify }},
+  "email": {{ site.author.email | jsonify }}{% if schema_location_name %},
+  "homeLocation": {
+    "@type": "Place",
+    "name": {{ site.location.name | jsonify }},
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": {{ site.location.locality | jsonify }},
+      "addressRegion": {{ site.location.region | jsonify }},
+      "addressCountry": {{ site.location.country | jsonify }}
+    }
+  }{% endif %},
   "sameAs": {{ site.social.links | jsonify }}
 }
 </script>
@@ -24,7 +35,17 @@
   "description": {{ schema_description | jsonify }},
   "url": {{ site.url | jsonify }},
   "inLanguage": {{ site.lang | jsonify }},
-  "image": {{ schema_image | jsonify }},
+  "image": {{ schema_image | jsonify }}{% if schema_location_name %},
+  "contentLocation": {
+    "@type": "Place",
+    "name": {{ site.location.name | jsonify }},
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": {{ site.location.locality | jsonify }},
+      "addressRegion": {{ site.location.region | jsonify }},
+      "addressCountry": {{ site.location.country | jsonify }}
+    }
+  }{% endif %},
   "author": {
     "@type": "Person",
     "name": {{ site.author.name | jsonify }},
@@ -53,6 +74,16 @@
   "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
   "dateModified": {{ page.lastmod | default: page.date | date_to_xmlschema | jsonify }},
   "inLanguage": {{ site.lang | jsonify }},
+  {% if schema_location_name %}"contentLocation": {
+    "@type": "Place",
+    "name": {{ site.location.name | jsonify }},
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": {{ site.location.locality | jsonify }},
+      "addressRegion": {{ site.location.region | jsonify }},
+      "addressCountry": {{ site.location.country | jsonify }}
+    }
+  },{% endif %}
   "author": {
     "@type": "Person",
     "name": {{ page.author | default: site.author.name | jsonify }},
