@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">AK // SYS LOG social preview</title>
+  <desc id="desc">Social preview image for Anthony Klein's systems and infrastructure log.</desc>
+  <rect width="1200" height="630" fill="#081108" />
+  <g stroke="rgba(77,201,71,0.08)" stroke-width="1">
+    <path d="M0 105.5h1200M0 210.5h1200M0 315.5h1200M0 420.5h1200M0 525.5h1200" />
+    <path d="M171.5 0v630M343.5 0v630M515.5 0v630M687.5 0v630M859.5 0v630M1031.5 0v630" />
+  </g>
+  <g font-family="'JetBrains Mono', 'Fira Mono', monospace" text-rendering="geometricPrecision">
+    <text x="798" y="248" fill="rgba(140,160,230,0.14)" font-size="144" font-weight="500" letter-spacing="-6">AK_</text>
+    <text x="804" y="314" fill="rgba(140,160,230,0.11)" font-size="28" font-weight="400" letter-spacing="4">// localhost</text>
+    <text x="110" y="178" fill="#4dc947" font-size="56" font-weight="500" letter-spacing="4">AK // SYS LOG</text>
+    <text x="112" y="276" fill="#e9f7e8" font-size="66" font-weight="500" letter-spacing="-2">Anthony Klein</text>
+    <text x="112" y="358" fill="rgba(233,247,232,0.78)" font-size="28" font-weight="400" letter-spacing="0.15">
+      <tspan x="112" dy="0">Technical documentation, infrastructure, systems administration,</tspan>
+      <tspan x="112" dy="38">and operational deep-dives.</tspan>
+    </text>
+    <text x="112" y="474" fill="rgba(77,201,71,0.88)" font-size="24" font-weight="400" letter-spacing="1.6">SYSTEMS · INFRASTRUCTURE · AUTOMATION · SRE</text>
+  </g>
+</svg>

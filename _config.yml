@@ -13,7 +13,7 @@ location:
   country: "US"
 tagline: "Technical documentation across IT infrastructure, systems administration, SRE, automation, and self-hosted architecture."
 logo: /assets/favicon.svg
-image: /assets/images/aklein-me-social-preview.png
+image: /assets/images/og-sys-log.png
 keywords:
   - systems administration
   - IT infrastructure

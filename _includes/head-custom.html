@@ -4,9 +4,31 @@
 <meta name="theme-color" content="#081108">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 {% assign page_keywords = page.tags | default: page.keywords | default: site.keywords %}
+{% assign social_title = page.title | default: site.title %}
+{% assign social_description = page.description | default: page.excerpt | default: site.tagline | default: site.description | strip_html | strip_newlines | normalize_whitespace %}
+{% assign social_image = page.image | default: site.image %}
+{% assign social_url = page.url | absolute_url %}
 {% if page_keywords %}
   <meta name="keywords" content="{% if page_keywords.first %}{{ page_keywords | join: ', ' }}{% else %}{{ page_keywords }}{% endif %}">
 {% endif %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:locale" content="{{ site.locale | default: 'en_US' }}">
+<meta property="og:url" content="{{ social_url }}">
+<meta property="og:title" content="{{ social_title | escape }}">
+<meta property="og:description" content="{{ social_description | escape }}">
+<meta property="og:image" content="{{ social_image | absolute_url }}">
+<meta property="og:image:secure_url" content="{{ social_image | absolute_url }}">
+<meta property="og:image:url" content="{{ social_image | absolute_url }}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AK // SYS LOG social preview for Anthony Klein">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ social_title | escape }}">
+<meta name="twitter:description" content="{{ social_description | escape }}">
+<meta name="twitter:image" content="{{ social_image | absolute_url }}">
+<meta name="twitter:image:alt" content="AK // SYS LOG social preview for Anthony Klein">
 {% include schema.html %}
 
 <style>
