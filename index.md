@@ -3,6 +3,30 @@ layout: default
 title: AK // SYS LOG
 author: Anthony Klein
 description: Technical documentation, architecture blueprints, and operational deep-dives into scalable, resilient infrastructure.
+keywords:
+  - systems administration
+  - IT infrastructure
+  - site reliability engineering
+  - infrastructure engineering
+  - network architecture
+  - security automation
+  - self-hosting
+  - homelab
+  - GitOps
+  - GitHub Pages
+  - Jekyll
+  - Proxmox
+  - pfSense
+  - WireGuard
+  - CrowdSec
+  - Terraform
+  - Ansible
+  - DNS
+  - Cloudflare
+  - email infrastructure
+  - OpenLDAP
+  - Postfix
+  - Dovecot
 ---
 
 ### [ SYSTEM_STATUS: ONLINE ]
@@ -31,4 +55,3 @@ _**Note:** Entries dated prior to 2020 are maintained primarily for historical r
 {% for post in site.posts %}
 - [{{ post.title }}]({{ post.url }}) — <small>{{ post.date | date: "%b %d, %Y" }}</small>
 {% endfor %}
-

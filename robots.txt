@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://b.aklein.me/sitemap.xml
+Host: b.aklein.me

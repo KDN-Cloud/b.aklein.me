@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="screenGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#153515"/>
+      <stop offset="100%" stop-color="#081108"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="64" height="64" rx="12" fill="#050805"/>
+  <rect x="8" y="10" width="48" height="36" rx="4" fill="url(#screenGlow)" stroke="#4bff78" stroke-opacity=".55" stroke-width="2"/>
+  <rect x="10" y="12" width="44" height="32" rx="3" fill="none" stroke="#b8ffcb" stroke-opacity=".08" stroke-width="1"/>
+
+  <path d="M18 24 L26 30 L18 36" fill="none" stroke="#7dff9a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#softGlow)"/>
+  <line x1="30" y1="36" x2="42" y2="36" stroke="#7dff9a" stroke-width="4" stroke-linecap="round" filter="url(#softGlow)"/>
+
+  <rect x="18" y="50" width="28" height="3" rx="1.5" fill="#214d21"/>
+  <rect x="24" y="46" width="16" height="5" rx="1.5" fill="#2b642b"/>
+</svg>

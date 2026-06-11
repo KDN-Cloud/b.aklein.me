@@ -1,0 +1,75 @@
+{% assign canonical_url = page.url | absolute_url %}
+{% assign schema_description = page.description | default: site.description | strip_newlines %}
+{% assign schema_image = page.image | default: site.image | absolute_url %}
+{% assign schema_author_url = site.author.url | default: site.url %}
+{% assign is_home = page.url == '/' or page.url == '/index.html' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": {{ site.author.name | jsonify }},
+  "url": {{ schema_author_url | jsonify }},
+  "image": {{ schema_image | jsonify }},
+  "email": {{ site.author.email | jsonify }},
+  "sameAs": {{ site.social.links | jsonify }}
+}
+</script>
+{% if is_home %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": {{ site.title | jsonify }},
+  "headline": {{ page.title | default: site.title | jsonify }},
+  "description": {{ schema_description | jsonify }},
+  "url": {{ site.url | jsonify }},
+  "inLanguage": {{ site.lang | jsonify }},
+  "image": {{ schema_image | jsonify }},
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author.name | jsonify }},
+    "url": {{ schema_author_url | jsonify }}
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": {{ site.author.name | jsonify }},
+    "url": {{ schema_author_url | jsonify }},
+    "logo": {
+      "@type": "ImageObject",
+      "url": {{ '/assets/favicon.svg' | absolute_url | jsonify }}
+    }
+  }
+}
+</script>
+{% endif %}
+{% if page.layout == 'post' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ schema_description | jsonify }},
+  "url": {{ canonical_url | jsonify }},
+  "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+  "dateModified": {{ page.lastmod | default: page.date | date_to_xmlschema | jsonify }},
+  "inLanguage": {{ site.lang | jsonify }},
+  "author": {
+    "@type": "Person",
+    "name": {{ page.author | default: site.author.name | jsonify }},
+    "url": {{ schema_author_url | jsonify }}
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": {{ site.author.name | jsonify }},
+    "url": {{ schema_author_url | jsonify }},
+    "logo": {
+      "@type": "ImageObject",
+      "url": {{ '/assets/favicon.svg' | absolute_url | jsonify }}
+    }
+  },
+  "image": {{ schema_image | jsonify }}{% if page.tags %},
+  "keywords": {{ page.tags | join: ', ' | jsonify }}
+  {% endif %}
+}
+</script>
+{% endif %}

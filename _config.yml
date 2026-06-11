@@ -1,8 +1,25 @@
 title: "AK // SYS LOG"
+lang: en-US
+locale: en_US
 author:
   name: "Anthony Klein"
   email: github@aklein.pro
   github: KDN-Cloud
+  url: "https://www.aklein.me/"
+tagline: "Technical documentation, systems administration workflows, and infrastructure engineering insights."
+logo: /assets/favicon.svg
+image: "https://avatars.githubusercontent.com/u/117257206?s=1200&v=4"
+keywords:
+  - systems administration
+  - infrastructure engineering
+  - network architecture
+  - automation
+  - GitHub Pages
+  - Jekyll
+  - homelab
+  - security
+  - cloud
+  - devops
 
 description: >
   A centralized repository for technical documentation, systems administration 
@@ -22,9 +39,17 @@ plugins:
   - jekyll-sitemap
 
 social:
-  type: Decentralized Social Network
-  name: AK
-  links: https://aklein.pro
+  name: "Anthony Klein"
+  links:
+    - https://www.aklein.me/
+    - https://aklein.pro/
+    - https://github.com/KDN-Cloud
+
+twitter:
+  card: summary
+
+seo:
+  type: Blog
 
 defaults:
   - scope:
@@ -32,6 +57,7 @@ defaults:
       type: posts
     values:
       layout: post
+      author: Anthony Klein
 
 google_analytics: G-17GC5WKY29
 
