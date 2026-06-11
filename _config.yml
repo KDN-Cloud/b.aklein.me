@@ -11,15 +11,28 @@ logo: /assets/favicon.svg
 image: "https://avatars.githubusercontent.com/u/117257206?s=1200&v=4"
 keywords:
   - systems administration
+  - IT infrastructure
+  - site reliability engineering
   - infrastructure engineering
   - network architecture
-  - automation
+  - security automation
+  - self-hosting
+  - homelab
+  - GitOps
   - GitHub Pages
   - Jekyll
-  - homelab
-  - security
-  - cloud
-  - devops
+  - Proxmox
+  - pfSense
+  - WireGuard
+  - CrowdSec
+  - Terraform
+  - Ansible
+  - DNS
+  - Cloudflare
+  - email infrastructure
+  - OpenLDAP
+  - Postfix
+  - Dovecot
 
 description: >
   A centralized repository for technical documentation, systems administration 
