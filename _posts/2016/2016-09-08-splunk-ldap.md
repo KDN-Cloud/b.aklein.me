@@ -2,6 +2,7 @@
 title: 'Splunk Enterprise (Free) LDAP auth in Apache'
 description: Adding LDAP auth in Splunk Enterprise
 date: 2017-03-08
+lastmod: 2026-06-12
 historical_warning_title: Historical access control warning
 historical_warning_body: This workaround came from an older Splunk Free era where fronting the UI with Apache LDAP auth made sense in a homelab. Splunk licensing, auth features, and deployment patterns have changed a lot since then, so use this as reference rather than current product guidance.
 historical_warning_docs_url: https://httpd.apache.org/docs/2.4/mod/mod_authnz_ldap.html

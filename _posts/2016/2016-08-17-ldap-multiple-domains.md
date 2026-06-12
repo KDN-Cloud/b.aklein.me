@@ -2,6 +2,7 @@
 title: 'Adding multiple mail domains in LDAP'
 description: Setup multiple domains in OpenLDAP.
 date: 2016-08-17
+lastmod: 2026-06-12
 historical_warning_title: Historical mail schema warning
 historical_warning_body: The multi-domain lookup model here still works, but this post assumes a classic OpenLDAP-backed Postfix mail schema from 2016. Use it as historical reference and re-check the surrounding lookup, transport, and identity assumptions before putting it into production.
 historical_warning_docs_url: https://www.postfix.org/LDAP_README.html

@@ -1,7 +1,7 @@
 ---
 title: Some Projects
 date: 2021-09-25
-lastmod: 2026-06-01
+lastmod: 2026-06-12
 description: A few different projects I had fun administering.
 tags:
 - self-hosted-projects

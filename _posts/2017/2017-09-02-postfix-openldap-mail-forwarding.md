@@ -1,6 +1,7 @@
 ---
 title: 'Mail forwarding with Postfix and OpenLDAP'
 date: 2017-09-02
+lastmod: 2026-06-12
 description: Configuring mail forwarding with Postfix and OpenLDAP
 tags:
 - postfix

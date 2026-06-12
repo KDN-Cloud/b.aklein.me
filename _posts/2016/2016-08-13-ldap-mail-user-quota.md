@@ -1,6 +1,7 @@
 ---
 title: 'Setup user specific mail quotas with LDAP'
 date: 2016-08-13
+lastmod: 2026-06-12
 description: Setting mail quotes with OpenLDAP.
 historical_warning_title: Historical config warning
 historical_warning_body: This quota setup came from an older OpenLDAP plus Dovecot mail stack and the broad idea still works, but modern Dovecot quota and mailbox configuration has moved around since 2016.

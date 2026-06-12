@@ -2,6 +2,7 @@
 title: 'LDAP Mail Distribution Groups with Postfix'
 description: Setup LDAP mail groups with Postfix
 date: 2018-01-05
+lastmod: 2026-06-12
 tags:
 - postfix
 - ldap
