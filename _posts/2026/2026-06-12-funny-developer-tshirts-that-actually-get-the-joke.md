@@ -29,7 +29,7 @@ I've spent 20+ years in IT infrastructure — Apple IS&T, fintech, SRE, IAM, the
 
 Here's what's in the store right now.
 
----
+
 
 ## This Is Fine. (It Is Not Fine.)
 
@@ -41,7 +41,7 @@ For everyone currently sitting calmly at their desk while production is on fire 
 
 **[→ Shop This Is Fine Cat](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## Salem.exe Has Encountered an Error. Please Reboot With Treats.
 
@@ -53,7 +53,7 @@ Available on t-shirts, mugs, hoodies, kids tees, stickers, magnets, pillows.
 
 **[→ Shop Salem.exe](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## chmod 777 and Pray
 
@@ -65,7 +65,7 @@ Available on t-shirts, long sleeves, mugs, posters, stickers.
 
 **[→ Shop chmod 777 and Pray](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## Senior Developer: Still Googles Everything
 
@@ -75,7 +75,7 @@ Twenty years in. Still Googling. Will never stop.
 
 **[→ Shop Senior Developer Still Googles Everything](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## It's Not a Bug. It's a Feature.
 
@@ -83,7 +83,7 @@ Classic for a reason. Available on mugs, tumblers, t-shirts, tank tops, kids tee
 
 **[→ Shop It's Not a Bug](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## There's No Place Like 127.0.0.1
 
@@ -93,7 +93,7 @@ Available on t-shirts, hoodies, mugs, tote bags, tank tops, posters, travel mugs
 
 **[→ Shop There's No Place Like 127.0.0.1](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## The Full Catalog
 

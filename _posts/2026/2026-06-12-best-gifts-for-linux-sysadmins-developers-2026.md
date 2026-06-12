@@ -27,7 +27,7 @@ If you've ever tried to buy a gift for a sysadmin, a developer, or anyone who's 
 
 I built [DeployOnFriday](https://www.etsy.com/shop/DeployOnFriday) because I couldn't find apparel that actually resonated with people like me — engineers who've been in the trenches for 20+ years, who know what a Friday deploy really means, who've typed `chmod 777` at 3 AM and prayed. Here are the designs that came out of that.
 
----
+
 
 ## chmod 777 and Pray
 
@@ -53,7 +53,7 @@ Available as a t-shirt, poster, mug, sticker, and more.
 
 **[→ Shop chmod 777 and Pray](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## rm -rf /feelings
 
@@ -69,7 +69,7 @@ Available on t-shirts, mugs, hoodies, stickers.
 
 **[→ Shop rm -rf /feelings](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## Senior Developer: Still Googles Everything
 
@@ -86,7 +86,7 @@ Available on t-shirts, mugs, tank tops, hoodies, muscle tanks, black coffee mugs
 
 **[→ Shop Senior Developer: Still Googles Everything](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## I Survived a Friday Deploy
 
@@ -98,7 +98,7 @@ Available on t-shirts, mugs, travel mugs, stickers.
 
 **[→ Shop I Survived a Friday Deploy](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## Sudo Make Me a Sandwich
 
@@ -117,7 +117,7 @@ Available on t-shirts, mugs, posters, stickers, magnets.
 
 **[→ Shop Sudo Make Me a Sandwich](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 ## There's No Place Like 127.0.0.1
 
@@ -129,7 +129,7 @@ Available on t-shirts, hoodies, mugs, tote bags, tank tops, posters, travel mugs
 
 **[→ Shop There's No Place Like 127.0.0.1](https://www.etsy.com/shop/DeployOnFriday)**
 
----
+
 
 All designs ship via print-on-demand — quality garments, no minimums, worldwide shipping. If you're shopping for a developer, sysadmin, DevOps engineer, SRE, or anyone who has ever had an on-call incident — these are the gifts that actually land.
 
