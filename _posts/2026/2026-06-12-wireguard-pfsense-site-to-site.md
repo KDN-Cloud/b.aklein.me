@@ -28,6 +28,7 @@ tags:
 - split-tunnel
 - full-tunnel
 - vlan
+- vlan-configuration
 - firewall
 - firewall-rules
 - routing
@@ -43,6 +44,16 @@ tags:
 - wg-quick
 - systemd
 - ops-automation
+- unifi
+- unifi-cloudkey
+- cloudkey-gen2-plus
+- third-party-gateway
+- 2-5gbps
+- network-segmentation
+- kids-vlan
+- guest-vlan
+- iot-vlan
+- lab-vlan
 ---
 
 I ran OpenVPN for years. I had it wired into LDAP, I knew the config surface cold, and it worked reliably. But it was also slow compared to what WireGuard can do, the config was heavier than it needed to be, and every time I had to add a peer it was a manual process I didn't enjoy. When I rebuilt the KDN Lab network on the Netgate 6100, I decided to move everything to WireGuard and do it properly from the start.
@@ -51,15 +62,76 @@ That meant not just swapping protocols but thinking through the full architectur
 
 ## The Network Foundation
 
-Before WireGuard made sense I needed the network segmented properly. The KDN Lab runs pfSense Plus on a Netgate 6100 with a full VLAN topology. The relevant segments for WireGuard are:
+Before WireGuard made sense I needed the network segmented properly. The KDN Lab runs pfSense Plus on a Netgate 6100 with a full VLAN topology. The Netgate 6100 has four 2.5Gbps ports and one 10Gbps SFP+ port, which is one of the reasons I chose it. Most home routers ship with a single 1Gbps WAN port and that's the end of the conversation. The 6100 gives you the option to reassign ports freely in pfSense, so I moved the WAN off the default port and onto one of the 2.5Gbps interfaces to take full advantage of the connection coming in. The interface assignment page in pfSense is where that remapping happens: WAN, LAN, LAN2, LAN3 and OPT4 are all physical ports on the 6100, and you can swap which physical port handles which logical role without touching anything else in the config.
+
+The wireless and VLAN side runs through a UniFi CloudKey Gen2 Plus, rack-mounted as a 1U unit. The CloudKey manages the UniFi APs and switches but since pfSense is the gateway rather than a UniFi Dream Machine, the CloudKey is operating in third-party gateway mode. That has one practical implication worth knowing about: VLANs have to be configured and enabled on both sides. You define the VLAN in pfSense, create the corresponding network in the UniFi controller, and tag it on the appropriate switch ports and SSIDs. If you only do it in pfSense the VLAN exists at the routing layer but nothing is actually tagging traffic into it. If you only do it in UniFi the controller thinks the network exists but pfSense doesn't know about it. Both sides have to match.
+
+Here is a simplified view of how the full topology fits together:
+
+```
+                        INTERNET
+                            |
+                     [ Netgate 6100 ]
+                     pfSense Plus 2.5G
+                            |
+          +-----------------+-----------------+
+          |                 |                 |
+    [ WireGuard ]     [ VLANs / LAN ]   [ WAN Firewall ]
+    10.6.0.1/24             |
+          |          +------+-------+
+          |          |      |       |
+     peers/tunnels  Main  Lab     IoT
+                    v10   v70     v30
+                                        (+ Kids v20, Guest v50, RemoteCorp v15)
+                          |
+                   [ UniFi CloudKey Gen2+ ]
+                   APs / Switches (tagged VLANs)
+
+    WireGuard Peers (10.6.0.0/24)
+    ┌─────────────────────────────────────────────────────┐
+    │                                                     │
+    │  [Split-tunnel]          [Full-tunnel]              │
+    │  MacBook / Phone         Laptop on untrusted net    │
+    │  10.6.0.x                10.6.0.x                  │
+    │  reaches: Main, Lab      reaches: everything        │
+    └─────────────────────────────────────────────────────┘
+
+    VPS Peers (connect as standard WireGuard peers to pfSense)
+
+    [ pfSense ] <=====> [ Nexus      10.6.0.22/24 ]
+                          Vultr / Ubuntu
+                          same subnet as client peers
+                          AllowedIPs: 192.168.1.0/24
+                                      192.168.20.0/24
+                                      192.168.70.0/24
+                                      10.7.0.0/24
+
+    [ pfSense ] <=====> [ Herald     10.7.0.2/24  ]
+                          Vultr / Ubuntu
+                          dedicated VPS subnet
+                          AllowedIPs: 192.168.10.0/24
+                                      192.168.20.0/24
+                                      192.168.70.0/24
+                                      10.7.0.0/24
+```
+
+The `<=====>` links are WireGuard tunnels, all encrypted UDP over port 51820. These two nodes illustrate two valid approaches to how you assign VPS peers. Nexus lives on the same `10.6.0.0/24` tunnel subnet as client peers, just at a higher IP. Herald lives on its own dedicated `10.7.0.0/24` subnet, keeping its traffic cleanly separated from the client peer range. Both connect to pfSense as standard peers. There is no special site-to-site mode in WireGuard. The protocol is peer-to-peer by design and the routing intent is handled entirely by `AllowedIPs` on each side.
+
+The current VLAN layout across the lab:
 
 **LAN (VLAN 0)** is the native untagged network where core infrastructure lives. The Netgate 6100 itself, network switches, the Synology NAS, the UniFi UNAS Pro, a Lenovo ThinkCentre M70q Tiny as the central management workstation, and a Raspberry Pi 4 with an SSD in a USB enclosure all live here. This is the hardware layer everything else depends on and it stays isolated from the rest by design.
 
-**MAIN (VLAN 10)** is the primary LAN. Trusted devices, homelab services, daily driver machines.
+**Main (VLAN 10)** is the primary LAN. Trusted devices, homelab services, daily driver machines.
 
-**Lab (VLAN 70)** is the infrastructure segment. Proxmox nodes, internal services, the monitoring stack. The stuff that doesn't need to be on the same segment as personal devices.
+**Kids (VLAN 20)** is a dedicated segment for kids devices with its own firewall policy.
 
 **IoT (VLAN 30)** is fully isolated. Smart home devices, cameras, nothing that should talk to anything it doesn't need to.
+
+**Guest (VLAN 50)** is internet-only access for visitors. No path to internal networks.
+
+**RemoteCorp (VLAN 15)** handles corporate VPN traffic, keeping work devices separated from personal infrastructure.
+
+**Lab (VLAN 70)** is the infrastructure segment. Proxmox nodes, internal services, the monitoring stack. The stuff that doesn't need to be on the same segment as personal devices.
 
 WireGuard peers land in their own dedicated tunnel subnet, `10.6.0.0/24`. That subnet doesn't map to any physical VLAN. It's the VPN layer and traffic from it into the rest of the network is controlled entirely by firewall rules on the assigned WireGuard interface. That separation is what makes split-tunnel and full-tunnel templates meaningful rather than cosmetic.
 
@@ -206,23 +278,45 @@ wg genkey | tee /etc/wireguard/private.key | wg pubkey > /etc/wireguard/public.k
 chmod 600 /etc/wireguard/private.key
 ```
 
-Create the interface config at `/etc/wireguard/wg0.conf`. For site-to-site links I use `/30` subnets in a separate range from the client tunnel subnet. Point-to-point links only need two usable addresses and the smaller subnet makes it visually obvious this is an infrastructure link rather than a client peer:
+Create the interface config at `/etc/wireguard/wg0.conf`. Each VPS node connects as a standard peer just like any other WireGuard client. The difference is in what `AllowedIPs` contains and which subnet the node's tunnel address sits on.
+
+Nexus sits on the same `10.6.0.0/24` tunnel subnet as regular client peers, just at a higher IP to make its role obvious at a glance:
 
 ```ini
 [Interface]
-PrivateKey = <VPS private key>
-Address = 10.7.0.2/30
+PrivateKey = <Nexus private key>
+Address = 10.6.0.22/24
 ListenPort = 51820
 MTU = 1420
 
 [Peer]
 PublicKey = <pfSense public key>
-Endpoint = your.pfsense.public.ip:51820
-AllowedIPs = 192.168.1.0/24, 192.168.70.0/24, 10.7.0.0/30
+PresharedKey = <preshared key>
+Endpoint = pfsense.yourdomain.cloud:51820
+AllowedIPs = 192.168.1.0/24, 192.168.20.0/24, 192.168.70.0/24, 10.7.0.0/24
 PersistentKeepalive = 25
 ```
 
-The `AllowedIPs` here lists the homelab networks this VPS should be able to reach through the tunnel. Adjust to match whatever subnets are relevant for that node's function.
+Herald runs on its own dedicated `10.7.0.0/24` subnet. Putting it on a separate range keeps Herald's traffic cleanly separated from the client peer range and makes firewall rules and routing easier to reason about. It also uses DNS fallback to Cloudflare and Google alongside the internal resolver so it can resolve both internal and external names regardless of tunnel state:
+
+```ini
+[Interface]
+PrivateKey = <Herald private key>
+Address = 10.7.0.2/24
+DNS = 192.168.1.1, 1.1.1.1, 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = <pfSense public key>
+PresharedKey = <preshared key>
+Endpoint = pfsense.yourdomain.cloud:51820
+AllowedIPs = 10.7.0.0/24, 192.168.10.0/24, 192.168.20.0/24, 192.168.70.0/24
+PersistentKeepalive = 25
+```
+
+Both configs include a `PresharedKey` on top of the public key exchange. This is an optional but worthwhile extra layer that adds a symmetric key into the handshake, providing post-quantum resistance against future attacks on the asymmetric cryptography. Generate one with `wg genpsk` and add the same value to both the peer config on the VPS and the peer entry on pfSense.
+
+The `AllowedIPs` on each node lists the homelab subnets it needs to reach. Anything not in that list routes out the VPS's own internet connection rather than through the tunnel.
 
 Enable and start the interface:
 
@@ -235,9 +329,9 @@ systemctl start wg-quick@wg0
 
 Back in pfSense, add a peer entry for the VPS with its public key. The allowed IPs should include the VPS tunnel address and any subnets on the VPS side that homelab traffic needs to reach. For nodes that are purely outbound clients of the homelab, just the tunnel IP is sufficient.
 
-For routing to work in both directions, add a static route in pfSense under System, Routing, Static Routes. Point the route for the VPS tunnel subnet at the WireGuard interface gateway. pfSense needs this to know that traffic destined for `10.7.0.2` should go through the WireGuard tunnel rather than out the default WAN gateway.
+For routing to work in both directions, add static routes in pfSense under System, Routing, Static Routes. For Nexus, pfSense already knows about `10.6.0.22` since it lives in the same `10.6.0.0/24` tunnel subnet. For Herald on `10.7.0.0/24`, you need a static route pointing that subnet at the WireGuard interface gateway so pfSense knows to send traffic for that range through the tunnel rather than out the default WAN gateway.
 
-You may need to add the gateway manually under System, Routing, Gateways first, pointing at the VPS tunnel IP, before the static route option becomes available.
+You may need to add the gateway manually under System, Routing, Gateways first, pointing at the peer tunnel IP, before the static route option becomes available.
 
 ### Verifying the Tunnel
 
@@ -257,26 +351,32 @@ interface: wg0
 
 peer: <pfSense public key>
   endpoint: your.pfsense.ip:51820
-  allowed ips: 192.168.1.0/24, 192.168.70.0/24, 10.7.0.0/30
+  allowed ips: 192.168.1.0/24, 192.168.20.0/24, 192.168.70.0/24, 10.7.0.0/24
   latest handshake: 8 seconds ago
   transfer: 1.23 GiB received, 456 MiB sent
 ```
 
 A handshake timestamp within the last few minutes means the tunnel is live. If latest handshake is blank or stale, check that the public keys match on both sides, verify the endpoint address and port are correct, and confirm that UDP 51820 is open in the Vultr firewall group assigned to the instance, not just the host-level firewall.
 
-From pfSense, ping the VPS tunnel IP:
+From pfSense, ping the Nexus tunnel IP:
+
+```bash
+ping 10.6.0.22
+```
+
+Or the Herald tunnel IP:
 
 ```bash
 ping 10.7.0.2
 ```
 
-From the VPS, ping a homelab host:
+From either VPS, ping a homelab host to confirm the return path works:
 
 ```bash
 ping 192.168.1.1
 ```
 
-If both directions work, routing is correct. One direction working and the other not usually means a static route is missing or the allowed IPs on one side doesn't include the right subnets.
+If both directions work, routing is correct. One direction working and the other not usually means a static route is missing or the `AllowedIPs` on one side doesn't include the right subnets.
 
 ### Aliases That Save Sanity
 
