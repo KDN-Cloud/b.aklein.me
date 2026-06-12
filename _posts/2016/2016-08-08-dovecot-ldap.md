@@ -1,5 +1,6 @@
 ---
 title: 'Dovecot with LDAP'
+promote_deployonfriday: true
 description: How I configured Dovecot to authenticate against OpenLDAP using password lookups, what changed in modern Dovecot, and where lighter identity options fit in 2026.
 date: 2016-08-08
 lastmod: 2026-06-12

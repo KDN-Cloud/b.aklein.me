@@ -1,5 +1,6 @@
 ---
 title: 'Using LDAP authentication with OpenVPN'
+promote_deployonfriday: true
 date: 2017-02-08
 lastmod: 2026-06-12
 description: How I configured OpenVPN to authenticate users against OpenLDAP using the openvpn-auth-ldap plugin, and where this fits in a modern homelab stack in 2026.
