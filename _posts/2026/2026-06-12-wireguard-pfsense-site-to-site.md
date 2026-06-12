@@ -44,6 +44,11 @@ tags:
 - wg-quick
 - systemd
 - ops-automation
+- pfsense-api
+- pfsense-restapi
+- pfrest
+- rest-api
+- api-automation
 - unifi
 - unifi-cloudkey
 - cloudkey-gen2-plus
