@@ -2,6 +2,10 @@
 title: 'Adding multiple mail domains in LDAP'
 description: Setup multiple domains in OpenLDAP.
 date: 2016-08-17
+historical_warning_title: Historical mail schema warning
+historical_warning_body: The multi-domain lookup model here still works, but this post assumes a classic OpenLDAP-backed Postfix mail schema from 2016. Use it as historical reference and re-check the surrounding lookup, transport, and identity assumptions before putting it into production.
+historical_warning_docs_url: https://www.postfix.org/LDAP_README.html
+historical_warning_docs_label: official Postfix LDAP documentation
 tags:
 - LDAP
 - Email
@@ -13,6 +17,8 @@ tags:
 - Postfix
 - self-hosted-email
 ---
+
+{% include historical-warning.html %}
 
 # Intro
 LDAP makes it a breeze to add multiple domain names you wish to serve email accounts with. Although I am describing how I configured multiple domains in my own environment using OpenLDAP - this should also work for other LDAP implementations. 

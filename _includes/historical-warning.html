@@ -1,0 +1,14 @@
+{% assign warning_title = page.historical_warning_title | default: "Historical config warning" %}
+{% assign warning_body = page.historical_warning_body %}
+{% assign warning_docs_url = page.historical_warning_docs_url %}
+{% assign warning_docs_label = page.historical_warning_docs_label | default: "official documentation" %}
+{% if warning_body %}
+<aside class="historical-warning" aria-label="{{ warning_title | escape }}">
+  <p>
+    <strong>{{ warning_title }}:</strong> {{ warning_body }}
+    {% if warning_docs_url %}
+      Verify current behavior against the <a href="{{ warning_docs_url }}" target="_blank" rel="noopener noreferrer">{{ warning_docs_label }}</a> before applying changes.
+    {% endif %}
+  </p>
+</aside>
+{% endif %}

@@ -1,19 +1,23 @@
 ---
 title: 'Dovecot with LDAP'
-description: How I configured Dovecot to authenticate against OpenLDAP using password lookups, and how that setup maps to modern identity providers like Authentik in 2026.
+description: How I configured Dovecot to authenticate against OpenLDAP using password lookups, what changed in modern Dovecot, and where lighter identity options fit in 2026.
 date: 2016-08-08
 lastmod: 2026-06-12
+historical_warning_title: Historical config warning
+historical_warning_body: Dovecot's configuration structure has changed significantly since this was originally written in 2016. Treat the examples below as historical reference, not copy-paste-safe production guidance for a current deployment.
+historical_warning_docs_url: https://doc.dovecot.org/
+historical_warning_docs_label: official Dovecot documentation
 tags:
 - dovecot
 - ldap
 - openldap
-- authentik
-- ldap-outpost
 - imap
+- pop3
 - mail-server
 - mail-authentication
 - self-hosted-email
 - postfix
+- lmtp
 - postfix-book-schema
 - linux
 - sysadmin
@@ -21,28 +25,57 @@ tags:
 - identity-management
 - directory-services
 - lldap
+- authentik
+- ldap-outpost
 - password-lookup
-- vmail
 - maildir
+- vmail
 - quota
-- pam
-- self-hosted
-- infrastructure
+- argon2
 ---
 
 > `[ STATUS: LOG UPDATED FOR 2026 RUNTIME ENVIRONMENT ]`
 
-This post covers how I configured Dovecot to authenticate against OpenLDAP when I was running my own mail stack. The Dovecot wiki does a solid job explaining the options at a high level, but the actual configuration details for getting password lookups working with specific LDAP attributes took more trial and error than I expected. That's what this documents.
+{% include historical-warning.html %}
 
-Before getting into the config: if you're setting this up fresh in 2026, the OpenLDAP path is worth evaluating carefully. Raw OpenLDAP is operationally heavy and the self-hosting community has largely moved toward lighter alternatives. I'll cover the modern options at the end of this post. The config below is accurate and still works, but it's worth knowing where the ecosystem has gone since 2016.
+This post covers how I configured Dovecot to authenticate against OpenLDAP when I was still running my own mail stack. The Dovecot docs have always done a decent job of explaining the moving pieces, but getting a real LDAP-backed configuration working against an actual schema still took more trial and error than I wanted. This write-up exists because I got tired of pretending the interesting part was the theory.
 
-Dovecot offers two approaches to LDAP authentication: authentication binds and password lookups. I went with password lookups because it's the recommended approach. With auth binds, Dovecot connects to LDAP as the user being authenticated, which means it needs to handle failed bind attempts and you lose the ability to use Dovecot's own password scheme handling. Password lookups keep that control inside Dovecot where it belongs.
+The bigger 2026 reality is that the original approach still explains the architecture, but not all of the syntax. Dovecot changed a lot since 2016, especially around config structure and mailbox path conventions. So the value here is twofold:
 
-The first change goes in `10-auth.conf`. The default has `!include auth-system.conf.ext` enabled. Comment that out and uncomment `!include auth-ldap.conf.ext` instead.
+- this shows how the classic OpenLDAP + Dovecot pattern was wired together
+- it also explains what I would revisit immediately if I were touching it now
 
-`auth-ldap.conf.ext` then needs to define both the password and user database drivers:
+## Why I used password lookups
 
+Dovecot gives you two main LDAP authentication approaches: authentication binds and password lookups.
+
+I went with password lookups because that kept the control inside Dovecot. Dovecot can retrieve the stored password hash, compare it using its own password scheme logic, and return the rest of the mailbox metadata in the same flow. That made more sense to me than binding as the user every time and letting LDAP own the entire auth decision path.
+
+That is still a valid design. The current Dovecot docs still support both models, but they are more explicit now about how the `passdb` and `userdb` pieces map to LDAP fields.
+
+## The original auth switch
+
+The first change went into `10-auth.conf`. The default usually had:
+
+```conf
+!include auth-system.conf.ext
 ```
+
+enabled. I commented that out and enabled:
+
+```conf
+!include auth-ldap.conf.ext
+```
+
+instead.
+
+That was the point where Dovecot stopped looking like "Linux box with system users" and started behaving like "mail service backed by directory lookups."
+
+## The original passdb and userdb layout
+
+In the older config structure, `auth-ldap.conf.ext` defined both the password and user database drivers:
+
+```conf
 passdb {
   driver = ldap
 }
@@ -54,11 +87,15 @@ userdb {
 }
 ```
 
-The `default_fields` line sets the mailbox home path using Dovecot's variable substitution. `%d` expands to the mail domain and `%u` to the full username, so you end up with a `domain/user` directory structure under `/home/vmail`. This matches how I organized the vmail storage and it keeps things easy to navigate on the filesystem.
+The `default_fields` line built the mailbox home path from Dovecot variables. `%d` expanded to the domain and `%u` to the full username. That gave me a `domain/user` layout under `/home/vmail`, which matched how I wanted the filesystem organized at the time.
 
-The actual LDAP connection and lookup configuration lives in `dovecot-ldap.conf.ext`:
+That part matters because it is exactly where modern Dovecot diverges. The old variable style and old mailbox location syntax are some of the first things I would expect to touch in a current deployment.
 
-```
+## The LDAP lookup file
+
+The actual LDAP connection and lookup logic lived in `dovecot-ldap.conf.ext`:
+
+```conf
 hosts = ldap.domain.net ldap.domain2.net ldap.domain3.net
 auth_bind = no
 dn = uid=dovecot,ou=System,dc=domain,dc=net
@@ -81,38 +118,143 @@ iterate_attrs = mail=user
 iterate_filter = (objectClass=inetOrgPerson)
 ```
 
-A few things worth explaining here. The `dn` and `dnpass` are the credentials for the service account Dovecot uses to bind to LDAP and perform lookups. I kept this account in a dedicated `System` OU rather than mixing it with regular users. The `base` points to the `Mail` OU specifically since that's where mail user records live, separate from the `People` OU that holds general directory users.
+There are a few important pieces here.
 
-The `user_attrs` mapping is where the postfix-book.schema attributes come in. `mailHomeDirectory`, `mailStorageDirectory`, `mailUidNumber`, `mailGidNumber`, and `mailQuota` are all custom attributes defined in that schema. If you're using this configuration, you need the [postfix-book.schema](https://github.com/variablenix/ldap-mail-schema/blob/master/postfix-book.schema) loaded into OpenLDAP or these attribute lookups will return nothing and Dovecot will refuse authentication.
+The `dn` and `dnpass` are the service account credentials Dovecot uses to bind to LDAP and perform lookups. I kept that account in a dedicated `System` OU instead of mixing it with user objects. That separation still makes sense.
 
-The `mailEnabled=TRUE` check in `user_filter` is worth calling out specifically. It means a user record can exist in LDAP without being able to receive mail. Setting that attribute to `FALSE` on a record effectively suspends the mailbox without deleting anything, which was useful for managing accounts cleanly.
+The `base` points only at the mail subtree. I liked keeping mail data under its own OU rather than forcing Dovecot to search through a broader user tree every time.
 
-On the `default_pass_scheme` value: the config above uses `SSHA`, which was standard practice in 2016. It's not what you should use now. If you're setting this up today, use `ARGON2I` or `PBKDF2-SHA512`. Update both the `default_pass_scheme` value in Dovecot and the password generation for your LDAP records accordingly.
+The `pass_filter` handles authentication lookups. The `user_filter` handles mailbox/user record lookups. The two are related, but they do not have to be identical, and in practice I was glad they were separate.
 
-For quota, the `mailQuota=quota_rule=*:bytes=%$` mapping in `user_attrs` pulls a per-user quota from the LDAP record if one exists. If no `mailQuota` attribute is present on the record, Dovecot falls back to whatever global quota you have defined in `dovecot.conf`. That combination gives you a sane default with the ability to override per user without touching the Dovecot config.
+## Why the schema mattered so much
 
-The last piece on the PAM side: `/etc/pam.d/dovecot` needs to tell PAM to use LDAP for authentication:
+The `user_attrs` line is where the schema assumptions become very real. Fields like:
 
+- `mailHomeDirectory`
+- `mailStorageDirectory`
+- `mailUidNumber`
+- `mailGidNumber`
+- `mailQuota`
+
+were not generic magic. They came from the mail schema I was using, including `postfix-book.schema`.
+
+If those attributes are not present, Dovecot is not going to quietly improvise. It will simply fail to build the mailbox metadata it needs.
+
+That is one of the things I would make much more explicit now: these posts are not "LDAP in general." They are "Dovecot and Postfix against a specific style of mail-oriented LDAP schema."
+
+## The `mailEnabled` flag was useful
+
+I liked the `mailEnabled=TRUE` condition in the `user_filter`:
+
+```conf
+user_filter = (&(objectClass=inetOrgPerson)(uid=%n)(mailEnabled=TRUE))
 ```
+
+That gave me a clean operational switch. A user could remain in LDAP for identity purposes while their mailbox access was effectively suspended. I didn't need to delete anything or break unrelated directory data just to disable mail access.
+
+## Password schemes are one of the places 2016 aged badly
+
+The example above uses:
+
+```conf
+default_pass_scheme = SSHA
+```
+
+That was normal enough at the time. I would not choose it today.
+
+If you're doing this now, use a modern password scheme such as `ARGON2I` or `PBKDF2-SHA512`, and make sure your stored LDAP password values and Dovecot's configured default scheme actually agree. Dovecot's current docs are much clearer about either setting a default scheme globally or prefixing stored hashes with the scheme.
+
+That is one of the easiest places for a legacy config to "look fine" and still be wrong.
+
+## Quota mapping
+
+For quota, I used:
+
+```conf
+mailQuota=quota_rule=*:bytes=%$
+```
+
+inside `user_attrs`.
+
+That let Dovecot pull a per-user quota straight out of LDAP if the attribute existed. If the record did not define `mailQuota`, Dovecot would fall back to whatever the global quota policy was. I still like that pattern because it keeps the default simple while allowing per-user overrides without editing Dovecot config every time.
+
+## PAM note from the original setup
+
+At the time I also had `/etc/pam.d/dovecot` using LDAP:
+
+```conf
 auth    required    pam_ldap.so nullok
 account required    pam_ldap.so
 ```
 
-Once everything is in place, restart Dovecot and watch the mail log for errors:
+That reflected how the stack was arranged then, but if I were building this cleanly today I would be very careful not to mix authentication approaches unless I had a real reason. If Dovecot is doing LDAP auth directly, I would rather keep the logic obvious than spread it across multiple layers just because Linux technically lets me.
 
-```bash
-systemctl restart dovecot
-tail -f /var/log/mail.log
+## How I would think about this in modern Dovecot
+
+This is the part I wish every old Dovecot post spelled out.
+
+Modern Dovecot still supports LDAP, but the configuration model is cleaner and more explicit. Current docs talk much more directly about:
+
+- LDAP `passdb` returning password fields
+- LDAP `userdb` returning mailbox fields
+- using static `userdb` when UID/GID and path patterns are predictable
+- using newer variable syntax such as `%{user}` and `%{user|domain}`
+
+That last part is a big one. In Dovecot 2.4, older mailbox location patterns like:
+
+```conf
+mail_location = maildir:/var/srv/foo/%d/%u
 ```
 
-Any misconfiguration in the LDAP filter or attribute mapping will show up immediately in the log as authentication failures. The most common issues are a wrong `base` DN, an incorrect service account bind, or a missing schema attribute.
+map to a newer style that looks more like:
 
-**Where this fits in 2026**
+```conf
+mail_home = /home/vmail/%{user|domain}/%{user|username}
+mail_driver = maildir
+mail_path = ~/maildir
+mail_uid = vmail
+mail_gid = vmail
+```
 
-Running raw OpenLDAP for a homelab mail stack is a significant operational commitment. Schema management, replication, access control lists, index tuning — none of it is hard individually but it adds up quickly. If you're building a new setup and don't already have OpenLDAP running for other reasons, it's worth considering lighter alternatives.
+I am not saying "replace your config blindly with that." I am saying this is exactly the class of change that can break an old installation if someone assumes a 2016 post still maps 1:1 to current Dovecot syntax.
 
-[LLDAP](https://github.com/lldap/lldap) is a minimal LDAP server built specifically for self-hosting scenarios. It speaks the LDAP protocol for services that need it, exposes a clean web UI for user management, and requires almost no configuration to get running. If all you need is an LDAP backend for mail authentication, LLDAP is considerably less overhead than a full OpenLDAP deployment.
+## A smarter 2026 optimization
 
-My own stack has moved to [Authentik](https://goauthentik.io) as the primary identity provider. Authentik handles SSO, OAuth2, SAML, and exposes an LDAP outpost for services that need to authenticate via LDAP directly. Dovecot can authenticate against the Authentik LDAP outpost the same way it would against OpenLDAP, with the connection string pointing at the outpost instead. The practical difference is that you get a single identity layer managing everything, a proper web UI, full audit logging, and no schema files to maintain. For a homelab running more than just mail, it makes a lot more sense than keeping a separate OpenLDAP instance alive.
+One thing the current Dovecot docs call out more clearly than older write-ups did: if all users share the same UID/GID and your mailbox path can be templated, a static `userdb` is often better than an LDAP `userdb` lookup.
 
-If you want the full context on why I eventually moved off self-hosted email entirely, that's covered here: [15 Years of Self-Hosted Email. Here's Why I Stopped.](/2026/06/04/self-hosted-email-migration.html)
+That is a good example of where modern Dovecot got more honest about operational efficiency. If the mailbox metadata is mostly deterministic, there is no point doing an extra LDAP lookup just to rediscover what you already know.
+
+## Where this still works and where it starts to hurt
+
+Running raw OpenLDAP for a homelab mail stack is still possible. It is also still a commitment.
+
+Individually, none of the pieces are impossible:
+
+- schema management
+- ACLs
+- replication
+- indexing
+- backup discipline
+- auth troubleshooting
+
+But stacked together, they become a second hobby.
+
+If all you need is LDAP compatibility for a handful of services, [LLDAP](https://github.com/lldap/lldap) is a lot lighter. It gives you an LDAP-speaking backend without signing yourself up for the full classic OpenLDAP experience.
+
+My own stack eventually moved toward [Authentik](https://goauthentik.io) as the primary identity layer. Authentik can expose an LDAP outpost for services that still need LDAP, which makes a lot more sense for a modern homelab than maintaining standalone directory infrastructure just because one or two services still speak LDAP.
+
+For Dovecot specifically, that can work well, because the problem is mostly "authenticate this user and return the mailbox fields Dovecot needs." That maps more naturally to an identity platform than Postfix's mail routing tables do.
+
+## Final take
+
+If you're maintaining an older Dovecot + OpenLDAP stack, this post still explains the shape of the system. The architecture is recognizable. The exact syntax may not be.
+
+If you're building fresh, I would do three things immediately:
+
+- use modern password schemes
+- verify every mailbox path and variable against current Dovecot docs
+- seriously consider whether LDAP should be OpenLDAP at all, or whether a lighter identity layer makes more sense now
+
+And if you're touching a legacy Dovecot install that has "been fine for years," do not trust muscle memory. This is one of those projects where old config habits can absolutely make a modern deployment weird in a hurry.
+
+If you want the broader context on why I eventually stepped away from self-hosted email as a long-term lifestyle choice, that is here: [15 Years of Self-Hosted Email. Here's Why I Stopped.](/2026/06/04/self-hosted-email-migration.html)

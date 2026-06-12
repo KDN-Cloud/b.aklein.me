@@ -3,6 +3,10 @@ title: 'Adding official email accounts and aliases in LDAP'
 description: How I structured OpenLDAP mail user records with the PostfixBookMailAccount schema — from a separated People and Mail OU design to a single unified People record, and why the merged approach won out.
 date: 2016-08-15
 lastmod: 2026-06-12
+historical_warning_title: Historical schema warning
+historical_warning_body: This post documents a classic OpenLDAP mail schema design that was valid for the stack I was running at the time. The directory modeling is still useful to study, but modern self-hosted identity stacks often solve the same problem with much less schema overhead.
+historical_warning_docs_url: https://www.postfix.org/LDAP_README.html
+historical_warning_docs_label: official Postfix LDAP documentation
 tags:
 - openldap
 - ldap
@@ -33,6 +37,8 @@ tags:
 ---
 
 > `[ STATUS: LOG UPDATED FOR 2026 RUNTIME ENVIRONMENT ]`
+
+{% include historical-warning.html %}
 
 This post covers how I structured OpenLDAP mail user records when I was running my own Postfix and Dovecot stack. What started as a clean separation between People and Mail organizational units eventually collapsed into a single unified record design, and both approaches are worth documenting because the reasoning behind each one is genuinely useful if you're thinking through the same problem.
 
