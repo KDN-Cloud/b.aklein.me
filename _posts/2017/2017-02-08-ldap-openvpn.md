@@ -3,6 +3,10 @@ title: 'Using LDAP authentication with OpenVPN'
 date: 2017-02-08
 lastmod: 2026-06-12
 description: How I configured OpenVPN to authenticate users against OpenLDAP using the openvpn-auth-ldap plugin, and where this fits in a modern homelab stack in 2026.
+historical_warning_title: Historical VPN auth warning
+historical_warning_body: The LDAP plugin approach here still works, but it depends on an older OpenVPN extension model and an aging plugin project. Treat it as a workable legacy pattern, not the default choice for a fresh remote-access deployment in 2026.
+historical_warning_docs_url: https://openvpn.net/community-docs/community-articles/openvpn-2-6-manual.html
+historical_warning_docs_label: current OpenVPN manual
 tags:
 - openvpn
 - ldap
@@ -30,6 +34,8 @@ tags:
 ---
 
 > `[ STATUS: LOG UPDATED FOR 2026 RUNTIME ENVIRONMENT ]`
+
+{% include historical-warning.html %}
 
 This post covers how I configured OpenVPN to authenticate users against OpenLDAP back in 2017. The setup worked well at the time and the core mechanics are still valid. OpenVPN 2.7.x is actively maintained and the LDAP plugin approach still functions. What has changed significantly is the broader context around VPN choice and identity infrastructure in a homelab, so I've added a proper 2026 update at the end.
 
