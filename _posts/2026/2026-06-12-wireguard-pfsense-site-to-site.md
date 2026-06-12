@@ -81,6 +81,8 @@ tags:
 - guest-vlan
 - iot-vlan
 - lab-vlan
+- openvpn-to-wireguard
+- wireguard-migration
 ---
 
 I ran OpenVPN for years. I had it wired into LDAP, I knew the config surface cold, and it worked reliably. But it was also slow compared to what WireGuard can do, the config was heavier than it needed to be, and every time I had to add a peer it was a manual process I didn't enjoy. When I rebuilt the KDN Lab network on the Netgate 6100, I decided to move everything to WireGuard and do it properly from the start.
