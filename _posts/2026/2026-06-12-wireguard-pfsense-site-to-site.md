@@ -69,50 +69,55 @@ The wireless and VLAN side runs through a UniFi CloudKey Gen2 Plus, rack-mounted
 Here is a simplified view of how the full topology fits together:
 
 ```
-                        INTERNET
-                            |
-                     [ Netgate 6100 ]
-                     pfSense Plus 2.5G
-                            |
-          +-----------------+-----------------+
-          |                 |                 |
-    [ WireGuard ]     [ VLANs / LAN ]   [ WAN Firewall ]
-    10.6.0.1/24             |
-          |          +------+-------+
-          |          |      |       |
-     peers/tunnels  Main  Lab     IoT
-                    v10   v70     v30
-                                        (+ Kids v20, Guest v50, RemoteCorp v15)
-                          |
-                   [ UniFi CloudKey Gen2+ ]
-                   APs / Switches (tagged VLANs)
+                           INTERNET
+                               |
+                      +------------------+
+                      |   Netgate 6100   |
+                      |  pfSense Plus    |
+                      |  2.5G ports      |
+                      +--------+---------+
+                               |
+              +----------------+----------------+
+              |                                 |
+    +---------+----------+           +----------+---------+
+    |   WireGuard Hub    |           |    VLANs / LAN     |
+    |   wg0: 10.6.0.1    |           |                    |
+    +--------------------+           | Main  v10          |
+              |                      | Kids  v20          |
+              |                      | IoT   v30          |
+              |                      | Guest v50          |
+              |                      | RemoteCorp v15     |
+              |                      | Lab   v70          |
+              |                      +----------+---------+
+              |                                 |
+              |                      +----------+---------+
+              |                      | UniFi CloudKey G2+ |
+              |                      | APs / Switches     |
+              |                      | (tagged VLANs)     |
+              |                      +--------------------+
+              |
+    +---------+------------------------------------------+
+    |         WireGuard Peers  (10.6.0.0/24)             |
+    |                                                    |
+    |  [Split-tunnel]            [Full-tunnel]           |
+    |  MacBook / Phone           Laptop (untrusted net)  |
+    |  10.6.0.x/24              10.6.0.x/24              |
+    |  reaches: Main, Lab        reaches: everything     |
+    |                                                    |
+    |  [VPS peer - same subnet]                          |
+    |  Nexus   10.6.0.22/24                              |
+    |  reaches: Main, Kids, Lab, Herald subnet           |
+    +----------------------------------------------------+
 
-    WireGuard Peers (10.6.0.0/24)
-    ┌─────────────────────────────────────────────────────┐
-    │                                                     │
-    │  [Split-tunnel]          [Full-tunnel]              │
-    │  MacBook / Phone         Laptop on untrusted net    │
-    │  10.6.0.x                10.6.0.x                  │
-    │  reaches: Main, Lab      reaches: everything        │
-    └─────────────────────────────────────────────────────┘
+    [VPS peer - dedicated subnet]
+    +----------------------------------------------------+
+    |  Herald  10.7.0.2/24                               |
+    |  Vultr / Ubuntu                                    |
+    |  reaches: Main, Kids, Lab, Nexus subnet            |
+    +----------------------------------------------------+
 
-    VPS Peers (connect as standard WireGuard peers to pfSense)
-
-    [ pfSense ] <=====> [ Nexus      10.6.0.22/24 ]
-                          Vultr / Ubuntu
-                          same subnet as client peers
-                          AllowedIPs: 192.168.1.0/24
-                                      192.168.20.0/24
-                                      192.168.70.0/24
-                                      10.7.0.0/24
-
-    [ pfSense ] <=====> [ Herald     10.7.0.2/24  ]
-                          Vultr / Ubuntu
-                          dedicated VPS subnet
-                          AllowedIPs: 192.168.10.0/24
-                                      192.168.20.0/24
-                                      192.168.70.0/24
-                                      10.7.0.0/24
+    pfSense <======> Nexus   (encrypted UDP :51820)
+    pfSense <======> Herald  (encrypted UDP :51820)
 ```
 
 The `<=====>` links are WireGuard tunnels, all encrypted UDP over port 51820. These two nodes illustrate two valid approaches to how you assign VPS peers. Nexus lives on the same `10.6.0.0/24` tunnel subnet as client peers, just at a higher IP. Herald lives on its own dedicated `10.7.0.0/24` subnet, keeping its traffic cleanly separated from the client peer range. Both connect to pfSense as standard peers. There is no special site-to-site mode in WireGuard. The protocol is peer-to-peer by design and the routing intent is handled entirely by `AllowedIPs` on each side.
@@ -415,13 +420,317 @@ If that returns fragmentation errors but smaller packet sizes succeed, reduce th
 
 ## Ansible: Automating Peer Provisioning
 
-Doing this manually for three peers is fine. Doing it for ten is tedious and error-prone. I have an Ansible role in my `ops_automation` repo on my private Gitea instance that handles the full provisioning workflow.
+Doing this manually for three peers is fine. Doing it for ten is tedious and error-prone. The full role lives in my private `ops_automation` repo on Gitea, but everything you need to replicate it is here.
 
-For each new peer the role generates a WireGuard key pair using `wg genkey` and `wg pubkey`, assigns the next available tunnel IP from the peer subnet, and renders the client config from a Jinja2 template applying either the split-tunnel or full-tunnel `AllowedIPs` depending on a variable set per peer. It then generates a QR code from the rendered config using `qrencode`, registers the peer on pfSense via the pfSense API with the public key and allowed IPs, and stores the rendered config and public key in a structured directory so there's a record of everything issued.
+One prerequisite worth calling out first: the Ansible role talks to pfSense via its REST API, which means you need [pfSense-pkg-RESTAPI](https://pfrest.org/) installed on your pfSense instance. It is not available in the pfSense package manager, including on pfSense Plus, so you install it manually from the shell. SSH into pfSense and run the one-liner from the [quickstart](https://github.com/pfrest/pfSense-pkg-RESTAPI#quickstart):
 
-For the VPS nodes there's a separate role that handles the Ubuntu side: installing WireGuard from apt, generating keys, rendering `wg0.conf` from a template, enabling the `wg-quick@wg0` systemd service, and opening the WireGuard port in `ufw`. A fresh Vultr instance goes from bare Ubuntu to a live tunnel in under two minutes.
+```bash
+pkg add https://github.com/pfrest/pfSense-pkg-RESTAPI/releases/latest/download/pfSense-pkg-RESTAPI.pkg
+```
 
-Adding a new peer or provisioning a new VPS node is a single Ansible command. It's idempotent too, so running it again on an existing peer changes nothing. Run it on a new one and everything gets created correctly the first time.
+Once installed the REST API is available at `https://your-pfsense-host/api/v2/` and includes full WireGuard peer management endpoints. The role uses that API to register new peers directly in pfSense without you touching the GUI.
+
+**Mac prerequisites**
+
+The role runs locally on your Mac. You need `wireguard-tools` for key generation and `qrencode` for QR code output:
+
+```bash
+brew install wireguard-tools qrencode
+```
+
+**Role structure**
+
+```
+roles/
+  wireguard_peer/
+    defaults/
+      main.yml
+    tasks/
+      main.yml
+    templates/
+      client.conf.j2
+
+playbooks/
+  wireguard_peer.yml
+  wireguard_deploy.yml
+
+group_vars/
+  all/
+    all.yml       # wireguard: block lives here
+    vault.yml     # wireguard_api_key goes here
+
+peers/            # gitignored: generated configs land here
+  alice-iphone/
+    client.conf
+    qr.png
+```
+
+**group_vars/all/all.yml**
+
+The `wireguard:` block centralises every value the role needs. Fill in your own `pfsense_wg_pubkey` from VPN, WireGuard, Tunnels in the pfSense GUI, and your external DDNS hostname for `pfsense_endpoint`. The `allowed_ips` map is what drives the split vs full tunnel decision at render time:
+
+```yaml
+wireguard:
+  pfsense_host: "https://pfsense.yourdomain.cloud"
+  pfsense_tunnel: "tun_wg0"
+  pfsense_wg_pubkey: "your-pfsense-public-key"
+  pfsense_endpoint: "pfsense.yourdomain.cloud:51820"
+  keepalive: 25
+  generate_psk: true
+  dns_servers: "192.168.1.1, 1.1.1.1, 8.8.8.8"
+  vpn_subnet_base: "10.6.0"
+  vpn_subnet_cidr: "10.6.0.0/24"
+  vpn_ip_start: 2
+  vpn_peer_mask: 24
+  allowed_ips:
+    split: "10.6.0.0/24, 192.168.1.0/24, 192.168.10.0/24, 192.168.20.0/24, 192.168.70.0/24"
+    full: "0.0.0.0/0, ::/0"
+```
+
+The pfSense API key goes into vault, never in plaintext:
+
+```bash
+ansible-vault edit group_vars/all/vault.yml
+```
+
+```yaml
+wireguard_api_key: "your-pfsense-api-key"
+```
+
+**defaults/main.yml**
+
+The default tunnel mode is split. Override at runtime with `-e "tunnel=full"`:
+
+```yaml
+---
+tunnel: "split"
+peer_name: ""
+```
+
+**tasks/main.yml**
+
+The tasks file is the full workflow in sequence: dependency checks, key generation, IP assignment via pfSense API, peer registration, config rendering, and QR code output. The IP assignment step is the part that makes this genuinely useful at scale. It queries pfSense for all existing peers, parses the used IP octets, and finds the next available one automatically so you never have to track IP assignments manually:
+
+```yaml
+# 1. Check dependencies
+- name: Check wg is installed
+  ansible.builtin.command: which wg
+  register: wg_check
+  changed_when: false
+  failed_when: wg_check.rc != 0
+
+- name: Check qrencode is installed
+  ansible.builtin.command: which qrencode
+  register: qr_check
+  changed_when: false
+  failed_when: qr_check.rc != 0
+
+# 2. Generate keys
+- name: Generate WireGuard private key
+  ansible.builtin.command: wg genkey
+  register: wg_privkey_result
+  changed_when: true
+  no_log: true
+
+- name: Derive public key from private key
+  ansible.builtin.shell: "echo '{{ wg_privkey_result.stdout }}' | wg pubkey"
+  register: wg_pubkey_result
+  changed_when: false
+  no_log: true
+
+- name: Generate pre-shared key
+  ansible.builtin.command: wg genpsk
+  register: wg_psk_result
+  changed_when: true
+  no_log: true
+  when: wireguard.generate_psk | bool
+
+- name: Set key facts
+  ansible.builtin.set_fact:
+    peer_privkey: "{{ wg_privkey_result.stdout }}"
+    peer_pubkey: "{{ wg_pubkey_result.stdout }}"
+    peer_psk: "{{ wg_psk_result.stdout | default('') }}"
+  no_log: true
+
+# 3. Determine next available IP
+- name: Fetch existing peers from pfSense
+  ansible.builtin.uri:
+    url: "{{ wireguard.pfsense_host }}/api/v2/vpn/wireguard/peers"
+    method: GET
+    headers:
+      x-api-key: "{{ wireguard_api_key }}"
+      Content-Type: "application/json"
+    validate_certs: true
+    return_content: true
+  register: existing_peers_response
+  no_log: true
+
+- name: Parse used IP last octets
+  ansible.builtin.set_fact:
+    used_octets: "{{ existing_peers_response.json.data
+      | map(attribute='allowedips') | flatten
+      | map(attribute='address')
+      | select('search', wireguard.vpn_subnet_base)
+      | map('regex_replace', '^.+\.', '')
+      | map('int') | list }}"
+
+- name: Find next available IP octet
+  ansible.builtin.set_fact:
+    next_octet: "{{ range(wireguard.vpn_ip_start, 255)
+      | reject('in', used_octets) | first }}"
+
+- name: Set peer IP
+  ansible.builtin.set_fact:
+    peer_ip: "{{ wireguard.vpn_subnet_base }}.{{ next_octet }}"
+
+- name: Show assigned IP
+  ansible.builtin.debug:
+    msg: "Assigning {{ peer_ip }}/{{ wireguard.vpn_peer_mask }} to {{ peer_name }}"
+
+# 4. Register peer in pfSense via REST API
+- name: POST new peer to pfSense
+  ansible.builtin.uri:
+    url: "{{ wireguard.pfsense_host }}/api/v2/vpn/wireguard/peer"
+    method: POST
+    headers:
+      x-api-key: "{{ wireguard_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      tun: "{{ wireguard.pfsense_tunnel }}"
+      enabled: true
+      descr: "{{ peer_name }}"
+      publickey: "{{ peer_pubkey }}"
+      presharedkey: "{{ peer_psk }}"
+      persistentkeepalive: "{{ wireguard.keepalive }}"
+      allowedips:
+        - address: "{{ peer_ip }}"
+          mask: "{{ wireguard.vpn_peer_mask }}"
+    validate_certs: true
+    status_code: 200
+  register: pfsense_response
+  no_log: true
+
+- name: Confirm peer created
+  ansible.builtin.debug:
+    msg: "Peer {{ peer_name }} registered in pfSense (ID: {{ pfsense_response.json.data.id }})"
+
+# 5. Create output directory
+- name: Ensure peers directory exists
+  ansible.builtin.file:
+    path: "peers/{{ peer_name }}"
+    state: directory
+    mode: "0700"
+
+# 6. Render client config
+- name: Render client.conf
+  ansible.builtin.template:
+    src: client.conf.j2
+    dest: "peers/{{ peer_name }}/client.conf"
+    mode: "0600"
+
+# 7. Generate QR code
+- name: Generate QR code PNG
+  ansible.builtin.command: >
+    qrencode -t PNG -s 5
+    -o peers/{{ peer_name }}/qr.png
+    -r peers/{{ peer_name }}/client.conf
+  changed_when: true
+
+- name: Print QR code to terminal
+  ansible.builtin.command: >
+    qrencode -t ansiutf8
+    -r peers/{{ peer_name }}/client.conf
+  register: qr_terminal
+  changed_when: false
+
+- name: Display QR code
+  ansible.builtin.debug:
+    msg: "{{ qr_terminal.stdout_lines }}"
+
+# 8. Summary
+- name: Peer summary
+  ansible.builtin.debug:
+    msg:
+      - "Peer:    {{ peer_name }}"
+      - "IP:      {{ peer_ip }}/{{ wireguard.vpn_peer_mask }}"
+      - "Tunnel:  {{ tunnel }}"
+      - "Config:  peers/{{ peer_name }}/client.conf"
+      - "QR PNG:  peers/{{ peer_name }}/qr.png"
+```
+
+**templates/client.conf.j2**
+
+The template uses the `tunnel` variable to pull the correct `AllowedIPs` value straight from the `wireguard.allowed_ips` map in vars. The preshared key block only renders if one was generated:
+
+```jinja2
+# {{ peer_name }}
+[Interface]
+PrivateKey = {{ peer_privkey }}
+Address = {{ peer_ip }}/{{ wireguard.vpn_peer_mask }}
+DNS = {{ wireguard.dns_servers }}
+
+[Peer]
+PublicKey = {{ wireguard.pfsense_wg_pubkey }}
+{% if peer_psk %}
+PresharedKey = {{ peer_psk }}
+{% endif %}
+AllowedIPs = {{ wireguard.allowed_ips[tunnel] }}
+Endpoint = {{ wireguard.pfsense_endpoint }}
+PersistentKeepalive = {{ wireguard.keepalive }}
+```
+
+**Running it**
+
+Add `peers/` to `.gitignore` first since generated configs contain private keys:
+
+```bash
+echo "peers/" >> .gitignore
+```
+
+Provision a split-tunnel peer (the default):
+
+```bash
+ansible-playbook playbooks/wireguard_peer.yml -e "peer_name=alice-iphone"
+```
+
+Provision a full-tunnel peer:
+
+```bash
+ansible-playbook playbooks/wireguard_peer.yml -e "peer_name=bob-laptop tunnel=full"
+```
+
+The role queries pfSense for existing peers, finds the next available IP automatically, registers the peer via the REST API, renders the config, and outputs both a QR code PNG and a terminal QR code you can scan immediately. The whole thing runs in seconds.
+
+**Deploying WireGuard to a VPS**
+
+For VPS nodes the workflow is two steps. First provision the peer config, then deploy WireGuard to the host using the generated config:
+
+```bash
+# Step 1: provision peer in pfSense and generate config locally
+ansible-playbook playbooks/wireguard_peer.yml -e "peer_name=herald-crm"
+
+# Step 2: install WireGuard on the VPS and drop the config in place
+ansible-playbook playbooks/wireguard_deploy.yml -l herald -e "peer_name=herald-crm"
+```
+
+The deploy playbook installs WireGuard from apt, copies the generated `client.conf` to `/etc/wireguard/wg0.conf`, and enables `wg-quick@wg0` as a systemd service. Verify the tunnel is up after it runs:
+
+```bash
+ssh user@vps-ip sudo wg show
+```
+
+You should see the pfSense peer listed with a recent handshake timestamp.
+
+**Debugging**
+
+To list all peers currently registered in pfSense without creating a new one:
+
+```bash
+ansible-playbook playbooks/wireguard_peer.yml -e "peer_name=debug" --tags debug_peers
+```
+
+This is useful for spotting orphaned peers that are occupying IP addresses without a corresponding active device.
 
 ## The Current State
 
