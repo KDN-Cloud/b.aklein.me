@@ -29,6 +29,47 @@ article h3, h3 {
   box-shadow: 0 0 12px rgba(181, 232, 83, 0.14);
 }
 
+.code-block-shell {
+  position: relative;
+}
+
+.code-block-shell pre {
+  padding-top: 2.8rem;
+}
+
+.code-copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 66px;
+  padding: 4px 10px;
+  border: 1px solid rgba(181, 232, 83, 0.18);
+  border-radius: 999px;
+  background: rgba(10, 16, 10, 0.92);
+  color: #b5e853;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: 11px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.code-copy-button:hover,
+.code-copy-button:focus {
+  border-color: rgba(159, 218, 255, 0.34);
+  color: #d7eeff;
+  box-shadow: 0 0 12px rgba(159, 218, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.code-copy-button.is-copied {
+  border-color: rgba(181, 232, 83, 0.4);
+  color: #d6ff8f;
+}
+
 .site-footer {
   padding: 0 0 2.5rem;
   text-align: center;

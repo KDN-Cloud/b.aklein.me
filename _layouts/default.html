@@ -57,6 +57,65 @@
       toggleBackToTop();
       window.addEventListener('scroll', toggleBackToTop, { passive: true });
     })();
+
+    (function () {
+      const blocks = document.querySelectorAll('#main_content pre');
+      if (!blocks.length) return;
+
+      const copyText = async (text) => {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'absolute';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        const copied = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return copied;
+      };
+
+      blocks.forEach((block) => {
+        if (block.parentElement && block.parentElement.classList.contains('code-block-shell')) {
+          return;
+        }
+
+        const shell = document.createElement('div');
+        shell.className = 'code-block-shell';
+        block.parentNode.insertBefore(shell, block);
+        shell.appendChild(block);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'code-copy-button';
+        button.setAttribute('aria-label', 'Copy code to clipboard');
+        button.textContent = 'Copy';
+        shell.appendChild(button);
+
+        button.addEventListener('click', async () => {
+          const text = block.innerText.replace(/\n$/, '');
+          const original = button.textContent;
+
+          try {
+            const copied = await copyText(text);
+            button.textContent = copied ? 'Copied' : 'Failed';
+          } catch (error) {
+            button.textContent = 'Failed';
+          }
+
+          button.classList.add('is-copied');
+          window.setTimeout(() => {
+            button.textContent = original;
+            button.classList.remove('is-copied');
+          }, 1600);
+        });
+      });
+    })();
   </script>
 </body>
 </html>
