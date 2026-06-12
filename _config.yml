@@ -54,6 +54,7 @@ description: >
 url: https://b.aklein.me
 repository: "KDN-Cloud/b.aklein.me"
 deployonfriday_url: https://deployonfriday.aklein.pro/
+vultr_referral_url: https://www.vultr.com/?ref=9901024
 
 future: true  # default, change to true to force publish
 timezone: America/Los_Angeles

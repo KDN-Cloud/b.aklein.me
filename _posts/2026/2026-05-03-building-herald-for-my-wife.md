@@ -3,6 +3,7 @@ layout: post
 title: "Building Herald: A Fully Automated, Secured VPS for My Wife's CRM"
 date: 2026-05-03
 description: "How I provisioned, configured, and secured a Vultr VPS running Twenty CRM for my wife's business — using Terraform, Ansible, CrowdSec, and Cloudflare from the ground up."
+promote_affiliate: true
 tags:
   - terraform
   - ansible

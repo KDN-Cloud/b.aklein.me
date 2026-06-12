@@ -11,6 +11,10 @@ layout: default
 
 {{ content }}
 
+{% if page.promote_affiliate %}
+  {% include affiliate-callout.html %}
+{% endif %}
+
 {% if page.promote_deployonfriday %}
   {% include deployonfriday-callout.html %}
 {% endif %}

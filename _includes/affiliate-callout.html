@@ -1,0 +1,13 @@
+{% assign affiliate_url = page.affiliate_url | default: site.vultr_referral_url %}
+<aside class="affiliate-callout" aria-label="Affiliate disclosure">
+  <p class="affiliate-copy">
+    Affiliate note: I run these VPS nodes on Vultr. If you're building something similar, this referral link helps fund the lab at no extra cost to you.
+  </p>
+  <a class="affiliate-link"
+     href="{{ affiliate_url }}"
+     target="_blank"
+     rel="noopener noreferrer sponsored">
+    <span aria-hidden="true">&gt;</span>
+    <span>Try Vultr</span>
+  </a>
+</aside>
