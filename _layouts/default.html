@@ -31,5 +31,32 @@
     <hr class="content-divider" aria-hidden="true">
   </div>
   {% include footer.html %}
+  <a href="#"
+     id="back-to-top"
+     class="back-to-top"
+     aria-label="Back to top"
+     title="Back to top">&#8679;</a>
+  <script>
+    (function () {
+      const backToTop = document.getElementById('back-to-top');
+      if (!backToTop) return;
+
+      const toggleBackToTop = () => {
+        if (window.scrollY > 520) {
+          backToTop.classList.add('is-visible');
+        } else {
+          backToTop.classList.remove('is-visible');
+        }
+      };
+
+      backToTop.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      toggleBackToTop();
+      window.addEventListener('scroll', toggleBackToTop, { passive: true });
+    })();
+  </script>
 </body>
 </html>
