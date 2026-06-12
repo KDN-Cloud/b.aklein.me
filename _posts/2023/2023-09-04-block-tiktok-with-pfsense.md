@@ -2,7 +2,7 @@
 title: Block TikTok with pfSense + pfBlockerNG
 date: 2023-08-27
 lastmod: 2026-06-12
-description: Block TikTok on your network using pfSense and pfBlockerNG — DNSBL, IP blocklists, ASN blocking, DoH blocking, and kill states for complete coverage.
+description: Block TikTok on your network using pfSense and pfBlockerNG: DNSBL, IP blocklists, ASN blocking, DoH blocking, and kill states for complete coverage.
 promote_deployonfriday: true
 tags:
 - tiktok
@@ -47,11 +47,11 @@ tags:
 - M4jx
 ---
 
-The old coygeek post that everyone referenced for this is long gone. Since I run pfBlockerNG on my Netgate 6100 and have a `Block_Tik_Tok` DNSBL group already in production, figured it was time to write this up properly — including the parts the original post skipped, like IP and ASN blocking.
+The old coygeek post that everyone referenced for this is long gone. Since I run pfBlockerNG on my Netgate 6100 and have a `Block_Tik_Tok` DNSBL group already in production, figured it was time to write this up properly, including the parts the original post skipped, like IP and ASN blocking.
 
 ## Why bother blocking it at the firewall?
 
-App-level blocking is a joke. Browser extensions don't help on mobile. If you want TikTok off your network — whether for your kids, a corporate policy, or because you'd prefer ByteDance not hoover up everything on your LAN — you need to do it at the DNS and IP layer. This post covers both.
+App-level blocking is a joke. Browser extensions don't help on mobile. If you want TikTok off your network, whether for your kids, a corporate policy, or because you'd prefer ByteDance not hoover up everything on your LAN, you need to do it at the DNS and IP layer. This post covers both.
 
 ## Prerequisites
 
@@ -61,7 +61,7 @@ App-level blocking is a joke. Browser extensions don't help on mobile. If you wa
 
 ---
 
-## Part 1: DNSBL — Block TikTok Domains
+## Part 1: DNSBL / Block TikTok Domains
 
 ### Create a new DNSBL Group
 
@@ -85,7 +85,7 @@ Or directly: `https://pfsense.lan/pfblockerng/pfblockerng_category.php?type=dnsb
 
 ### Option A: Use an auto-updating feed (recommended)
 
-The best maintained TikTok domain blocklist right now is from [M4jx on GitHub](https://github.com/M4jx/TikTokBlockList). It's derived from live mobile traffic captures — not just guesswork — and is formatted for pfBlockerNG DNSBL.
+The best maintained TikTok domain blocklist right now is from [M4jx on GitHub](https://github.com/M4jx/TikTokBlockList). It's derived from live mobile traffic captures, not just guesswork, and is formatted for pfBlockerNG DNSBL.
 
 Under **DNSBL Source Definitions**, add:
 
@@ -142,7 +142,7 @@ ttoversea.net
 
 ---
 
-## Part 2: IP Blocking — Because DNS Isn't Enough
+## Part 2: IP Blocking (Because DNS Isn't Enough)
 
 DNS blocking alone can be bypassed. The TikTok app (especially on mobile) can use DoH or DoT to resolve domains through Cloudflare or Google, completely bypassing your local resolver. You need IP-level blocking to close that gap.
 
@@ -162,7 +162,7 @@ Navigate to `Firewall → pfBlockerNG → IP → IPv4 → + Add`
 
 ### IPv6
 
-Navigate to `Firewall → pfBlockerNG → IP → IPv6 → + Add` — same settings, different source:
+Navigate to `Firewall → pfBlockerNG → IP → IPv6 → + Add` with the same settings, different source:
 
 ```
 https://raw.githubusercontent.com/M4jx/TikTokBlockList/main/ipv6s
@@ -248,7 +248,7 @@ Neither of these are reasons not to do this. DNSBL plus IP blocking plus ASN blo
 
 ## A note on domain list staleness
 
-TikTok's infrastructure is not static. ByteDance rotates domains and CDN endpoints regularly. A static custom list will drift over time — I've seen the byteimg.com and ibyteimg.com subdomains change on me. The M4jx repo is updated from live traffic captures and is currently the best maintained source I've found for this. Pair it with the IP blocklists and you've got solid coverage without having to babysit it.
+TikTok's infrastructure is not static. ByteDance rotates domains and CDN endpoints regularly. A static custom list will drift over time. I've seen the byteimg.com and ibyteimg.com subdomains change on me. The M4jx repo is updated from live traffic captures and is currently the best maintained source I've found for this. Pair it with the IP blocklists and you've got solid coverage without having to babysit it.
 
 For reference on what TikTok's full network footprint looks like, [netify.ai's TikTok page](https://www.netify.ai/resources/applications/tiktok) has good detail on domains, IPs, and ASNs.
 
