@@ -37,7 +37,7 @@ A white fluffy cat sitting completely unbothered on a chair in a burning room. C
 
 For everyone currently sitting calmly at their desk while production is on fire and the monitoring is down.
 
-**[→ Shop This Is Fine Cat](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop This Is Fine Cat](https://www.etsy.com/shop/DeployOnFriday?search_query=fine)**
 
 
 
@@ -49,7 +49,7 @@ It's a cat shirt. It's a tech shirt. It's both simultaneously and it works.
 
 Available on t-shirts, mugs, hoodies, kids tees, stickers, magnets, pillows.
 
-**[→ Shop Salem.exe](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop Salem.exe](https://www.etsy.com/shop/DeployOnFriday?search_query=salem)**
 
 
 
@@ -61,7 +61,7 @@ Already covered this in the gift guide but it deserves its own mention here beca
 
 Available on t-shirts, long sleeves, mugs, posters, stickers.
 
-**[→ Shop chmod 777 and Pray](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop chmod 777 and Pray](https://www.etsy.com/shop/DeployOnFriday?search_query=777)**
 
 
 
@@ -71,7 +71,7 @@ The Google-colored "GOOGLES" in the payoff line is the detail that makes enginee
 
 Twenty years in. Still Googling. Will never stop.
 
-**[→ Shop Senior Developer Still Googles Everything](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop Senior Developer Still Googles Everything](https://www.etsy.com/shop/DeployOnFriday?search_query=Googles)**
 
 
 
@@ -79,7 +79,7 @@ Twenty years in. Still Googling. Will never stop.
 
 Classic for a reason. Available on mugs, tumblers, t-shirts, tank tops, kids tees — with a retro cartoon bug character that somehow makes the joke land harder. Every product type covered for this one because every engineer needs it in at least three formats.
 
-**[→ Shop It's Not a Bug](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop It's Not a Bug](https://www.etsy.com/shop/DeployOnFriday?search_query=bug)**
 
 
 
@@ -89,7 +89,7 @@ The ruby slippers are surrounded by binary code and circuit board traces. 127.0.
 
 Available on t-shirts, hoodies, mugs, tote bags, tank tops, posters, travel mugs.
 
-**[→ Shop There's No Place Like 127.0.0.1](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop There's No Place Like 127.0.0.1](https://www.etsy.com/shop/DeployOnFriday?search_query=no+place)**
 
 
 
