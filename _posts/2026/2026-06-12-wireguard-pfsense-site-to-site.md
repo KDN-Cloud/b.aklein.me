@@ -49,6 +49,28 @@ tags:
 - pfrest
 - rest-api
 - api-automation
+- wg-portal
+- wireguard-portal
+- wireguard-automation
+- wireguard-management
+- peer-provisioning
+- vpn-automation
+- homelab-networking
+- homelab-vpn
+- network-automation
+- pfsense-wireguard
+- wireguard-site-to-site
+- wireguard-split-tunnel
+- wireguard-full-tunnel
+- wireguard-qr-code
+- wireguard-ansible
+- vultr-wireguard
+- ubuntu-wireguard
+- vps-wireguard
+- wireguard-peer
+- wireguard-keys
+- wg-genkey
+- wg-show
 - unifi
 - unifi-cloudkey
 - cloudkey-gen2-plus
@@ -434,6 +456,14 @@ pkg add https://github.com/pfrest/pfSense-pkg-RESTAPI/releases/latest/download/p
 ```
 
 Once installed the REST API is available at `https://your-pfsense-host/api/v2/` and includes full WireGuard peer management endpoints. The role uses that API to register new peers directly in pfSense without you touching the GUI.
+
+**Why an Ansible role and not wg-portal**
+
+Before landing on a custom Ansible role I looked at [wg-portal](https://github.com/h44z/wg-portal), an open source WireGuard management portal with a web UI, user management, and claimed pfSense support. It looked like exactly the right tool for the job and I wanted to try it before writing my own automation.
+
+It didn't work out. The latest pfSense Plus broke compatibility with wg-portal's pfSense API integration at the time I tested it. The portal failed to communicate with pfSense correctly and peer registration didn't complete. I filed it under "worth watching" and moved on. The project is still active and it's possible that's been resolved since, but I wasn't willing to wait on an upstream fix when I could build something reliable myself in an afternoon.
+
+The Ansible role ended up being the better fit anyway. It's a small surface area, it lives in the same `ops_automation` repo as everything else in the lab, it uses the pfSense REST API directly which I already had working, and I understand every line of it. No web UI to maintain, no separate service to keep running, no dependency on a third-party project's pfSense compatibility. Worth keeping an eye on wg-portal if you want a GUI-driven workflow, but if you're already in the Ansible world the role approach is solid.
 
 **Mac prerequisites**
 
