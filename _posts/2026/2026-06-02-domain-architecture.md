@@ -3,6 +3,7 @@ layout: post
 title: "How I Think About Domain Architecture"
 date: 2026-06-02
 description: Most people buy a domain and call it done. Here's why I run four, what each one does, and how Domain Locker keeps it all from falling apart.
+promote_deployonfriday: true
 tags:
   - domains
   - infrastructure
