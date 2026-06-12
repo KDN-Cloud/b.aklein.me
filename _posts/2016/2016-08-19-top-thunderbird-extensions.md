@@ -1,7 +1,8 @@
 ---
-title: 'My Top Thunderbird mail extensions'
-description: Thunderbird mail extensions
+title: 'My Top Thunderbird Mail Extensions'
+description: The best Thunderbird extensions in 2026 — updated for accuracy, current compatibility, and what actually still works.
 date: 2016-08-19
+lastmod: 2026-06-12
 tags:
 - Mail
 - Thunderbird
@@ -14,66 +15,50 @@ tags:
 - open-source-email
 ---
 
-# Intro
->> Mozilla Thunderbird is a free, open source, cross-platform email, news, and chat client developed by the Mozilla Foundation. 
+I originally wrote this post back in 2016. Thunderbird has changed a lot since then. It moved from the old XUL/XPCOM extension model to WebExtensions, gained native OpenPGP encryption, and has been on an aggressive development trajectory backed by a full-time team funded almost entirely by user donations. Some extensions from the original list are deprecated, a few got replaced by built-in features, and a couple have community forks that picked up where upstream left off. This is the updated list for 2026.
 
-Mozilla Thunderbird is arguably the best [Mail User Agent](https://en.wikipedia.org/wiki/Email_client) for the desktop. Being an avid user of email I thought I would list some of the extensions I find makes Thunderbird even better in no specific order.
+Before getting into it — if you're still running Enigmail, uninstall it. Thunderbird has had native OpenPGP support built in since version 78. You don't need an extension for that anymore. Go to Account Settings, find End-to-End Encryption, and configure it from there. Enigmail won't work on any current Thunderbird build and hasn't been actively developed in years.
 
-### [uBlock Origin](https://addons.thunderbird.net/en-US/thunderbird/addon/ublock-origin/?src=search)
-First on the list is uBlock Origin. I really think it's ridiculous to serve ads in 
-emails, so this works really well for anyone looking to block all those annoying ads. This extension is probably not needed if emails are read in plain text.
+With that out of the way, here's what's actually worth installing right now.
 
-### [Display Quota](https://addons.thunderbird.net/en-US/thunderbird/addon/display-quota/)
-This is a nice extension to display your mail quota. I use quotas on my mail servers and like how this extension will tell you how many messages are in each folder. You can also have it give you a warning when you reach a certain percentage and modify it's appearance.
+### [uBird](https://addons.thunderbird.net/en-US/thunderbird/addon/ubird/)
 
-### [Enigmail](https://addons.thunderbird.net/en-US/thunderbird/addon/enigmail/)
-This is a must have extension all Thunderbird users should have. It does a great job at what it was intended to do - sign & encrypt email messages. From my experience it has been quite stable.
-
-### [Manually sort folders](https://addons.thunderbird.net/en-US/thunderbird/addon/manually-sort-folders/)
-I'm not sure why Thunderbird does not have native support for manually sorting folders, but this extension really does deliver. You can sort manually or automatically and re-order accounts in the folder pane. Definitely worth having. 
-
-### [Markdown Here](https://addons.thunderbird.net/en-us/thunderbird/addon/markdown-here-revival/)
-I really like using markdown and just so happen to write my blog using markdown, so thought why not extend support to other apps like Thunderbird. This extension works really well for writing email messages using markdown syntax. 
+uBlock Origin dropped official Thunderbird support upstream, but the community responded with uBird — a fork built directly from uBlock Origin's own build scripts with only minor changes to make it work properly inside Thunderbird. It does exactly what you'd expect: blocks ads, trackers, and remote content that gets loaded when you open HTML emails. Remote images in emails are a well-known tracking vector. A sender can know when you opened a message, from what IP, and roughly where you are just from a 1x1 pixel loaded silently in the background. uBird handles that without you thinking about it.
 
 ### [Send Later](https://addons.thunderbird.net/en-US/thunderbird/addon/send-later-3/)
-I needed to send an email at a specific time and found Send Later to exist. I'm glad I came across this extension because it definitely excels at what it does. The caveat is that Thunderbird must be open for it to work, but the [support page](http://blog.kamens.us/send-later/#running) suggests some solutions.
 
-I originally thought about writing a small script to do this, so decided to write something up that I could easily use on Linux and macOS systems.
+Still active, still the best way to schedule outgoing email. You write the message whenever, set the send time, and it fires when you told it to. The same caveat from 2016 applies — Thunderbird has to be open for it to actually send — but for anyone running Thunderbird as their daily driver that's a non-issue. If you work across time zones or just want to write something at 11pm without it landing in someone's inbox at 11pm, this is the extension for that.
 
-```
-#!/usr/bin/env bash
+### [Manually Sort Folders](https://addons.thunderbird.net/en-US/thunderbird/addon/manually-sort-folders/)
 
-## use the 'at' command to send an outgoing email at a specific time
-MAILTO=''
-MAILFROM=''
-SUBJECT=''
-Cc=''
-Bcc=''
-AT="at 9:00 AM Today" # 'at' expressions: http://www.computerhope.com/unix/uat.htm
+A decade later and Thunderbird still hasn't shipped native manual folder sorting. The built-in options are limited and the default sort order is opinionated in ways that don't fit everyone's workflow. This extension gives you drag-and-drop control over folder order and lets you reorder accounts in the folder pane however you want. It's one of those small things that matters a lot if you're managing multiple accounts with a lot of folders.
 
-MESSAGE=''
+### [CardBook](https://addons.thunderbird.net/en-US/thunderbird/addon/cardbook/)
 
-# Begin script
-$AT <<EMAIL
-mail -s "$SUBJECT" -c "$Cc" -b "$Bcc" -r "$MAILFROM" "$MAILTO"
-$MESSAGE
-EMAIL
+CardBook is a full replacement for Thunderbird's built-in address book, built on the CardDAV and vCard standards. If you self-host your contacts on Nextcloud, Radicale, or any CardDAV-compatible server, this is how you get proper two-way sync working inside Thunderbird. The native address book gets the job done for basic use but CardBook is what you want if you're running your own identity stack and need contacts that actually stay in sync.
 
-# EOF
-```
+### [Quicktext](https://addons.thunderbird.net/en-US/thunderbird/addon/quicktext/)
 
-### [Sieve](https://addons.mozilla.org/en-US/thunderbird/addon/sieve)
-I use [pigeonhole](http://pigeonhole.dovecot.org) with Dovecot for Sieve support on my Linux server. I'm really glad this Thunderbird extension exists. It easily implements the ManageSieve protocol to securely manage Sieve Script on a remote IMAP server. For example, we can set a vacation notice.
+One of the most widely used extensions in the Thunderbird ecosystem and for good reason. Quicktext lets you define email templates and insert them with a keystroke or toolbar click. If you send any recurring type of email — client updates, support responses, meeting follow-ups — this eliminates the copy-paste cycle entirely. It also supports variables so you can inject the recipient's name, today's date, or other dynamic fields into a template automatically.
 
-```
-require ["body","fileinto","vacation"];
-# rule:[Vacation]
-if true
-{
-	vacation :days 2 :addresses "hello@aklein.me" :subject "Out of Office" "Thanks for your message. I am on vacation and will respond to emails when I return.";
-}
-```
+### [Display Quota](https://addons.thunderbird.net/en-US/thunderbird/addon/display-quota/)
 
-> I want to also point out you can grab the latest Thunderbird Sieve extension on [GitHub](https://github.com/thsmi/sieve/blob/master/README.md). I had to use a Development Build because the extension available from the official Mozilla page would hang and never make the initial connection.
+Still relevant if you run your own mail server with quotas configured. This extension shows current mailbox usage per folder and can warn you before you hit a threshold. It's a small utility that does one thing well. If you manage your own Dovecot/Postfix stack and want quota visibility without having to SSH in and check, it's worth keeping around.
 
-So there you have all the extensions worth mentioning that I find make Thunderbird even better. Leave a comment if you have any other useful Thunderbird extensions!
+### [Signature Switch](https://addons.thunderbird.net/en-US/thunderbird/addon/signature-switch/)
+
+If you juggle multiple email identities — personal, consulting, business — Signature Switch is worth installing. You define multiple signatures and switch between them from the toolbar when composing. No more manually editing the signature block depending on who you're writing to. It pairs well with having separate account identities already set up in Thunderbird.
+
+### [FileLink for Nextcloud / ownCloud](https://addons.thunderbird.net/en-US/thunderbird/addon/filelink-nextcloud-owncloud/)
+
+Thunderbird has built-in FileLink support for handling large attachments by uploading them to a hosted service and inserting a download link instead of embedding the file in the message. This extension extends that to Nextcloud and ownCloud. If you self-host Nextcloud, this is the cleanest way to handle large file sends — the file goes to your server, the recipient gets a link, and you don't have to deal with attachment size limits from mail providers.
+
+### [DKIM Verifier](https://addons.thunderbird.net/en-US/thunderbird/addon/dkim-verifier/)
+
+This extension verifies DKIM signatures on incoming messages and surfaces the result directly in the message header. If you care about mail authentication — and if you're running your own mail server you definitely should — this makes it immediately visible whether a message's From domain actually signed it. Useful for catching spoofed headers and useful for testing your own outbound DKIM setup when you're configuring a new domain.
+
+### A note on Sieve
+
+The Sieve extension from the original post is still around and still works. If you run Dovecot with pigeonhole for server-side filtering, the Sieve extension is the cleanest way to manage those scripts without SSHing into the box. Worth keeping if your mail stack supports ManageSieve.
+
+That's the updated list. The extension ecosystem cleaned up considerably after the move to WebExtensions and most of what exists now actually works reliably on current Thunderbird builds. If you're on anything past version 115 you should be in good shape with all of the above. Drop a comment if there's something you find indispensable that I missed.
