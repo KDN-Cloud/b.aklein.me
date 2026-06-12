@@ -3,6 +3,7 @@ layout: post
 title: "DeployOnFriday — A Side Project That Deploys on Its Own Terms"
 date: 2026-06-01
 description: DeployOnFriday is a tech humor merch store built around the one thing every engineer knows better than to do — and does anyway.
+promote_deployonfriday: true
 tags:
   - deployonfriday
   - merch

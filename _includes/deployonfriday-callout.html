@@ -1,0 +1,13 @@
+{% assign deploy_url = page.deployonfriday_url | default: site.deployonfriday_url %}
+<aside class="deployonfriday-callout" aria-label="DeployOnFriday promotion">
+  <p class="deployonfriday-copy">
+    If this post saved you from doing something heroic on a Friday, DeployOnFriday exists for that exact kind of judgment.
+  </p>
+  <a class="deployonfriday-link"
+     href="{{ deploy_url }}"
+     target="_blank"
+     rel="noopener noreferrer">
+    <span aria-hidden="true">&gt;</span>
+    <span>Visit DeployOnFriday</span>
+  </a>
+</aside>

@@ -11,6 +11,10 @@ layout: default
 
 {{ content }}
 
+{% if page.promote_deployonfriday %}
+  {% include deployonfriday-callout.html %}
+{% endif %}
+
 {% if page.tags %}
   <small>tags: {% for tag in page.tags %}<em>{{ tag }}</em>{% unless forloop.last %} - {% endunless %}{% endfor %}</small>
 {% endif %}

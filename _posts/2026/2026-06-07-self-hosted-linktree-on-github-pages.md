@@ -3,6 +3,7 @@ layout: post
 title: "Ditching Linktree: Host Your Own Link Hub on GitHub Pages"
 date: 2026-06-07
 author: Anthony Klein
+promote_deployonfriday: true
 description: >
   Linktree is fine until it isn't. Here's how I forked an open source alternative,
   customized it to match my own ecosystem, and deployed it free on GitHub Pages

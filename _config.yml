@@ -53,6 +53,7 @@ description: >
 
 url: https://b.aklein.me
 repository: "KDN-Cloud/b.aklein.me"
+deployonfriday_url: https://deployonfriday.aklein.pro/
 
 future: true  # default, change to true to force publish
 timezone: America/Los_Angeles
