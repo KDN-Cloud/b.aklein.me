@@ -81,6 +81,17 @@ tags:
 - guest-vlan
 - iot-vlan
 - lab-vlan
+- wireguard-app
+- wireguard-ios
+- wireguard-android
+- wireguard-macos
+- wireguard-windows
+- wireguard-linux-client
+- wg-tunnel
+- wireguard-import
+- wireguard-client
+- wireguard-mobile
+- wireguard-config-import
 - openvpn-to-wireguard
 - wireguard-migration
 ---
@@ -290,6 +301,42 @@ qrencode -t ansiutf8 < peer-jdoe-phone.conf
 ```
 
 This prints the QR code directly in the terminal. Point a phone camera at it, import in the WireGuard app, done. For family members who are not going to edit a text file, this is the difference between the VPN actually getting used and not.
+
+## Importing the Config on Each Device
+
+Once you have a `client.conf` file or QR code, here is what to do with it depending on the device.
+
+**iPhone and iPad**
+
+Download [WireGuard](https://apps.apple.com/us/app/wireguard/id1441195209) from the App Store. Open the app, tap the plus icon, and choose either "Create from QR code" to scan the terminal output directly or "Create from file or archive" to import the `.conf` file if you transferred it another way. Name the tunnel and tap "Save". Toggle it on from the tunnel list.
+
+**macOS**
+
+The official [WireGuard app for macOS](https://apps.apple.com/us/app/wireguard/id1451685025?mt=12) is available on the Mac App Store and it is genuinely one of the best clients available. It lives in the menu bar and handles tunnel management cleanly. To import, open the app, click "Import tunnel(s) from file", and select the `.conf` file. The tunnel appears in the list ready to activate.
+
+**Android**
+
+I use [WG Tunnel](https://play.google.com/store/apps/details?id=com.zaneschepke.wireguardautotunnel) rather than the official WireGuard Android app and it has been excellent. It supports QR code import, file import, and has a few quality-of-life features the stock app lacks like auto-tunnel based on Wi-Fi network and a persistent notification with quick toggle. Install it from the Play Store, tap the plus button, and scan the QR code or import the config file. All downloads including APK for sideloading are available at [wgtunnel.com/download](https://wgtunnel.com/download).
+
+**Windows**
+
+Download the official WireGuard client from [wireguard.com/install](https://www.wireguard.com/install/). Open it, click "Import tunnel(s) from file", and select the `.conf` file. Activate from the tunnel list.
+
+**Linux**
+
+Copy the config to `/etc/wireguard/wg0.conf` and bring the tunnel up with:
+
+```bash
+sudo wg-quick up wg0
+```
+
+Enable it on boot with:
+
+```bash
+sudo systemctl enable --now wg-quick@wg0
+```
+
+The aliases from the earlier section apply here too. `wgshow` to confirm the handshake, `wgpinghome` to verify you're through the tunnel.
 
 ## Site-to-Site: Extending to Vultr
 
