@@ -546,6 +546,7 @@ peer_name: ""
 
 The tasks file is the full workflow in sequence: dependency checks, key generation, IP assignment via pfSense API, peer registration, config rendering, and QR code output. The IP assignment step is the part that makes this genuinely useful at scale. It queries pfSense for all existing peers, parses the used IP octets, and finds the next available one automatically so you never have to track IP assignments manually:
 
+{% raw %}
 ```yaml
 # 1. Check dependencies
 - name: Check wg is installed
@@ -693,11 +694,13 @@ The tasks file is the full workflow in sequence: dependency checks, key generati
       - "Config:  peers/{{ peer_name }}/client.conf"
       - "QR PNG:  peers/{{ peer_name }}/qr.png"
 ```
+{% endraw %}
 
 **templates/client.conf.j2**
 
 The template uses the `tunnel` variable to pull the correct `AllowedIPs` value straight from the `wireguard.allowed_ips` map in vars. The preshared key block only renders if one was generated:
 
+{% raw %}
 ```jinja2
 # {{ peer_name }}
 [Interface]
@@ -714,6 +717,7 @@ AllowedIPs = {{ wireguard.allowed_ips[tunnel] }}
 Endpoint = {{ wireguard.pfsense_endpoint }}
 PersistentKeepalive = {{ wireguard.keepalive }}
 ```
+{% endraw %}
 
 **Running it**
 
