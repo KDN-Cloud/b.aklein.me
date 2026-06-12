@@ -1,7 +1,7 @@
 ---
 title: 'WireGuard on pfSense: Remote Access, VLANs, and Site-to-Site to Vultr'
 date: 2026-06-12
-description: How I replaced OpenVPN with WireGuard on my Netgate 6100, set up split-tunnel and full-tunnel peer templates across VLANs, and extended it to site-to-site tunnels with two Vultr VPS nodes running Ubuntu, automated end-to-end with Ansible.
+description: How I replaced OpenVPN with WireGuard on my Netgate 6100, set up split-tunnel and full-tunnel peer templates across VLANs, and extended it to site-to-site tunnels with two Vultr VPS nodes (Ubuntu and Debian), automated end-to-end with Ansible.
 tags:
 - wireguard
 - pfsense
@@ -152,7 +152,7 @@ Here is a simplified view of how the full topology fits together:
     [VPS peer - dedicated subnet]
     +----------------------------------------------------+
     |  Herald  10.7.0.2/24                               |
-    |  Vultr / Ubuntu                                    |
+    |  Vultr / Ubuntu (Herald) or Debian (Nexus)         |
     |  reaches: Main, Kids, Lab, Nexus subnet            |
     +----------------------------------------------------+
 
@@ -340,13 +340,13 @@ The aliases from the earlier section apply here too. `wgshow` to confirm the han
 
 ## Site-to-Site: Extending to Vultr
 
-Remote access peers connect individual devices. Site-to-site tunnels connect entire networks. I have two Vultr VPS nodes, both running Ubuntu, that need to reach homelab services and have homelab infrastructure reach them in return. Herald runs Twenty CRM for my wife's business. The other node handles outbound routing for specific traffic. Both need to be on the same private network as the homelab without any public exposure of the services they're running.
+Remote access peers connect individual devices. Site-to-site tunnels connect entire networks. I have two Vultr VPS nodes that need to reach homelab services and have homelab infrastructure reach them in return. Herald runs Ubuntu and hosts Twenty CRM for my wife's business. Nexus runs Debian and handles outbound routing for specific traffic. Both need to be on the same private network as the homelab without any public exposure of the services they're running.
 
 WireGuard handles this identically to remote access peers from pfSense's perspective. The difference is in the routing intent and the peer config on the VPS side.
 
-### On the Vultr VPS (Ubuntu)
+### On the VPS (Ubuntu or Debian)
 
-WireGuard is in the Ubuntu repos:
+WireGuard is in the repos on both Ubuntu and Debian:
 
 ```bash
 apt install wireguard
