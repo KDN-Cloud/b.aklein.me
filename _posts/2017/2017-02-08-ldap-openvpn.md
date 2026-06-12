@@ -133,7 +133,9 @@ If that returns the user record, OpenVPN will be able to authenticate that user.
 
 **Where this sits in 2026**
 
-OpenVPN is still actively maintained, version 2.7.4 shipped in April 2026, and this setup still works. But the honest answer is that if I were building this from scratch today I would use WireGuard instead, and I have. WireGuard is built into the Linux kernel, has a dramatically simpler configuration surface, and is significantly faster. The peer-based model is different from OpenVPN's client-server model but for homelab remote access it's actually more appropriate. I wrote about the full WireGuard journey separately, including the site-to-site setup to a couple of Vultr VPS nodes.
+OpenVPN is still actively maintained, version 2.7.4 shipped in April 2026, and this setup still works. But the honest answer is that if I were building this from scratch today I would use WireGuard instead, and I have. WireGuard is built into the Linux kernel, has a dramatically simpler configuration surface, and is significantly faster. The peer-based model is different from OpenVPN's client-server model but for homelab remote access it's actually more appropriate.
+
+If you want the newer iteration of this idea, I documented that here: [WireGuard on pfSense: Remote Access, VLANs, and Site-to-Site to Vultr](/2026/06/12/wireguard-pfsense-site-to-site.html). That post covers the 2026 version of my VPN stack, including automated WireGuard site-to-site topology deployment with Ansible.
 
 For LDAP-authenticated VPN access in a modern homelab, [NetBird](https://netbird.io) is worth looking at. It's WireGuard-based, open source, self-hostable, and integrates natively with identity providers including Authentik, Keycloak, and Azure AD. You get SSO-controlled VPN access with a management dashboard and proper audit logging, which is the modern equivalent of what this openvpn-auth-ldap setup was doing in 2017, just with less operational overhead and a better security model.
 
