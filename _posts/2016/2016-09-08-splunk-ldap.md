@@ -7,15 +7,22 @@ historical_warning_body: This workaround came from an older Splunk Free era wher
 historical_warning_docs_url: https://httpd.apache.org/docs/2.4/mod/mod_authnz_ldap.html
 historical_warning_docs_label: Apache mod_authnz_ldap documentation
 tags:
-- Splunk
-- Linux
-- LDAP
-- Apache
+- splunk
+- linux
+- ldap
+- openldap
+- apache
 - authentication
 - log-management
 - observability
 - splunk-enterprise
 - apache-auth
+- apache-httpd
+- mod-authnz-ldap
+- reverse-proxy-auth
+- access-control
+- self-hosted
+- sysadmin
 ---
 {% include historical-warning.html %}
 

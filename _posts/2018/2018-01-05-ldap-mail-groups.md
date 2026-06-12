@@ -3,15 +3,21 @@ title: 'LDAP Mail Distribution Groups with Postfix'
 description: Setup LDAP mail groups with Postfix
 date: 2018-01-05
 tags:
-- Postfix
-- LDAP
-- Linux
-- Email
-- MailGroups
-- OpenLDAP
+- postfix
+- ldap
+- linux
+- mail-groups
+- openldap
 - distribution-lists
 - self-hosted-email
 - mail-server
+- group-mail
+- mail-aliases
+- virtual-alias-maps
+- postfix-book-schema
+- mail-routing
+- homelab
+- sysadmin
 ---
 
 A common feature with mail environments is to use distribution groups that you could add and remove group members from. This is fairly common among organizations. For example, one might have `hq@example.net` and a list of members stored in LDAP. I wanted to have the ability to use mail distribution groups with my OpenLDAP infrastructure. LDAP group members could then easily be removed or added using `ldapmodify` or Apache Directory Studio.

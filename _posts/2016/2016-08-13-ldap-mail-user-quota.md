@@ -7,15 +7,23 @@ historical_warning_body: This quota setup came from an older OpenLDAP plus Dovec
 historical_warning_docs_url: https://doc.dovecot.org/
 historical_warning_docs_label: current Dovecot docs
 tags:
-- Mail
-- LDAP
-- Quota
-- Dovecot
-- OpenLDAP
+- dovecot
+- ldap
+- openldap
+- quota
 - self-hosted-email
 - mail-server
 - mail-quota
 - mailbox-management
+- quota-management
+- imap
+- maildir
+- postfix-book-schema
+- mail-storage
+- vmail
+- homelab
+- linux
+- sysadmin
 ---
 
 {% include historical-warning.html %}

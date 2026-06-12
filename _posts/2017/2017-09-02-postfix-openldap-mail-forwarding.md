@@ -3,14 +3,21 @@ title: 'Mail forwarding with Postfix and OpenLDAP'
 date: 2017-09-02
 description: Configuring mail forwarding with Postfix and OpenLDAP
 tags:
-- Postfix
-- LDAP
-- Linux
-- Email
-- OpenLDAP
+- postfix
+- ldap
+- linux
+- openldap
 - self-hosted-email
 - mail-forwarding
 - mail-server
+- email-routing
+- virtual-mailboxes
+- virtual-aliases
+- postfix-book-schema
+- mail-schema
+- homelab
+- sysadmin
+- mail-infrastructure
 ---
 
 For the most part mail forwarding is not too common within my Infrastructure. With Sieve deployed in my environment using the ManageSieve protocol - mail users are able to easily setup a redirect to their preferred email address. This all works fine, but I also wanted to have the ability to setup mail forwarding directly within OpenLDAP. 

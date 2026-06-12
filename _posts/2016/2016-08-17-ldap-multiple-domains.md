@@ -7,15 +7,22 @@ historical_warning_body: The multi-domain lookup model here still works, but thi
 historical_warning_docs_url: https://www.postfix.org/LDAP_README.html
 historical_warning_docs_label: official Postfix LDAP documentation
 tags:
-- LDAP
-- Email
-- 'multiple domains'
-- OpenLDAP
+- ldap
+- openldap
+- multiple-domains
 - mail-server
 - virtual-mail-domains
 - domain-management
-- Postfix
+- postfix
 - self-hosted-email
+- virtual-domains
+- virtual-mailboxes
+- mail-routing
+- mail-infrastructure
+- dnsdomain
+- homelab
+- linux
+- sysadmin
 ---
 
 {% include historical-warning.html %}

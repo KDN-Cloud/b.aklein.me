@@ -4,15 +4,22 @@ date: 2021-09-25
 lastmod: 2026-06-01
 description: A few different projects I had fun administering.
 tags:
-- Projects
-- Passion
-- Sysadmin
+- self-hosted-projects
+- sysadmin
 - infrastructure
 - homelab
 - automation
 - self-hosted
 - linux
 - sysadmin-projects
+- foss
+- sre
+- docker
+- nginx
+- minecraft-server
+- nostr
+- privatebin
+- openpgp
 ---
 
 > I no longer run most of the projects listed here, but I leave them for historical reference.
