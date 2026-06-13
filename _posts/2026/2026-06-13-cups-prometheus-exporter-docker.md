@@ -59,10 +59,6 @@ tags:
   - network-segmentation
 ---
 
-# Monitoring CUPS with Prometheus: I Wrote the Exporter That Didn't Exist
-
-by Anthony Klein
-
 I have two Brother printers on my network. A MFC-L3770CDW color laser all-in-one
 and an HL-L2340D mono laser, both sitting on the IoT VLAN, both capable of
 ethernet and wireless, both discoverable over Bonjour and Avahi. They are managed
