@@ -11,6 +11,7 @@ article h3, h3 {
 }
 
 #main_content a {
+  text-decoration: none;
   transition: color 0.18s ease, text-shadow 0.18s ease, opacity 0.18s ease;
 }
 
@@ -18,13 +19,6 @@ article h3, h3 {
 #main_content a:focus {
   color: #9fdaff;
   text-shadow: 0 0 8px rgba(99, 192, 245, 0.28);
-}
-
-.archive-list a,
-.archive-list a:visited,
-.archive-list a:hover,
-.archive-list a:focus {
-  text-decoration: none;
 }
 
 .view .byline-github,
