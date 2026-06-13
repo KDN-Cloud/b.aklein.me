@@ -20,6 +20,19 @@ article h3, h3 {
   text-shadow: 0 0 8px rgba(99, 192, 245, 0.28);
 }
 
+.view .byline-github,
+.view .byline-github:visited {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.view .byline-github-mark {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+}
+
 .content-divider {
   display: block;
   width: 100%;
