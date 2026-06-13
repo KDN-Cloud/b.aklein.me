@@ -20,6 +20,13 @@ article h3, h3 {
   text-shadow: 0 0 8px rgba(99, 192, 245, 0.28);
 }
 
+.archive-list a,
+.archive-list a:visited,
+.archive-list a:hover,
+.archive-list a:focus {
+  text-decoration: none;
+}
+
 .view .byline-github,
 .view .byline-github:visited {
   display: inline-flex;
@@ -352,6 +359,23 @@ article h3, h3 {
 .historical-warning a:hover,
 .historical-warning a:focus {
   color: #ffe29e;
+}
+
+.post-comments {
+  margin: 2.75rem 0 1.5rem;
+  padding-top: 1.35rem;
+  border-top: 1px dashed rgba(159, 218, 255, 0.24);
+}
+
+.post-comments h2 {
+  margin-bottom: 0.45rem;
+}
+
+.post-comments-note {
+  margin: 0 0 1rem;
+  color: rgba(234, 234, 234, 0.72);
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 @keyframes cur-blink {

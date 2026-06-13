@@ -1,0 +1,37 @@
+{% assign comments_enabled = site.comments.enabled %}
+{% if page.comments == false %}
+  {% assign comments_enabled = false %}
+{% elsif page.comments == true %}
+  {% assign comments_enabled = true %}
+{% endif %}
+{% if comments_enabled and site.comments.provider == "giscus" %}
+  <section class="post-comments" aria-labelledby="post-comments-title">
+    <h2 id="post-comments-title">Comments</h2>
+    <p class="post-comments-note">
+      Questions, corrections, and follow-ups live in GitHub Discussions.
+    </p>
+    <script
+      src="https://giscus.app/client.js"
+      data-repo="{{ site.comments.repo }}"
+      data-repo-id="{{ site.comments.repo_id }}"
+      data-category="{{ site.comments.category }}"
+      data-category-id="{{ site.comments.category_id }}"
+      data-mapping="{{ site.comments.mapping }}"
+      data-strict="{{ site.comments.strict }}"
+      data-reactions-enabled="{{ site.comments.reactions_enabled }}"
+      data-emit-metadata="0"
+      data-input-position="{{ site.comments.input_position }}"
+      data-theme="{{ site.comments.theme }}"
+      data-lang="{{ site.comments.lang }}"
+      data-loading="{{ site.comments.loading }}"
+      crossorigin="anonymous"
+      async>
+    </script>
+    <noscript>
+      <p class="post-comments-note">
+        JavaScript is required to load comments. You can still join the
+        discussion on GitHub.
+      </p>
+    </noscript>
+  </section>
+{% endif %}

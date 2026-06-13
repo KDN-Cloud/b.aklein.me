@@ -85,6 +85,21 @@ twitter:
 seo:
   type: Blog
 
+comments:
+  enabled: true
+  provider: giscus
+  repo: KDN-Cloud/b.aklein.me
+  repo_id: R_kgDOKMQAfQ
+  category: Announcements
+  category_id: DIC_kwDOKMQAfc4C_EJx
+  mapping: pathname
+  strict: 0
+  reactions_enabled: 1
+  input_position: bottom
+  theme: preferred_color_scheme
+  lang: en
+  loading: lazy
+
 defaults:
   - scope:
       path: ""
@@ -92,6 +107,7 @@ defaults:
     values:
       layout: post
       author: Anthony Klein
+      comments: true
 
 google_analytics: G-17GC5WKY29
 
