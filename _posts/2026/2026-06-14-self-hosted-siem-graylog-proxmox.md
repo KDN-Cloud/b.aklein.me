@@ -100,7 +100,7 @@ tags:
 
 > **What you're building:** A production-grade centralized log management and SIEM stack running Graylog 7.x + OpenSearch + MongoDB inside Docker on a Proxmox VM, with fleet-wide rsyslog forwarding, GELF container logging, NFS-backed storage, and a reverse proxy entry point. By the end, every node in your lab ships logs to one place — and you'll actually know what's happening across your infrastructure for the first time.
 
-I ran this lab blind for years. Grafana dashboards for metrics, but no centralized logs. When something broke I was SSH-ing into nodes one at a time playing detective. When I finally stood up Graylog, I had 13 nodes reporting in within a few hours. The first thing I noticed was a pfSense firewall block storm I didn't know was happening. That alone was worth the setup time.
+I ran this lab blind for longer than I'd like to admit. Back in 2012 I had a VPS running Splunk Enterprise with a couple forwarders — centralized logging was just part of the setup. When that VPS got sunset, I never replaced it. For years it was just Grafana dashboards for metrics and a lot of SSH-ing into nodes one at a time playing detective when something broke. When I finally stood up Graylog, I had 13 nodes reporting in within a few hours. The first thing I saw was a pfSense firewall block storm that had apparently been running for who knows how long. That alone was worth the setup time.
 
 This guide covers every gotcha I hit — the MongoDB NFS crash loop, the Docker NAT source IP problem, the Graylog 7.x input activation trap that makes logs silently disappear, and the Proxmox-specific rsyslog situation nobody documents. Skip to what you need or follow it top to bottom.
 
