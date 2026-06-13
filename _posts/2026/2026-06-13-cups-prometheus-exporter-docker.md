@@ -115,6 +115,12 @@ The `lpstat` approach means the exporter works with any CUPS installation
 regardless of version or configuration. It talks to CUPS the same way any other
 client on the system would.
 
+Here is what the CUPS admin interface looks like when discovering available
+printers. Both Brother devices show up as driverless IPP Everywhere entries
+alongside anything else CUPS can see on the network:
+
+![CUPS Administration listing available printers discovered over Bonjour and exposed as driverless IPP Everywhere targets]({{ site.baseurl }}/assets/images/cups-list-of-available-printers.png)
+
 ## What It Exposes
 
 Six metrics. Deliberately minimal. Every metric that matters for knowing whether
@@ -136,6 +142,12 @@ own labels: the MFC-L3770CDW and the HL-L2340D, each sitting on the IoT VLAN,
 each capable of ethernet and wireless, each discoverable via Bonjour and Avahi,
 each reporting their own state independently. Register another printer in CUPS
 tomorrow and it appears in the next scrape without touching the exporter.
+
+Once added, both printers are managed cleanly through the main CUPS printers
+view. In my case they are idle, reachable, and configured with driverless IPP
+Everywhere support:
+
+![CUPS printers page showing both Brother printers configured and idle]({{ site.baseurl }}/assets/images/cups-printers.png)
 
 ## Verifying the Exporter Is Working
 
@@ -396,4 +408,3 @@ build script is at
 [github.com/variablenix/cups-prometheus-exporter](https://github.com/variablenix/cups-prometheus-exporter).
 The image is published publicly to GHCR and free to pull with no authentication
 required.*
-
