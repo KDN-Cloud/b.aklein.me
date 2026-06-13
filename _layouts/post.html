@@ -8,14 +8,13 @@ layout: default
 <h1>{{ page.title }}</h1>
 
 <p class="view">
-  by {{ page.author | default: site.author.name }}
   {% assign github_handle = site.author.github_handle | default: nil %}
   {% if github_handle %}
-    · <a href="https://github.com/{{ github_handle }}" target="_blank" rel="noopener noreferrer">@{{ github_handle }}</a>
+    <a href="https://github.com/{{ github_handle }}" target="_blank" rel="noopener noreferrer">@{{ github_handle }}</a>
   {% endif %}
   {% assign byline_label = page.byline_label | default: site.author.byline_label %}
   {% if byline_label %}
-    · <code>{{ byline_label }}</code>
+    · <code>{ {{ byline_label }} }</code>
   {% endif %}
 </p>
 
