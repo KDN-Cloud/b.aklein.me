@@ -26,7 +26,7 @@ tags:
 
 See [https://selfh.st/apps/](https://selfh.st/apps/) for a large amount of self-hosted services.
 
-I 💙 and respect <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software" target="_blank">FOSS</a>.
+I 💙 and respect [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software).
 
 Some fun projects of services I have deployed in no particular order. 
 
@@ -44,4 +44,4 @@ Some fun projects of services I have deployed in no particular order.
 
 🔘 **Searx** - a privacy-respecting metasearch engine
 
-🔘 **Tor Bridge** - an obfs4 bridge to <a href="https://blog.torproject.org/run-tor-bridges-defend-open-internet" target="_blank">help</a> censored users connect to the open internet through Tor when users are being oppressed in countries like China, Iran, and Kazakhstan that exercise information control by trying to block Tor
+🔘 **Tor Bridge** - an obfs4 bridge to [help](https://blog.torproject.org/run-tor-bridges-defend-open-internet) censored users connect to the open internet through Tor when users are being oppressed in countries like China, Iran, and Kazakhstan that exercise information control by trying to block Tor
