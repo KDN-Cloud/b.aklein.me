@@ -19,7 +19,8 @@ layout: default
   {% endif %}
   {% assign byline_label = page.byline_label | default: site.author.byline_label %}
   {% if byline_label %}
-    · <code>{ {{ byline_label }} }</code>
+    {% assign byline_parts = byline_label | split: ' // ' %}
+    · <code class="byline-code"><span class="byline-brace">{</span> {% for part in byline_parts %}<span class="byline-term">{{ part }}</span>{% unless forloop.last %} <span class="byline-sep">//</span> {% endunless %}{% endfor %} <span class="byline-brace">}</span></code>
   {% endif %}
 </p>
 

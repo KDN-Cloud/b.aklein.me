@@ -33,6 +33,22 @@ article h3, h3 {
   flex: 0 0 14px;
 }
 
+.view .byline-code {
+  color: rgba(234, 234, 234, 0.9);
+}
+
+.view .byline-brace {
+  color: #b5e853;
+}
+
+.view .byline-sep {
+  color: #63c0f5;
+}
+
+.view .byline-term {
+  color: rgba(234, 234, 234, 0.92);
+}
+
 .content-divider {
   display: block;
   width: 100%;
