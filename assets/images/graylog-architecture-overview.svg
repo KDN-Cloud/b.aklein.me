@@ -1,12 +1,75 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 1420" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1280" role="img" aria-labelledby="title desc">
   <title id="title">Graylog architecture overview</title>
   <desc id="desc">Architecture overview diagram for a homelab Graylog stack showing lab nodes sending logs to Graylog on Proxmox, OpenSearch storing indexed log data on NFS, MongoDB keeping Graylog configuration locally, a reverse proxy handling the public entrypoint, and a separate pfSense to Synology archive path.</desc>
-  <rect width="1700" height="1420" fill="#050705"/>
-  <text
-    x="24"
-    y="44"
-    fill="#e9f7e8"
-    font-family="Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, monospace"
-    font-size="22"
-    xml:space="preserve"><tspan x="24" dy="0">┌─────────────────────────────────────────────────────────────┐</tspan><tspan x="24" dy="34">│                        Lab Fleet                            │</tspan><tspan x="24" dy="34">│   linux-node-1 · linux-node-2 · linux-node-3 · pfSense     │</tspan><tspan x="24" dy="34">│           rsyslog TCP → port 5140 (Syslog Input)           │</tspan><tspan x="24" dy="34">│           Docker GELF UDP → port 12201 (GELF Input)        │</tspan><tspan x="24" dy="34">└───────────────────────────┬─────────────────────────────────┘</tspan><tspan x="24" dy="34">                            │</tspan><tspan x="24" dy="34">                            │  all nodes ship logs inward</tspan><tspan x="24" dy="34">                    ┌───────▼────────┐</tspan><tspan x="24" dy="34">                    │  Graylog VM    │  Ubuntu 22.04 on Proxmox</tspan><tspan x="24" dy="34">                    │  10.0.0.x      │  16GB RAM / 8 vCPU</tspan><tspan x="24" dy="34">                    │                │</tspan><tspan x="24" dy="34">                    │  ┌──────────┐  │</tspan><tspan x="24" dy="34">                    │  │ Graylog  │  │  :9000 (UI)</tspan><tspan x="24" dy="34">                    │  │          │  │  :9833 (Prometheus)</tspan><tspan x="24" dy="34">                    │  └────┬─────┘  │  ingest, search, dashboards, streams</tspan><tspan x="24" dy="34">                    │       │        │</tspan><tspan x="24" dy="34">                    │  ┌────▼─────┐  │</tspan><tspan x="24" dy="34">                    │  │OpenSearch│  │  stores and indexes log data</tspan><tspan x="24" dy="34">                    │  └──────────┘  │  ← data/journal → NFS (NAS)</tspan><tspan x="24" dy="34">                    │  ┌──────────┐  │</tspan><tspan x="24" dy="34">                    │  │ MongoDB  │  │  Graylog config, users, streams only</tspan><tspan x="24" dy="34">                    │  └──────────┘  │  ← local named volume</tspan><tspan x="24" dy="34">                    └───────┬────────┘</tspan><tspan x="24" dy="34">                            │</tspan><tspan x="24" dy="34">                            │  public access path</tspan><tspan x="24" dy="34">                    ┌───────▼────────┐</tspan><tspan x="24" dy="34">                    │  Reverse Proxy │  TLS termination + external entrypoint</tspan><tspan x="24" dy="34">                    │  logs.lab.yourdomain.com</tspan><tspan x="24" dy="34">                    └────────────────┘</tspan><tspan x="24" dy="34"></tspan><tspan x="24" dy="34">                    ┌───────────────────────┐</tspan><tspan x="24" dy="34">                    │  pfSense → Synology   │  separate path</tspan><tspan x="24" dy="34">                    │  NAS log archive      │  local firewall retention, no Graylog needed</tspan><tspan x="24" dy="34">                    └───────────────────────┘</tspan></text>
+
+  <defs>
+    <style>
+      .frame { fill: none; stroke: #e9f7e8; stroke-width: 3; stroke-linecap: square; stroke-linejoin: miter; }
+      .flow { fill: none; stroke: #e9f7e8; stroke-width: 3; stroke-linecap: square; }
+      .label { fill: #e9f7e8; font-family: Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, monospace; font-size: 24px; }
+      .small { fill: #e9f7e8; font-family: Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, monospace; font-size: 20px; }
+      .muted { fill: rgba(233,247,232,0.92); font-family: Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, monospace; font-size: 20px; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#e9f7e8"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="1280" fill="#050705"/>
+
+  <rect class="frame" x="44" y="42" width="1020" height="198"/>
+  <text class="label" x="554" y="92">Lab Fleet</text>
+  <text class="label" x="94" y="142">linux-node-1 · linux-node-2 · linux-node-3 · pfSense</text>
+  <text class="label" x="220" y="188">rsyslog TCP → port 5140 (Syslog Input)</text>
+  <text class="label" x="220" y="232">Docker GELF UDP → port 12201 (GELF Input)</text>
+
+  <line class="flow" x1="554" y1="240" x2="554" y2="400"/>
+  <line class="flow" x1="554" y1="360" x2="554" y2="400" marker-end="url(#arrow)"/>
+  <line class="flow" x1="590" y1="350" x2="640" y2="350"/>
+  <text class="small" x="656" y="356">all nodes ship logs inward</text>
+
+  <rect class="frame" x="442" y="400" width="262" height="520"/>
+  <text class="label" x="494" y="456">Graylog VM</text>
+  <text class="label" x="494" y="504">10.0.0.x</text>
+  <line class="flow" x1="704" y1="446" x2="760" y2="446"/>
+  <text class="label" x="784" y="452">Ubuntu 22.04 on Proxmox</text>
+  <text class="label" x="784" y="498">16GB RAM / 8 vCPU</text>
+
+  <rect class="frame" x="496" y="560" width="154" height="118"/>
+  <text class="label" x="520" y="620">Graylog</text>
+  <line class="flow" x1="650" y1="604" x2="728" y2="604"/>
+  <text class="small" x="752" y="610">:9000 (UI)</text>
+  <text class="small" x="752" y="648">:9833 (Prometheus)</text>
+  <text class="small" x="752" y="686">ingest, search, dashboards, streams</text>
+
+  <line class="flow" x1="573" y1="678" x2="573" y2="754"/>
+  <line class="flow" x1="573" y1="724" x2="573" y2="754" marker-end="url(#arrow)"/>
+
+  <rect class="frame" x="496" y="756" width="154" height="102"/>
+  <text class="small" x="510" y="818">OpenSearch</text>
+  <line class="flow" x1="650" y1="804" x2="728" y2="804"/>
+  <text class="small" x="752" y="810">stores and indexes log data</text>
+  <text class="small" x="752" y="848">data/journal → NFS (NAS)</text>
+
+  <rect class="frame" x="496" y="906" width="154" height="102"/>
+  <text class="small" x="520" y="968">MongoDB</text>
+  <line class="flow" x1="650" y1="954" x2="728" y2="954"/>
+  <text class="small" x="752" y="960">Graylog config, users, streams only</text>
+  <text class="small" x="752" y="998">local named volume</text>
+
+  <line class="flow" x1="573" y1="920" x2="573" y2="1090"/>
+  <line class="flow" x1="573" y1="1048" x2="573" y2="1090" marker-end="url(#arrow)"/>
+  <line class="flow" x1="590" y1="1040" x2="640" y2="1040"/>
+  <text class="small" x="656" y="1046">public access path</text>
+
+  <rect class="frame" x="442" y="1090" width="262" height="118"/>
+  <text class="label" x="482" y="1150">Reverse Proxy</text>
+  <text class="small" x="482" y="1192">logs.domain.com</text>
+  <line class="flow" x1="704" y1="1144" x2="760" y2="1144"/>
+  <text class="small" x="784" y="1150">TLS termination + external entrypoint</text>
+  <text class="small" x="784" y="1188">public URL for the Graylog UI</text>
+
+  <rect class="frame" x="1004" y="1090" width="426" height="118"/>
+  <text class="small" x="1038" y="1150">pfSense → Synology NAS log archive</text>
+  <text class="small" x="1038" y="1192">local firewall retention, no Graylog needed</text>
 </svg>

@@ -403,6 +403,16 @@ article h3, h3 {
 }
 
 @media (max-width: 760px) {
+  .diagram-figure {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
+  .diagram-image {
+    width: calc(100% + 32px);
+    max-width: none;
+  }
+
   #main_content table {
     display: block;
     overflow-x: auto;
