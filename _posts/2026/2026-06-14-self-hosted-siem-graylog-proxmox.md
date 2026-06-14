@@ -41,6 +41,9 @@ tags:
   - variablenix
   - nfs
   - nas
+  - unifi
+  - unifi-unas
+  - unas-pro
   - synology
   - synology-nas
   - nfs-mount
@@ -128,7 +131,8 @@ OpenSearch and Graylog journal data live on an NFS share from my UniFi UNAS Pro.
 ## Prerequisites
 
 - Proxmox host with a spare VM slot
-- Ubuntu 22.04 LTS ISO
+- A modern x86_64 Linux guest for the Graylog VM
+- Ubuntu 22.04 LTS, Ubuntu 24.04 LTS, Debian 12, or Debian 13 all work well here
 - An NFS-capable storage target (UniFi UNAS Pro, TrueNAS, Synology, QNAP, etc.), optional but recommended for >1M logs/day
 - Docker + Docker Compose v2 installed on the VM
 - Nginx Proxy Manager or similar reverse proxy
@@ -138,11 +142,13 @@ OpenSearch and Graylog journal data live on an NFS share from my UniFi UNAS Pro.
 
 ## Step 1: Provision the Proxmox VM
 
-In the Proxmox UI, create a new VM with these specs:
+I built this stack on Ubuntu 22.04, but there is nothing especially sacred about that release. Ubuntu 24.04 and modern Debian builds are fine too as long as Docker Compose runs cleanly and you give OpenSearch enough memory.
+
+In the Proxmox UI, create a new VM with these baseline specs:
 
 | Setting | Value |
-|---|---|
-| OS | Ubuntu 22.04 LTS |
+| --- | --- |
+| OS | Ubuntu 22.04/24.04 LTS or Debian 12/13 |
 | CPU | 4–8 vCPU |
 | RAM | **16GB minimum** because OpenSearch is memory-hungry |
 | Disk | 60–100GB (local SSD for OS + MongoDB) |
@@ -259,6 +265,9 @@ GRAYLOG_PASSWORD_SECRET=REPLACE_WITH_96_CHAR_SECRET
 # Generate: echo -n 'yourpassword' | sha256sum | awk '{print $1}'
 GRAYLOG_ROOT_PASSWORD_SHA2=REPLACE_WITH_SHA256_HASH
 
+# Set a real value here. Do not leave this as changeme.
+OPENSEARCH_INITIAL_ADMIN_PASSWORD=REPLACE_WITH_A_REAL_PASSWORD
+
 # Must be the publicly reachable URI, used in Graylog email links
 GRAYLOG_HTTP_EXTERNAL_URI=https://logs.domain.cloud/
 
@@ -267,13 +276,15 @@ TZ=America/Los_Angeles
 
 `GRAYLOG_HTTP_EXTERNAL_URI` needs to match the real URL you will open in the browser. If this is wrong, links and some UI behavior get weird fast.
 
+`docker compose` will automatically read a `.env` file from this directory, so keeping these values here stays clean and predictable.
+
 ### `docker-compose.yml`
 
 ```yaml
 services:
 
   mongodb:
-    image: mongo:7.0
+    image: mongo:7.0.37
     container_name: graylog-mongodb
     restart: unless-stopped
     networks:
@@ -283,7 +294,7 @@ services:
       - mongodb-config:/data/configdb
 
   opensearch:
-    image: opensearchproject/opensearch:2.15.0
+    image: opensearchproject/opensearch:2.19.0
     container_name: graylog-opensearch
     restart: unless-stopped
     environment:
@@ -291,9 +302,11 @@ services:
       - node.name=opensearch
       - discovery.type=single-node
       - action.auto_create_index=false
+      - plugins.security.ssl.http.enabled=false
+      - plugins.security.disabled=true
+      - bootstrap.memory_lock=true
       - OPENSEARCH_JAVA_OPTS=-Xms4g -Xmx4g
-      - DISABLE_INSTALL_DEMO_CONFIG=true
-      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
     ulimits:
       memlock:
         soft: -1
@@ -306,27 +319,39 @@ services:
       - /mnt/unas/graylog/opensearch:/usr/share/opensearch/data
     networks:
       - graylog
+    ports:
+      - "9200:9200"
 
   graylog:
-    image: graylog/graylog:7.0
+    image: graylog/graylog:7.1.3
     container_name: graylog
+    hostname: graylog
     restart: unless-stopped
     depends_on:
       - mongodb
       - opensearch
-    env_file: .env
+    entrypoint: /usr/bin/tini -- wait-for-it opensearch:9200 -- /docker-entrypoint.sh
     environment:
+      - GRAYLOG_PROMETHEUS_EXPORTER_ENABLED=true
+      - GRAYLOG_PROMETHEUS_EXPORTER_BIND_ADDRESS=0.0.0.0:9833
+      - TZ=${TZ}
+      - GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}
+      - GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}
+      - GRAYLOG_HTTP_EXTERNAL_URI=${GRAYLOG_HTTP_EXTERNAL_URI}
       - GRAYLOG_ELASTICSEARCH_HOSTS=http://opensearch:9200
-      - GRAYLOG_MONGODB_URI=mongodb://mongodb/graylog
+      - GRAYLOG_MONGODB_URI=mongodb://mongodb:27017/graylog
+      - GRAYLOG_ROOT_TIMEZONE=America/Los_Angeles
+      - GRAYLOG_NODE_ID_FILE=/usr/share/graylog/data/config/node-id
     ports:
       - "9000:9000"       # Web UI
       - "9833:9833"       # Prometheus metrics
       - "5140:5140/tcp"   # Syslog TCP (preserves source IPs through Docker NAT)
       - "5140:5140/udp"   # Syslog UDP
+      - "12201:12201/tcp" # GELF TCP, if you want it
       - "12201:12201/udp" # GELF UDP
+      - "5044:5044/tcp"   # Beats input, optional
     volumes:
-      - /mnt/unas/graylog/journal:/usr/share/graylog/data/journal
-      - /mnt/unas/graylog/data:/usr/share/graylog/data
+      - /mnt/unas/graylog/graylog:/usr/share/graylog/data
     networks:
       - graylog
 
@@ -339,13 +364,20 @@ volumes:
 networks:
   graylog:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.205.0/24
 ```
 
 > **Why MongoDB uses local named volumes and not NFS:** MongoDB's entrypoint tries to `chown` its data directories at startup. NFS blocks this due to root squashing, causing a crash loop. MongoDB only holds Graylog's config metadata, not log data, so local storage is fine and avoids the locking issue entirely.
 
 > **Why TCP for syslog, not UDP?** When Docker NATs traffic through the bridge network, UDP packets lose their source IP. Every log entry looks like it came from the Docker host. Using TCP (`@@` in rsyslog) preserves the real originating source IP in Graylog. This one will drive you crazy if you miss it.
 
-> **OpenSearch version pin:** Do not upgrade past `2.15.0`. Graylog 7.x does not support OpenSearch 2.16+. Pin it explicitly and make sure nothing auto-updates this image.
+> **Version note:** This is much closer to what I actually run now: Graylog `7.1.3`, OpenSearch `2.19.0`, and MongoDB `7.0.37`. I still pin all three on purpose. Graylog's compatibility matrix now supports the OpenSearch `2.19.x` line for Graylog `7.1.x`, but I still do not let these float.
+
+> **Why the `wait-for-it` entrypoint is there:** Graylog likes to come up fast and then complain if OpenSearch is not actually answering yet. Letting `tini` wait for `opensearch:9200` saves you from a noisy cold-start race.
+
+> **About the extra ports:** I expose `9200`, `12201/tcp`, and `5044/tcp` because I like having room for direct checks and future inputs. If you know you will never use them, close them and keep the surface area tighter.
 
 ---
 
@@ -366,6 +398,8 @@ docker compose logs -f graylog
 # You're ready when you see:
 # Graylog server up and running.
 ```
+
+If you prefer managing the same Compose stack from a UI instead of living in the shell, Dockhand is a clean option. I still keep the raw `docker compose` flow in the post because it is easier to troubleshoot, easier to move, and does not depend on one more layer being healthy.
 
 Hit `http://<your-vm-ip>:9000`, then log in with `admin` and the password you hashed in Step 4.
 
