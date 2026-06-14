@@ -105,7 +105,7 @@ I ran this lab blind for longer than I'd like to admit. Back in 2012 I had a VPS
 
 This guide covers every gotcha I hit: the MongoDB NFS crash loop, the Docker NAT source IP problem, the Graylog 7.x input activation trap that makes logs silently disappear, and the Proxmox-specific rsyslog situation nobody documents. Skip to what you need or follow it top to bottom.
 
-> **Before you copy anything:** I left my real lab patterns in here on purpose so the examples stay grounded. If you see `192.168.70.22`, that is my Graylog host. If you see `10.0.0.x`, `logs.lab.yourdomain.com`, or a sample NFS path, swap those for whatever matches your environment.
+> **Before you copy anything:** I left my real lab patterns in here on purpose so the examples stay grounded. If you see `192.168.70.22`, that is my Graylog host. If you see `10.0.0.x`, `logs.domain.cloud`, or a sample NFS path, swap those for whatever matches your environment.
 
 ---
 
@@ -256,7 +256,7 @@ GRAYLOG_PASSWORD_SECRET=REPLACE_WITH_96_CHAR_SECRET
 GRAYLOG_ROOT_PASSWORD_SHA2=REPLACE_WITH_SHA256_HASH
 
 # Must be the publicly reachable URI, used in Graylog email links
-GRAYLOG_HTTP_EXTERNAL_URI=https://logs.lab.yourdomain.com/
+GRAYLOG_HTTP_EXTERNAL_URI=https://logs.domain.cloud/
 
 TZ=America/Los_Angeles
 ```
@@ -583,7 +583,7 @@ Expose the Graylog UI through NPM:
 
 | Field | Value |
 |---|---|
-| Domain | `logs.lab.yourdomain.com` |
+| Domain | `logs.domain.cloud` |
 | Scheme | `http` |
 | Forward Hostname/IP | your Graylog VM IP |
 | Forward Port | `9000` |
