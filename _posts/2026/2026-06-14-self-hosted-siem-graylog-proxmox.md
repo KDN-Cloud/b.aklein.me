@@ -2,8 +2,8 @@
 layout: post
 promote_deployonfriday: true
 title: "I Built a Homelab SIEM with Graylog on Proxmox: Here's Everything I Learned the Hard Way"
-date: 2026-06-13
-lastmod: 2026-06-13
+date: 2026-06-14
+lastmod: 2026-06-14
 author: Anthony Klein
 description: "A full step-by-step guide to running Graylog 7.x + OpenSearch + MongoDB on a Proxmox VM with Docker Compose, NFS-backed storage, fleet-wide rsyslog forwarding via Ansible, GELF container logging, and a reverse proxy entry point. Every gotcha I hit, including source IP loss through Docker NAT, MongoDB NFS crash loops, and the Graylog 7.x Setup mode trap, documented so you don't have to debug them yourself."
 tags:
