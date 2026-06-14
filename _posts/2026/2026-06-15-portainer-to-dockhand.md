@@ -43,8 +43,19 @@ tags:
 - lxc
 - vm
 - authentik
+- authentik-sso
+- authentik-oidc
+- authentik-integration
+- authentik-oauth2
+- authentik-provider
 - oidc
+- oidc-integration
+- oauth2
+- openid-connect
 - sso
+- sso-integration
+- identity-provider
+- idp
 - mfa
 - security
 - hardening
@@ -175,9 +186,33 @@ POST /api/git/webhooks/{repositoryId}
 
 Works with whatever webhook format your Git host sends. I have this wired up to my internal Gitea instance and it just works.
 
+## Authentik SSO Integration
+
+I run Authentik as my SSO/OIDC provider across the homelab, so getting Dockhand wired into it was a priority. The good news is Dockhand treats OIDC as a first-class feature and the setup is straightforward.
+
+On the Authentik side, create a new OAuth2/OpenID Connect provider and application. The important part is the redirect URI — Dockhand expects:
+
+```
+https://your-dockhand-url/api/auth/oidc/callback
+```
+
+Make sure that's added to the allowed redirect URIs in your Authentik application config, otherwise the callback will get rejected.
+
+On the Dockhand side, go to **Settings > Authentication > SSO / OIDC** and hit **Add provider**. You'll fill in four fields:
+
+- **Name** — whatever you want to call it, I just used `authentik`
+- **Issuer URL** — this comes from your Authentik application's OIDC discovery URL, formatted as `https://auth.yourdomain/application/o/<app-slug>/`
+- **Client ID** and **Client Secret** — copy these from the Authentik provider you just created
+
+Enable the provider, save, and then make sure the top-level **Authentication** toggle in Settings is set to **ON** — that's the master switch that enforces login for all access.
+
+> **Note:** Authentication is off by default on a fresh Dockhand install. That's intentional — it lets you get in and configure things before locking yourself out. Just don't forget to flip it on before you expose the UI to anything beyond localhost.
+
+Once it's set up, the Dockhand login page gives you the option to sign in with your OIDC provider or with a local user. I keep a local admin account as a fallback in case Authentik is ever unreachable, which has saved me at least once during an Authentik upgrade.
+
 ## Everything Else
 
-Dockhand also has real-time log streaming, an interactive terminal for shell access into containers, a file browser for getting in and out of container filesystems, and real-time stats on CPU/memory/network/disk I/O. The authentication supports SSO via OIDC (relevant since I run Authentik) plus local users.
+Dockhand also has real-time log streaming, an interactive terminal for shell access into containers, a file browser for getting in and out of container filesystems, and real-time stats on CPU/memory/network/disk I/O.
 
 The base OS layer is built from scratch using Wolfi packages via apko with every package explicitly declared in the Dockerfile. That kind of transparency matters when you're deciding what gets access to your Docker socket.
 
