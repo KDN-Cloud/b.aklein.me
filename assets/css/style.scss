@@ -35,19 +35,19 @@ article h3, h3 {
 
 #main_content th,
 #main_content td {
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
   vertical-align: top;
   padding: 0.7rem 1.1rem 0.7rem 0;
 }
 
-#main_content th:first-child,
-#main_content td:first-child {
+#main_content tr > th:first-child:nth-last-child(2),
+#main_content tr > td:first-child:nth-last-child(2) {
   width: 38%;
 }
 
-#main_content th:last-child,
-#main_content td:last-child {
+#main_content tr > th:last-child:nth-child(2),
+#main_content tr > td:last-child:nth-child(2) {
   width: 62%;
 }
 
