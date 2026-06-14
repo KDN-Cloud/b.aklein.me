@@ -1,10 +1,11 @@
 ---
 layout: post
 promote_deployonfriday: true
-title: "I Built a Homelab SIEM with Graylog on Proxmox — Here's Everything I Learned the Hard Way"
+title: "I Built a Homelab SIEM with Graylog on Proxmox: Here's Everything I Learned the Hard Way"
 date: 2026-06-13
+lastmod: 2026-06-13
 author: Anthony Klein
-description: "A full step-by-step guide to running Graylog 7.x + OpenSearch + MongoDB on a Proxmox VM with Docker Compose, NFS-backed storage, fleet-wide rsyslog forwarding via Ansible, GELF container logging, and a reverse proxy entry point. Every gotcha I hit — source IP loss through Docker NAT, MongoDB NFS crash loops, the Graylog 7.x Setup mode trap — documented so you don't have to debug them yourself."
+description: "A full step-by-step guide to running Graylog 7.x + OpenSearch + MongoDB on a Proxmox VM with Docker Compose, NFS-backed storage, fleet-wide rsyslog forwarding via Ansible, GELF container logging, and a reverse proxy entry point. Every gotcha I hit, including source IP loss through Docker NAT, MongoDB NFS crash loops, and the Graylog 7.x Setup mode trap, documented so you don't have to debug them yourself."
 tags:
   - graylog
   - siem
@@ -98,11 +99,13 @@ tags:
   - security-monitoring
 ---
 
-> **What you're building:** A production-grade centralized log management and SIEM stack running Graylog 7.x + OpenSearch + MongoDB inside Docker on a Proxmox VM, with fleet-wide rsyslog forwarding, GELF container logging, NFS-backed storage, and a reverse proxy entry point. By the end, every node in your lab ships logs to one place — and you'll actually know what's happening across your infrastructure for the first time.
+> **What you're building:** A production-grade centralized log management and SIEM stack running Graylog 7.x + OpenSearch + MongoDB inside Docker on a Proxmox VM, with fleet-wide rsyslog forwarding, GELF container logging, NFS-backed storage, and a reverse proxy entry point. By the end, every node in your lab ships logs to one place, and you'll actually know what's happening across your infrastructure for the first time.
 
-I ran this lab blind for longer than I'd like to admit. Back in 2012 I had a VPS running Splunk Enterprise with a couple forwarders — centralized logging was just part of the setup. When that VPS got sunset, I never replaced it. For years it was just Grafana dashboards for metrics and a lot of SSH-ing into nodes one at a time playing detective when something broke. When I finally stood up Graylog, I had 13 nodes reporting in within a few hours. The first thing I saw was a pfSense firewall block storm that had apparently been running for who knows how long. That alone was worth the setup time.
+I ran this lab blind for longer than I'd like to admit. Back in 2012 I had a VPS running Splunk Enterprise with a couple forwarders. Centralized logging was just part of the setup. When that VPS got sunset, I never replaced it. For years it was just Grafana dashboards for metrics and a lot of SSH-ing into nodes one at a time playing detective when something broke. When I finally stood up Graylog, I had 13 nodes reporting in within a few hours. The first thing I saw was a pfSense firewall block storm that had apparently been running for who knows how long. That alone was worth the setup time.
 
-This guide covers every gotcha I hit — the MongoDB NFS crash loop, the Docker NAT source IP problem, the Graylog 7.x input activation trap that makes logs silently disappear, and the Proxmox-specific rsyslog situation nobody documents. Skip to what you need or follow it top to bottom.
+This guide covers every gotcha I hit: the MongoDB NFS crash loop, the Docker NAT source IP problem, the Graylog 7.x input activation trap that makes logs silently disappear, and the Proxmox-specific rsyslog situation nobody documents. Skip to what you need or follow it top to bottom.
+
+> **Before you copy anything:** I left my real lab patterns in here on purpose so the examples stay grounded. If you see `192.168.70.22`, that is my Graylog host. If you see `10.0.0.x`, `logs.lab.yourdomain.com`, or a sample NFS path, swap those for whatever matches your environment.
 
 ---
 
@@ -145,7 +148,7 @@ This guide covers every gotcha I hit — the MongoDB NFS crash loop, the Docker 
 ```
 
 **Why split storage?**
-OpenSearch and Graylog journal data live on NFS (your NAS) — these are high-volume, and you want them on a large array, not eating your VM disk. MongoDB holds only Graylog's *configuration* (dashboards, inputs, stream rules) — not log data — so it stays on a local named volume. MongoDB has a documented incompatibility with NFS due to file locking; don't fight it.
+OpenSearch and Graylog journal data live on NFS (your NAS). These are high-volume, and you want them on a large array, not eating your VM disk. MongoDB holds only Graylog's *configuration* (dashboards, inputs, stream rules), not log data, so it stays on a local named volume. MongoDB has a documented incompatibility with NFS due to file locking. Don't fight it.
 
 ---
 
@@ -153,14 +156,14 @@ OpenSearch and Graylog journal data live on NFS (your NAS) — these are high-vo
 
 - Proxmox host with a spare VM slot
 - Ubuntu 22.04 LTS ISO
-- A NAS/NFS share (Synology, TrueNAS, QNAP, etc.) — optional but recommended for >1M logs/day
+- A NAS/NFS share (Synology, TrueNAS, QNAP, etc.), optional but recommended for >1M logs/day
 - Docker + Docker Compose v2 installed on the VM
 - Nginx Proxy Manager or similar reverse proxy
 - A wildcard or dedicated SSL cert for your lab domain
 
 ---
 
-## Step 1 — Provision the Proxmox VM
+## Step 1: Provision the Proxmox VM
 
 In the Proxmox UI, create a new VM with these specs:
 
@@ -168,7 +171,7 @@ In the Proxmox UI, create a new VM with these specs:
 |---|---|
 | OS | Ubuntu 22.04 LTS |
 | CPU | 4–8 vCPU |
-| RAM | **16GB minimum** — OpenSearch is memory-hungry |
+| RAM | **16GB minimum** because OpenSearch is memory-hungry |
 | Disk | 60–100GB (local SSD for OS + MongoDB) |
 | Network | VirtIO NIC, assign a static IP |
 
@@ -187,7 +190,7 @@ docker compose version
 
 ---
 
-## Step 2 — Set vm.max_map_count (Required for OpenSearch)
+## Step 2: Set vm.max_map_count (Required for OpenSearch)
 
 OpenSearch will silently fail or crash without this. Set it permanently:
 
@@ -200,11 +203,11 @@ cat /proc/sys/vm/max_map_count
 # Should output: 262144
 ```
 
-> **Production note:** This is a kernel-level setting OpenSearch requires for its memory-mapped files. On a production system this lives in your Ansible `sysctl` role and gets applied at build time — not something you want to discover is missing after the fact.
+> **Production note:** This is a kernel-level setting OpenSearch requires for its memory-mapped files. On a production system this lives in your Ansible `sysctl` role and gets applied at build time. It is not something you want to discover is missing after the fact.
 
 ---
 
-## Step 3 — Mount NFS Storage (Optional but Recommended)
+## Step 3: Mount NFS Storage (Optional but Recommended)
 
 If you have a NAS, mount your Graylog share over NFS before the stack comes up. This offloads all log data off the VM disk entirely.
 
@@ -220,12 +223,14 @@ Create the mount point:
 sudo mkdir -p /mnt/nas/graylog
 ```
 
-Add to `/etc/fstab` — adjust the NFS export path for your NAS:
+Add to `/etc/fstab`. Adjust the NFS export path for your NAS:
 
 ```
 # Graylog NFS share
 10.0.0.x:/path/to/your/nfs/export  /mnt/nas/graylog  nfs  defaults,_netdev,rw,hard,intr,rsize=131072,wsize=131072,timeo=14  0  0
 ```
+
+The server IP and export path here are placeholders. Use the actual NFS server and shared path from your own NAS.
 
 Mount and pre-create subdirectories with correct ownership:
 
@@ -241,19 +246,19 @@ df -h | grep graylog
 ls -la /mnt/nas/graylog/
 ```
 
-> **Why `_netdev`?** Tells systemd to wait for network availability before mounting. Without it, a reboot can race the network coming up and leave the NFS mount broken — which means OpenSearch won't start.
+> **Why `_netdev`?** Tells systemd to wait for network availability before mounting. Without it, a reboot can race the network coming up and leave the NFS mount broken, which means OpenSearch won't start.
 
 ---
 
-## Step 4 — Generate Credentials
+## Step 4: Generate Credentials
 
 Graylog needs two secrets. Generate them before writing your `.env`:
 
 ```bash
-# GRAYLOG_PASSWORD_SECRET — random 96-char secret
+# GRAYLOG_PASSWORD_SECRET: random 96-char secret
 openssl rand -hex 48
 
-# GRAYLOG_ROOT_PASSWORD_SHA2 — SHA256 of your admin password
+# GRAYLOG_ROOT_PASSWORD_SHA2: SHA256 of your admin password
 echo -n 'YourAdminPassword' | sha256sum | awk '{print $1}'
 ```
 
@@ -261,7 +266,7 @@ Keep both values handy for the next step.
 
 ---
 
-## Step 5 — Create the Docker Compose Stack
+## Step 5: Create the Docker Compose Stack
 
 Create your stack directory:
 
@@ -279,11 +284,13 @@ GRAYLOG_PASSWORD_SECRET=REPLACE_WITH_96_CHAR_SECRET
 # Generate: echo -n 'yourpassword' | sha256sum | awk '{print $1}'
 GRAYLOG_ROOT_PASSWORD_SHA2=REPLACE_WITH_SHA256_HASH
 
-# Must be the publicly reachable URI — used in Graylog email links
+# Must be the publicly reachable URI, used in Graylog email links
 GRAYLOG_HTTP_EXTERNAL_URI=https://logs.lab.yourdomain.com/
 
 TZ=America/Los_Angeles
 ```
+
+`GRAYLOG_HTTP_EXTERNAL_URI` needs to match the real URL you will open in the browser. If this is wrong, links and some UI behavior get weird fast.
 
 ### `docker-compose.yml`
 
@@ -320,7 +327,7 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      # NFS mount — OpenSearch data lives here
+      # NFS mount, OpenSearch data lives here
       - /mnt/nas/graylog/opensearch:/usr/share/opensearch/data
     networks:
       - graylog
@@ -359,20 +366,20 @@ networks:
     driver: bridge
 ```
 
-> **Why MongoDB uses local named volumes and not NFS:** MongoDB's entrypoint tries to `chown` its data directories at startup. NFS blocks this due to root squashing, causing a crash loop. MongoDB only holds Graylog's config metadata, not log data — local storage is fine and avoids the locking issue entirely.
+> **Why MongoDB uses local named volumes and not NFS:** MongoDB's entrypoint tries to `chown` its data directories at startup. NFS blocks this due to root squashing, causing a crash loop. MongoDB only holds Graylog's config metadata, not log data, so local storage is fine and avoids the locking issue entirely.
 
-> **Why TCP for syslog, not UDP?** When Docker NATs traffic through the bridge network, UDP packets lose their source IP — every log entry looks like it came from the Docker host. Using TCP (`@@` in rsyslog) preserves the real originating source IP in Graylog. This one will drive you crazy if you miss it.
+> **Why TCP for syslog, not UDP?** When Docker NATs traffic through the bridge network, UDP packets lose their source IP. Every log entry looks like it came from the Docker host. Using TCP (`@@` in rsyslog) preserves the real originating source IP in Graylog. This one will drive you crazy if you miss it.
 
 > **OpenSearch version pin:** Do not upgrade past `2.15.0`. Graylog 7.x does not support OpenSearch 2.16+. Pin it explicitly and make sure nothing auto-updates this image.
 
 ---
 
-## Step 6 — Start the Stack
+## Step 6: Start the Stack
 
 ```bash
 cd /opt/stacks/graylog
 
-# Start — OpenSearch takes 30–60 seconds before Graylog can connect
+# Start. OpenSearch takes 30–60 seconds before Graylog can connect
 docker compose up -d
 
 # Watch OpenSearch first
@@ -385,13 +392,13 @@ docker compose logs -f graylog
 # Graylog server up and running.
 ```
 
-Hit `http://<your-vm-ip>:9000` — login with `admin` / the password you hashed in Step 4.
+Hit `http://<your-vm-ip>:9000`, then log in with `admin` and the password you hashed in Step 4.
 
 ---
 
-## Step 7 — Configure Graylog Inputs
+## Step 7: Configure Graylog Inputs
 
-Graylog doesn't collect *anything* until you configure Inputs. This is the most common "where are my logs?" moment for first-timers — there's no default collection, it just sits there waiting.
+Graylog doesn't collect *anything* until you configure Inputs. This is the most common "where are my logs?" moment for first-timers. There is no default collection. It just sits there waiting.
 
 Navigate to **System → Inputs → Launch new input**.
 
@@ -413,20 +420,46 @@ Navigate to **System → Inputs → Launch new input**.
 | Bind address | 0.0.0.0 |
 | Name | Docker GELF |
 
-> **Graylog 7.x gotcha:** New inputs start in "Setup mode" and won't receive logs until you explicitly activate them. After creating each input: **More actions → Exit Setup mode → Start input**. You'll see the green "Running" indicator when it's actually live. I spent longer than I'd like to admit wondering why nothing was showing up before I found this.
+> **Graylog 7.x gotcha:** New inputs start in "Setup mode" and won't receive logs until you explicitly activate them. After creating each input, go to **More actions → Exit Setup mode → Start input**. You'll see the green "Running" indicator when it's actually live. I spent longer than I'd like to admit wondering why nothing was showing up before I found this.
 
 ---
 
-## Step 8 — Fleet-Wide rsyslog Forwarding via Ansible
+## Step 8: Fleet-Wide rsyslog Forwarding via Ansible
 
 For a fleet of 5+ nodes, configure forwarding with Ansible rather than SSH-ing into each host individually.
+
+On most of my hosts, this is all the file needs to be. Nothing fancy. Just point the node at the Graylog box and ship everything over TCP.
+
+### Generic host config: `/etc/rsyslog.d/99-graylog.conf`
+
+```conf
+*.* @@192.168.70.22:5140;RSYSLOG_SyslogProtocol23Format
+```
+
+In my lab, `192.168.70.22` is the host where the Graylog stack is running in Docker. On another network, change that IP to wherever your Graylog syslog TCP input is listening.
+
+That one line is enough for the majority of Ubuntu, Debian, and similar Linux hosts.
+
+If you are following along in your own lab, this is the one value you are most likely to change in the whole post. Keep the port and format unless you intentionally built your input differently.
+
+If you want the same file created by hand:
+
+```bash
+sudo tee /etc/rsyslog.d/99-graylog.conf > /dev/null << 'EOF'
+*.* @@192.168.70.22:5140;RSYSLOG_SyslogProtocol23Format
+EOF
+
+sudo systemctl restart rsyslog
+```
+
+I stick with TCP here for a reason. It keeps the source IP intact when Graylog is behind Docker, which saves a lot of confusion later.
 
 ### Ansible playbook: `rsyslog-graylog.yml`
 
 ```yaml
 ---
 - name: Configure rsyslog forwarding to Graylog
-  hosts: standard_nodes   # exclude proxmox and pfsense — handled separately below
+  hosts: standard_nodes   # exclude proxmox and pfsense, handled separately below
   become: true
   tasks:
 
@@ -440,8 +473,7 @@ For a fleet of 5+ nodes, configure forwarding with Ansible rather than SSH-ing i
       ansible.builtin.copy:
         dest: /etc/rsyslog.d/99-graylog.conf
         content: |
-          # Forward all logs to Graylog via TCP (preserves source IP through Docker NAT)
-          *.* @@10.0.0.x:5140;RSYSLOG_SyslogProtocol23Format
+          *.* @@192.168.70.22:5140;RSYSLOG_SyslogProtocol23Format
         owner: root
         group: root
         mode: '0644'
@@ -461,24 +493,26 @@ Run it:
 ansible-playbook rsyslog-graylog.yml -i hosts.ini
 
 # Test from any node
-logger -n 10.0.0.x -P 5140 -T --rfc5424 "test from $(hostname)"
+logger -n 192.168.70.22 -P 5140 -T --rfc5424 "test from $(hostname)"
 ```
 
-Check Graylog's **Search** tab — the test message should appear within a few seconds.
+Check Graylog's **Search** tab. The test message should appear within a few seconds.
 
 ---
 
-## Step 9 — Special Cases
+## Step 9: Special Cases
 
 ### Proxmox Host
 
-Proxmox uses `systemd-journald` only — there is no `rsyslog.service` running by default and you can't just `systemctl restart rsyslog`. Install it manually:
+Proxmox uses `systemd-journald` only. There is no `rsyslog.service` running by default, and you cannot just `systemctl restart rsyslog`. Install it manually:
 
 ```bash
 ssh root@your-proxmox-host
 
 apt-get install -y rsyslog
-echo '*.* @@10.0.0.x:5140;RSYSLOG_SyslogProtocol23Format' | tee /etc/rsyslog.d/99-graylog.conf
+cat > /etc/rsyslog.d/99-graylog.conf << 'EOF'
+*.* @@192.168.70.22:5140;RSYSLOG_SyslogProtocol23Format
+EOF
 systemctl enable rsyslog && systemctl start rsyslog
 ```
 
@@ -486,21 +520,23 @@ You'll see Proxmox VM start/stop events, storage operations, cluster activity, a
 
 ### pfSense / OPNsense → Graylog
 
-pfSense has a built-in syslog forwarder — no SSH required.
+pfSense has a built-in syslog forwarder. No SSH required.
+
+Same idea here: use the IP of your Graylog host, not mine.
 
 Navigate to **Status → System Logs → Settings**:
 
 | Field | Value |
 |---|---|
 | Enable Remote Logging | ✅ |
-| Remote Log Servers | `10.0.0.x:5140` |
+| Remote Log Servers | `192.168.70.22:5140` |
 | Remote Syslog Contents | Everything (or select specific facilities) |
 
 Save and apply. Firewall events, DHCP leases, and IDS alerts appear in Graylog immediately.
 
 ### pfSense → Synology NAS (Local Log Archive)
 
-If you want pfSense logs written directly to disk on a Synology NAS — independent of Graylog — you can run rsyslog on the Synology and have pfSense forward there instead (or in addition).
+If you want pfSense logs written directly to disk on a Synology NAS, independent of Graylog, you can run rsyslog on the Synology and have pfSense forward there instead, or in addition.
 
 **On the Synology NAS:**
 
@@ -536,7 +572,7 @@ Navigate to **Status → System Logs → Settings**:
 | Remote Log Servers | `your-synology-ip:514` |
 | Remote Syslog Contents | Firewall Events, General System, DHCP |
 
-> pfSense log visibility via its own UI is already solid — firewall rules, DHCP leases, IDS events are all browsable natively. The Synology archive is purely for retention and offline reference. If you later want to pull these into Graylog, you can add a second remote log server entry in pfSense pointing at your Graylog instance and run both simultaneously — no rsyslog changes needed on the NAS.
+> pfSense log visibility via its own UI is already solid. Firewall rules, DHCP leases, and IDS events are all browsable natively. The Synology archive is purely for retention and offline reference. If you later want to pull these into Graylog, you can add a second remote log server entry in pfSense pointing at your Graylog instance and run both simultaneously. No rsyslog changes are needed on the NAS.
 
 ### Docker Containers (GELF)
 
@@ -553,14 +589,16 @@ services:
         tag: "your-app-name"
 ```
 
-Requires the GELF UDP Input to be running (Step 7). Use meaningful tag values — they become searchable fields in Graylog and make filtering across containers much cleaner.
+Requires the GELF UDP Input to be running (Step 7). Point `gelf-address` at the host where your Graylog stack is listening for GELF, not just the container name. Use meaningful tag values. They become searchable fields in Graylog and make filtering across containers much cleaner.
 
 ### Remote Nodes (VPS over WireGuard)
 
-For VPS nodes with site-to-site WireGuard access back to your lab, rsyslog forwarding works identically — just point at the Graylog VM's lab IP through the tunnel:
+For VPS nodes with site-to-site WireGuard access back to your lab, rsyslog forwarding works identically. Just point at the Graylog VM's lab IP through the tunnel:
 
 ```bash
-echo '*.* @@10.0.0.x:5140;RSYSLOG_SyslogProtocol23Format' | sudo tee /etc/rsyslog.d/99-graylog.conf
+sudo tee /etc/rsyslog.d/99-graylog.conf > /dev/null << 'EOF'
+*.* @@192.168.70.22:5140;RSYSLOG_SyslogProtocol23Format
+EOF
 sudo systemctl restart rsyslog
 ```
 
@@ -568,7 +606,7 @@ No special configuration needed as long as WireGuard is routing your lab subnet 
 
 ---
 
-## Step 10 — Reverse Proxy (Nginx Proxy Manager)
+## Step 10: Reverse Proxy (Nginx Proxy Manager)
 
 Expose the Graylog UI through NPM:
 
@@ -583,10 +621,12 @@ Expose the Graylog UI through NPM:
 | Force SSL | ✅ |
 
 > **Websockets required:** Graylog's UI uses websockets for live log streaming. Don't skip that toggle or the search stream view will silently not work.
+>
+> The domain, upstream IP, and cert here all need to match your own environment. If the browser URL and `GRAYLOG_HTTP_EXTERNAL_URI` disagree, expect strange behavior.
 
 ---
 
-## Step 11 — Index Retention Tuning
+## Step 11: Index Retention Tuning
 
 Out of the box, OpenSearch's default index set is ~4GB per index with no retention limit. Set this before your NAS fills up.
 
@@ -639,7 +679,7 @@ df -h | grep graylog
 | Source | Method | Notes |
 |---|---|---|
 | Standard Linux nodes | rsyslog via Ansible | TCP, RFC5424 format |
-| Proxmox host | rsyslog manual install | journald-only by default, install rsyslog first |
+| Proxmox host | rsyslog manual install | journald only by default, install rsyslog first |
 | pfSense / OPNsense | Native syslog UI | Built-in forwarder, no packages needed |
 | pfSense → Synology NAS | rsyslog on NAS, UDP 514 | Local disk archive, independent of Graylog |
 | Docker containers | GELF logging driver | Per-service, tag everything |
@@ -656,16 +696,16 @@ OpenSearch takes 30–60 seconds to be ready. Watch `docker compose logs -f gray
 Check that the Input is in **Running** state, not Setup mode. In Graylog 7.x, new inputs require an explicit "Exit Setup mode → Start input" step. This is not obvious and not well documented.
 
 **MongoDB crash loop on startup**
-You've pointed MongoDB at an NFS mount. Move it to a local named volume — MongoDB's entrypoint `chown` is blocked by NFS root squashing. See the compose file in Step 5.
+You've pointed MongoDB at an NFS mount. Move it to a local named volume. MongoDB's entrypoint `chown` is blocked by NFS root squashing. See the compose file in Step 5.
 
 **rsyslog not found on Proxmox**
-Proxmox ships without rsyslog — it uses journald only. `apt-get install rsyslog` and then enable it. Don't bother looking for `rsyslog.service` before installing it.
+Proxmox ships without rsyslog. It uses journald only. `apt-get install rsyslog` and then enable it. Don't bother looking for `rsyslog.service` before installing it.
 
 **AppArmor blocking rsyslog journal access**
 If rsyslog starts but produces no output on a specific host, AppArmor may be blocking `/var/log/journal` access. Check `journalctl -xe | grep apparmor`. Fix is either an AppArmor exception for rsyslogd or disabling it on that host if it's not a security boundary you care about.
 
 **Source IPs all showing as the Docker host IP**
-You're using UDP syslog (`@` in rsyslog). Switch to TCP (`@@`). UDP loses source IPs through Docker's bridge NAT — every log entry will look like it came from the same host. TCP fixes this.
+You're using UDP syslog (`@` in rsyslog). Switch to TCP (`@@`). UDP loses source IPs through Docker's bridge NAT, so every log entry will look like it came from the same host. TCP fixes this.
 
 ---
 
@@ -675,9 +715,9 @@ This stack is sized for a lab with 10–15 nodes. For a production deployment:
 
 - **Multi-node OpenSearch cluster** for redundancy and index parallelism
 - **Graylog Operations or Security tier** for built-in alerting, threat intel feeds, and compliance dashboards
-- **mTLS on syslog inputs** — plaintext TCP is fine on an isolated lab VLAN, not fine for anything crossing untrusted networks
-- **Dedicated journal disk** separate from OpenSearch data — high ingestion rates cause I/O contention on shared storage
-- **Back up MongoDB** — it's small, but losing it means rebuilding every dashboard, input, and stream rule from scratch
+- **mTLS on syslog inputs:** plaintext TCP is fine on an isolated lab VLAN, not fine for anything crossing untrusted networks
+- **Dedicated journal disk** separate from OpenSearch data: high ingestion rates cause I/O contention on shared storage
+- **Back up MongoDB:** it's small, but losing it means rebuilding every dashboard, input, and stream rule from scratch
 
 ---
 
@@ -685,12 +725,11 @@ This stack is sized for a lab with 10–15 nodes. For a production deployment:
 
 With centralized logging running, the natural extensions are:
 
-- **Streams** — route logs by source or facility into separate views (firewall, auth, container logs)
-- **Pipelines** — enrich fields in real time (GeoIP on source IPs, severity normalization)
-- **Alerts** — fire on failed SSH attempts, service crashes, or custom patterns
-- **Grafana integration** — Graylog exposes Prometheus metrics on `:9833`; scrape it and overlay log volume on top of your existing dashboards
+- **Streams:** route logs by source or facility into separate views (firewall, auth, container logs)
+- **Pipelines:** enrich fields in real time (GeoIP on source IPs, severity normalization)
+- **Alerts:** fire on failed SSH attempts, service crashes, or custom patterns
+- **Grafana integration:** Graylog exposes Prometheus metrics on `:9833`; scrape it and overlay log volume on top of your existing dashboards
 
 ---
 
-Running this in your lab? Hit me on the socials or drop a comment. If something in this guide is wrong or outdated for your version of Graylog, let me know — I'd rather fix it than leave someone debugging in circles.
-
+Running this in your lab? Hit me on the socials or drop a comment. If something in this guide is wrong or outdated for your version of Graylog, let me know. I'd rather fix it than leave someone debugging in circles.

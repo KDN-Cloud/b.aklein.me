@@ -21,6 +21,18 @@ article h3, h3 {
   text-shadow: 0 0 8px rgba(99, 192, 245, 0.28);
 }
 
+#main_content table {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#main_content th,
+#main_content td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .view .byline-github,
 .view .byline-github:visited {
   display: inline-flex;
@@ -378,6 +390,12 @@ article h3, h3 {
 }
 
 @media (max-width: 760px) {
+  #main_content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .footer-shell {
     gap: 0.7rem;
   }
