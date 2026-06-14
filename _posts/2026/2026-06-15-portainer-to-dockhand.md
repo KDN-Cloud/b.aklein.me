@@ -1,39 +1,75 @@
 ---
 layout: post
 title: "Goodbye Portainer, Hello Dockhand"
-promote_deployonfriday: true
 date: 2025-06-13
 tags:
 - docker
 - docker-compose
 - dockhand
 - portainer
+- portainer-alternative
 - homelab
 - self-hosted
 - infrastructure
 - container-management
+- container-orchestration
 - compose-stacks
 - docker-management
+- docker-ui
+- docker-dashboard
+- docker-stack
+- docker-host
+- docker-socket
 - wireguard
 - site-to-site
+- site-to-site-vpn
 - multi-environment
+- multi-host
 - remote-docker
+- remote-management
 - git-integration
+- gitops
+- webhook
 - gitea
+- github
+- gitlab
 - svelte
 - sveltekit
 - linux
+- ubuntu
+- debian
 - proxmox
+- proxmox-ve
+- lxc
+- vm
 - authentik
 - oidc
 - sso
+- mfa
+- security
+- hardening
 - open-source
 - bsl
+- business-source-license
 - privacy
 - no-telemetry
+- zero-telemetry
 - ops
 - devops
 - sysadmin
+- platform-engineering
+- hawser
+- docker-agent
+- yaml
+- env-file
+- dot-env
+- docker-security
+- port-mapping
+- sqlite
+- lightweight
+- migration
+- lab
+- network
 ---
 
 I ran Portainer for a long time. Longer than I should have, honestly. It was one of those things I kept around out of inertia more than anything else, because at some point the pain of dealing with it became background noise. You get used to it. You stop noticing the sluggishness. You chalk up the weird UI behavior to "just how it is." And then one day something tips the scale and you finally go looking.
@@ -70,7 +106,19 @@ I evaluated a few options. Came close to just writing a custom wrapper around th
 
 It's fast. That was the first thing I noticed. Not "fast for a Docker UI" fast. Just fast. The frontend is built on SvelteKit and it shows. Pages snap. Actions feel instant. Coming from Portainer this was jarring in the best way.
 
-The deployment is refreshingly simple:
+Getting it running takes about 30 seconds. You can either spin it up with a quick `docker run` if you just want to kick the tires:
+
+```bash
+docker run -d \
+  --name dockhand \
+  --restart unless-stopped \
+  -p 3000:3000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v dockhand_data:/app/data \
+  fnsys/dockhand:latest
+```
+
+Or the way I actually run it, with a proper compose file. The official example on [dockhand.pro](https://dockhand.pro/) is intentionally minimal to get you up fast, but for anything beyond a quick test you want more control than that. Here's my setup:
 
 ```yaml
 services:
@@ -81,7 +129,7 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "8080:8080"
+      - "8080:3000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./data:/app/data
@@ -91,7 +139,9 @@ services:
       - TZ=America/Los_Angeles
 ```
 
-That's it. No separate database container required by default, no multi-container setup to babysit on day one. Just up and running.
+> **Note:** Dockhand listens internally on port `3000`. The host-side port (`8080` above) is whatever you want to map it to on your system. I had other services already occupying `3000` on this host, so I mapped it to `8080` instead. If `3000` is free on your end, `"3000:3000"` works fine and matches the quick-start docs.
+
+A few other things worth noting here compared to the bare minimum version. The socket is mounted read-only (`:ro`) which is a small but meaningful hardening step — Dockhand doesn't need write access to the socket itself. `no-new-privileges:true` prevents any process inside the container from escalating privileges via `setuid` or `setgid` binaries. Credentials come from a `.env` file rather than being hardcoded, and `TZ` is set so timestamps in the UI actually reflect your local time instead of UTC. No separate database container required by default, no multi-container setup to babysit on day one. Just up and running.
 
 ## Multi-Environment Support Done Right
 
