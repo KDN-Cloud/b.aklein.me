@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 1460" role="img" aria-labelledby="title desc">
   <title id="title">Graylog architecture overview</title>
-  <desc id="desc">Architecture overview diagram for a homelab Graylog stack showing local lab nodes and Debian or Ubuntu VPS nodes sending logs to Graylog, including rsyslog transport over a WireGuard tunnel, OpenSearch storing indexed log data on NFS, MongoDB keeping Graylog configuration locally, a reverse proxy handling the public entrypoint, and a separate pfSense to Synology archive path.</desc>
+  <desc id="desc">Architecture overview diagram for a homelab Graylog stack showing local lab nodes and Debian or Ubuntu VPS nodes sending logs to Graylog, including rsyslog transport over a WireGuard tunnel, OpenSearch storing indexed log data on a UniFi UNAS Pro over NFS, MongoDB keeping Graylog configuration locally, a reverse proxy handling the public entrypoint, and a separate pfSense to Synology archive path.</desc>
 
   <defs>
     <style>
@@ -63,7 +63,7 @@
   <text class="small" x="510" y="818">OpenSearch</text>
   <line class="flow" x1="650" y1="804" x2="728" y2="804"/>
   <text class="small" x="752" y="810">stores and indexes log data</text>
-  <text class="small" x="752" y="848">data/journal → NFS (NAS)</text>
+  <text class="small" x="752" y="848">data/journal → UniFi UNAS Pro (NFS)</text>
 
   <rect class="frame" x="496" y="906" width="154" height="102"/>
   <text class="small" x="520" y="968">MongoDB</text>

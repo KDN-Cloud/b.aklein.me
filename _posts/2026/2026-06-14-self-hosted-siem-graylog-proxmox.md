@@ -114,14 +114,14 @@ This guide covers every gotcha I hit: the MongoDB NFS crash loop, the Docker NAT
 <figure class="diagram-figure">
   <img
     src="/assets/images/graylog-architecture-overview.svg"
-    alt="Architecture overview showing the Graylog VM, OpenSearch, MongoDB, reverse proxy, and pfSense to Synology log archive flow."
+    alt="Architecture overview showing the Graylog VM, OpenSearch, MongoDB, reverse proxy, UniFi UNAS Pro NFS-backed Graylog storage, and the separate pfSense archive path."
     class="diagram-image">
 </figure>
 
 My Debian and Ubuntu VPS nodes follow the same `rsyslog` pattern as the rest of the fleet. Boxes like `nexus-node` and `herald` forward `*.* @@192.168.70.22:5140;RSYSLOG_SyslogProtocol23Format` over a site-to-site WireGuard tunnel so Graylog can stay internal-only and still ingest remote system logs cleanly.
 
 **Why split storage?**
-OpenSearch and Graylog journal data live on NFS (your NAS). These are high-volume, and you want them on a large array, not eating your VM disk. MongoDB holds only Graylog's *configuration* (dashboards, inputs, stream rules), not log data, so it stays on a local named volume. MongoDB has a documented incompatibility with NFS due to file locking. Don't fight it.
+OpenSearch and Graylog journal data live on an NFS share from my UniFi UNAS Pro. These are high-volume paths, and I would rather let that storage array absorb the churn than burn up VM disk on the Graylog box. MongoDB holds only Graylog's *configuration* (dashboards, inputs, stream rules), not log data, so it stays on a local named volume. MongoDB has a documented incompatibility with NFS due to file locking. Don't fight it.
 
 ---
 
@@ -129,7 +129,7 @@ OpenSearch and Graylog journal data live on NFS (your NAS). These are high-volum
 
 - Proxmox host with a spare VM slot
 - Ubuntu 22.04 LTS ISO
-- A NAS/NFS share (Synology, TrueNAS, QNAP, etc.), optional but recommended for >1M logs/day
+- An NFS-capable storage target (UniFi UNAS Pro, TrueNAS, Synology, QNAP, etc.), optional but recommended for >1M logs/day
 - Docker + Docker Compose v2 installed on the VM
 - Nginx Proxy Manager or similar reverse proxy
 - A wildcard or dedicated SSL cert for your lab domain
@@ -182,7 +182,7 @@ cat /proc/sys/vm/max_map_count
 
 ## Step 3: Mount NFS Storage (Optional but Recommended)
 
-If you have a NAS, mount your Graylog share over NFS before the stack comes up. This offloads all log data off the VM disk entirely.
+If you have an NFS-capable storage box, mount your Graylog share before the stack comes up. This pushes the heavy log data off the VM disk entirely. In my case, Graylog lands on a UniFi UNAS Pro export mounted locally at `/mnt/unas/graylog`.
 
 Install NFS client:
 
@@ -193,17 +193,17 @@ sudo apt install -y nfs-common
 Create the mount point:
 
 ```bash
-sudo mkdir -p /mnt/nas/graylog
+sudo mkdir -p /mnt/unas/graylog
 ```
 
-Add to `/etc/fstab`. Adjust the NFS export path for your NAS:
+Add to `/etc/fstab`. Adjust the NFS export path for your own storage target:
 
 ```
 # Graylog NFS share
-10.0.0.x:/path/to/your/nfs/export  /mnt/nas/graylog  nfs  defaults,_netdev,rw,hard,intr,rsize=131072,wsize=131072,timeo=14  0  0
+10.0.0.x:/path/to/your/nfs/export  /mnt/unas/graylog  nfs  defaults,_netdev,rw,hard,intr,rsize=131072,wsize=131072,timeo=14  0  0
 ```
 
-The server IP and export path here are placeholders. Use the actual NFS server and shared path from your own NAS.
+The server IP and export path here are placeholders. In my lab the actual export comes from a UniFi UNAS Pro, but your NFS server and shared path will match whatever storage platform you run.
 
 Mount and pre-create subdirectories with correct ownership:
 
@@ -211,15 +211,17 @@ Mount and pre-create subdirectories with correct ownership:
 sudo mount -a
 
 # OpenSearch runs as UID 1000
-sudo mkdir -p /mnt/nas/graylog/{opensearch,journal,data}
-sudo chown -R 1000:1000 /mnt/nas/graylog/
+sudo mkdir -p /mnt/unas/graylog/{opensearch,journal,data}
+sudo chown -R 1000:1000 /mnt/unas/graylog/
 
 # Verify
 df -h | grep graylog
-ls -la /mnt/nas/graylog/
+ls -la /mnt/unas/graylog/
 ```
 
 > **Why `_netdev`?** Tells systemd to wait for network availability before mounting. Without it, a reboot can race the network coming up and leave the NFS mount broken, which means OpenSearch won't start.
+
+> **Reality check:** If you are following my exact pattern, `df -h` will show Graylog mounted from a UniFi UNAS Pro share into `/mnt/unas/graylog`. If your mount point or export path differs, that is expected. The important part is that OpenSearch and the Graylog journal land on healthy NFS storage while MongoDB stays local.
 
 ---
 
@@ -301,7 +303,7 @@ services:
         hard: 65536
     volumes:
       # NFS mount, OpenSearch data lives here
-      - /mnt/nas/graylog/opensearch:/usr/share/opensearch/data
+      - /mnt/unas/graylog/opensearch:/usr/share/opensearch/data
     networks:
       - graylog
 
@@ -323,8 +325,8 @@ services:
       - "5140:5140/udp"   # Syslog UDP
       - "12201:12201/udp" # GELF UDP
     volumes:
-      - /mnt/nas/graylog/journal:/usr/share/graylog/data/journal
-      - /mnt/nas/graylog/data:/usr/share/graylog/data
+      - /mnt/unas/graylog/journal:/usr/share/graylog/data/journal
+      - /mnt/unas/graylog/data:/usr/share/graylog/data
     networks:
       - graylog
 
