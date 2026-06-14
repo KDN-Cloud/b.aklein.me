@@ -615,19 +615,7 @@ No special configuration needed as long as WireGuard is routing your lab subnet 
 
 ---
 
-## Step 10: Watch the Stack in Grafana
-
-Once Graylog is actually taking traffic, I like to keep one Grafana view up that tells me whether the stack is calm or about to get weird. Throughput, journal pressure, JVM behavior, process memory, and OpenSearch writes tell the story fast without digging through five different menus.
-
-![Grafana dashboard showing Graylog Prometheus metrics across throughput, journal, JVM, process, and OpenSearch panels](/Users/anthonyklein/Projects/git/github/org/kdnc/b.aklein.me/assets/images/graylog-grafana-overview.png)
-
-*Example Grafana view built from Graylog's built-in Prometheus exporter, tracking message throughput, journal usage, JVM behavior, process memory, and OpenSearch output health.*
-
-Graylog documents the built-in Prometheus exporter here: [Operational Metrics](https://go2docs.graylog.org/current/interacting_with_your_log_data/metrics.html). That is the real source I would trust first. If you want a public Grafana starting point, the community dashboard [9122 - Graylog](https://grafana.com/grafana/dashboards/13569-9122-graylog/) is worth looking at for ideas, but I would treat it as inspiration and not a hard dependency.
-
----
-
-## Step 11: Reverse Proxy (Nginx Proxy Manager)
+## Step 10: Reverse Proxy (Nginx Proxy Manager)
 
 Expose the Graylog UI through NPM:
 
@@ -647,7 +635,7 @@ Expose the Graylog UI through NPM:
 
 ---
 
-## Step 12: Index Retention Tuning
+## Step 11: Index Retention Tuning
 
 Out of the box, OpenSearch's default index set is ~4GB per index with no retention limit. Set this before your NAS fills up.
 
@@ -660,6 +648,16 @@ Out of the box, OpenSearch's default index set is ~4GB per index with no retenti
 | ~200GB | 50 |
 
 Set **Rotation strategy** to `Index Size` at `4GB` and **Retention strategy** to `Delete` with your max index count. Graylog handles the rest automatically.
+
+### Optional: Grafana Visibility
+
+Once Graylog is actually taking traffic, I like to keep one Grafana view up that tells me whether the stack is calm or about to get weird. Throughput, journal pressure, JVM behavior, process memory, and OpenSearch writes tell the story fast without digging through five different menus.
+
+![Grafana dashboard showing Graylog Prometheus metrics across throughput, journal, JVM, process, and OpenSearch panels](/assets/images/graylog-grafana-overview.png)
+
+*Example Grafana view built from Graylog's built-in Prometheus exporter, tracking message throughput, journal usage, JVM behavior, and OpenSearch output health.*
+
+Graylog documents the built-in Prometheus exporter here: [Operational Metrics](https://go2docs.graylog.org/current/interacting_with_your_log_data/metrics.html). That is the real source I would trust first. If you want a public Grafana starting point, the community dashboard [9122 - Graylog](https://grafana.com/grafana/dashboards/13569-9122-graylog/) is worth looking at for ideas, but I would treat it as inspiration and not a hard dependency.
 
 ---
 
