@@ -2,7 +2,7 @@
 layout: default
 title: AK // SYS LOG
 author: Anthony Klein
-description: Technical documentation, architecture blueprints, and operational deep-dives into systems administration, IT infrastructure, SRE, and self-hosted platforms.
+description: Systems notes, architecture blueprints, and operational runbooks across systems administration, IT infrastructure, SRE, and self-hosted platforms.
 keywords:
   - systems administration
   - IT infrastructure
@@ -35,9 +35,9 @@ keywords:
 
 ### [ SYSTEM_STATUS: ONLINE ]
 
-**Welcome** to my centralized technical repository. This space serves as a living document for my work in systems administration, network architecture, and automation engineering.
+**Welcome** to my centralized systems log. This space serves as a working record of my work in systems administration, network architecture, and automation engineering.
 
-Whether it's deep-dives into Proxmox virtualization, CrowdSec implementations, or general infrastructure logic, this log is where I archive proven workflows and technical observations.
+Whether it's Proxmox virtualization, CrowdSec implementations, or general infrastructure logic, this log is where I document proven workflows, runbook patterns, and lessons pulled from live systems.
 
 For consulting and professional engagements → [aklein.pro](https://aklein.pro)
 

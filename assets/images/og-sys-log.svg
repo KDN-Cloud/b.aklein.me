@@ -12,8 +12,8 @@
     <text x="110" y="178" fill="#4dc947" font-size="56" font-weight="500" letter-spacing="4">AK // SYS LOG</text>
     <text x="112" y="276" fill="#e9f7e8" font-size="66" font-weight="500" letter-spacing="-2">Anthony Klein</text>
     <text x="112" y="358" fill="rgba(233,247,232,0.78)" font-size="28" font-weight="400" letter-spacing="0.15">
-      <tspan x="112" dy="0">Technical documentation, infrastructure, systems administration,</tspan>
-      <tspan x="112" dy="38">and operational deep-dives.</tspan>
+      <tspan x="112" dy="0">Systems notes, infrastructure, architecture blueprints,</tspan>
+      <tspan x="112" dy="38">and operational runbooks.</tspan>
     </text>
     <text x="112" y="474" fill="rgba(77,201,71,0.88)" font-size="24" font-weight="400" letter-spacing="1.6">SYSTEMS · INFRASTRUCTURE · AUTOMATION · SRE</text>
   </g>

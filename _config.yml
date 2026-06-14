@@ -13,7 +13,7 @@ location:
   locality: "Las Vegas"
   region: "Nevada"
   country: "US"
-tagline: "Technical documentation across IT infrastructure, systems administration, SRE, automation, and self-hosted architecture."
+tagline: "Systems notes across IT infrastructure, SRE, automation, and self-hosted architecture."
 logo: /assets/favicon.svg
 image: /assets/images/og-sys-log.png
 keywords:
@@ -49,9 +49,9 @@ keywords:
   - open source
 
 description: >
-  A technical blog covering systems administration, IT infrastructure, site
-  reliability engineering, homelab architecture, self-hosting, automation,
-  and practical security workflows.
+  A systems and infrastructure log covering architecture blueprints,
+  operational runbooks, site reliability engineering, self-hosting,
+  automation, and practical security workflows.
 
 url: https://b.aklein.me
 repository: "KDN-Cloud/b.aklein.me"
