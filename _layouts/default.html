@@ -105,6 +105,10 @@
       };
 
       blocks.forEach((block) => {
+        if (block.classList.contains('ascii-diagram')) {
+          return;
+        }
+
         if (block.parentElement && block.parentElement.classList.contains('code-block-shell')) {
           return;
         }

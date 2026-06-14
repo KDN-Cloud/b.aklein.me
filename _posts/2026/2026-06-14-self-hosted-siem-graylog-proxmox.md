@@ -111,7 +111,8 @@ This guide covers every gotcha I hit: the MongoDB NFS crash loop, the Docker NAT
 
 ## Architecture Overview
 
-```
+<div class="ascii-diagram-shell">
+<pre class="ascii-diagram"><code>
 ┌─────────────────────────────────────────────────────────────┐
 │                        Lab Fleet                            │
 │   linux-node-1 · linux-node-2 · linux-node-3 · pfSense      │
@@ -145,7 +146,8 @@ This guide covers every gotcha I hit: the MongoDB NFS crash loop, the Docker NAT
                     │  pfSense → Synology   │  separate path
                     │  NAS log archive      │  (no Graylog needed)
                     └───────────────────────┘
-```
+</code></pre>
+</div>
 
 **Why split storage?**
 OpenSearch and Graylog journal data live on NFS (your NAS). These are high-volume, and you want them on a large array, not eating your VM disk. MongoDB holds only Graylog's *configuration* (dashboards, inputs, stream rules), not log data, so it stays on a local named volume. MongoDB has a documented incompatibility with NFS due to file locking. Don't fight it.
