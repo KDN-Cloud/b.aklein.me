@@ -2,7 +2,7 @@
 layout: post
 title: "Dock and Roll: Why I Ditched Portainer"
 promote_deployonfriday: true
-date: 2025-06-15
+date: 2026-06-15
 tags:
 - docker
 - docker-compose
