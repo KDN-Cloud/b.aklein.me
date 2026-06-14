@@ -72,9 +72,9 @@
   <line class="flow" x1="573" y1="1208" x2="573" y2="1296"/>
   <line class="flow" x1="573" y1="1260" x2="573" y2="1296" marker-end="url(#arrow)"/>
 
-  <rect class="frame" x="442" y="1296" width="428" height="108"/>
+  <rect class="frame" x="442" y="1296" width="500" height="108"/>
   <text class="small" x="478" y="1356">pfSense → Synology NAS log archive</text>
-  <line class="flow" x1="870" y1="1350" x2="926" y2="1350"/>
-  <text class="small" x="950" y="1356">local firewall retention</text>
-  <text class="small" x="950" y="1392">separate path, no Graylog needed</text>
+  <line class="flow" x1="942" y1="1350" x2="1002" y2="1350"/>
+  <text class="small" x="1028" y="1356">local firewall retention</text>
+  <text class="small" x="1028" y="1392">separate path, no Graylog needed</text>
 </svg>
