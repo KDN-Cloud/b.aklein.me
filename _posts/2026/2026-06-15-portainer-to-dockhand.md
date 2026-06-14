@@ -1,6 +1,7 @@
 ---
 layout: post
-title: "Goodbye Portainer, Hello Dockhand"
+title: "Dock and Roll: Why I Ditched Portainer"
+promote_deployonfriday: true
 date: 2025-06-15
 tags:
 - docker
