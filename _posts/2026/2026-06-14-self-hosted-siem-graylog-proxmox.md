@@ -111,43 +111,12 @@ This guide covers every gotcha I hit: the MongoDB NFS crash loop, the Docker NAT
 
 ## Architecture Overview
 
-<div class="ascii-diagram-shell">
-<pre class="ascii-diagram"><code>
-┌─────────────────────────────────────────────────────────────┐
-│                        Lab Fleet                            │
-│   linux-node-1 · linux-node-2 · linux-node-3 · pfSense      │
-│           rsyslog TCP → port 5140 (Syslog Input)            │
-│           Docker GELF UDP → port 12201 (GELF Input)         │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-                    ┌───────▼────────┐
-                    │  Graylog VM    │  Ubuntu 22.04 on Proxmox
-                    │  10.0.0.x      │  16GB RAM / 8 vCPU
-                    │                │
-                    │  ┌──────────┐  │
-                    │  │ Graylog  │  │  :9000 (UI)
-                    │  │          │  │  :9833 (Prometheus)
-                    │  └────┬─────┘  │
-                    │       │        │
-                    │  ┌────▼─────┐  │
-                    │  │OpenSearch│  │  ← data/journal → NFS (NAS)
-                    │  └──────────┘  │
-                    │  ┌──────────┐  │
-                    │  │ MongoDB  │  │  ← local named volume
-                    │  └──────────┘  │
-                    └───────┬────────┘
-                            │
-                    ┌───────▼────────┐
-                    │  Reverse Proxy │
-                    │  logs.lab.yourdomain.com
-                    └────────────────┘
-
-                    ┌───────────────────────┐
-                    │  pfSense → Synology   │  separate path
-                    │  NAS log archive      │  (no Graylog needed)
-                    └───────────────────────┘
-</code></pre>
-</div>
+<figure class="diagram-figure">
+  <img
+    src="/assets/images/graylog-architecture-overview.svg"
+    alt="Architecture overview showing the Graylog VM, OpenSearch, MongoDB, reverse proxy, and pfSense to Synology log archive flow."
+    class="diagram-image">
+</figure>
 
 **Why split storage?**
 OpenSearch and Graylog journal data live on NFS (your NAS). These are high-volume, and you want them on a large array, not eating your VM disk. MongoDB holds only Graylog's *configuration* (dashboards, inputs, stream rules), not log data, so it stays on a local named volume. MongoDB has a documented incompatibility with NFS due to file locking. Don't fight it.
