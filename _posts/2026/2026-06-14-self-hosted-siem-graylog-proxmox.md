@@ -426,7 +426,7 @@ Navigate to **System → Inputs → Launch new input**.
 
 ## Step 8: Fleet-Wide rsyslog Forwarding via Ansible
 
-For a fleet of 5+ nodes, configure forwarding with Ansible rather than SSH-ing into each host individually.
+For a fleet of 10+ nodes, configure forwarding with Ansible rather than SSH-ing into each host individually.
 
 On most of my hosts, this is all the file needs to be. Nothing fancy. Just point the node at the Graylog box and ship everything over TCP.
 
