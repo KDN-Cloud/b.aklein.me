@@ -25,12 +25,30 @@ article h3, h3 {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+#main_content thead th {
+  text-align: left;
 }
 
 #main_content th,
 #main_content td {
   overflow-wrap: anywhere;
   word-break: break-word;
+  vertical-align: top;
+  padding: 0.7rem 1.1rem 0.7rem 0;
+}
+
+#main_content th:first-child,
+#main_content td:first-child {
+  width: 38%;
+}
+
+#main_content th:last-child,
+#main_content td:last-child {
+  width: 62%;
 }
 
 .view .byline-github,
