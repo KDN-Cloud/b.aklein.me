@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1460" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 1460" role="img" aria-labelledby="title desc">
   <title id="title">Graylog architecture overview</title>
-  <desc id="desc">Architecture overview diagram for a homelab Graylog stack showing lab nodes sending logs to Graylog on Proxmox, OpenSearch storing indexed log data on NFS, MongoDB keeping Graylog configuration locally, a reverse proxy handling the public entrypoint, and a separate pfSense to Synology archive path.</desc>
+  <desc id="desc">Architecture overview diagram for a homelab Graylog stack showing local lab nodes and Debian or Ubuntu VPS nodes sending logs to Graylog, including rsyslog transport over a WireGuard tunnel, OpenSearch storing indexed log data on NFS, MongoDB keeping Graylog configuration locally, a reverse proxy handling the public entrypoint, and a separate pfSense to Synology archive path.</desc>
 
   <defs>
     <style>
@@ -15,18 +15,32 @@
     </marker>
   </defs>
 
-  <rect width="1600" height="1460" fill="#050705"/>
+  <rect width="1760" height="1460" fill="#050705"/>
 
-  <rect class="frame" x="44" y="42" width="1020" height="198"/>
+  <rect class="frame" x="44" y="42" width="1020" height="214"/>
   <text class="label" x="554" y="92">Lab Fleet</text>
   <text class="label" x="94" y="142">linux-node-1 · linux-node-2 · linux-node-3 · pfSense</text>
   <text class="label" x="220" y="188">rsyslog TCP → port 5140 (Syslog Input)</text>
-  <text class="label" x="220" y="232">Docker GELF UDP → port 12201 (GELF Input)</text>
+  <text class="label" x="220" y="226">Docker GELF UDP → port 12201 (GELF Input)</text>
 
-  <line class="flow" x1="554" y1="240" x2="554" y2="400"/>
+  <rect class="frame" x="1100" y="42" width="620" height="302"/>
+  <text class="label" x="1284" y="92">Debian / Ubuntu VPS</text>
+  <text class="label" x="1144" y="146">nexus-node · herald · remote edge nodes</text>
+  <text class="label" x="1144" y="188">*.* @@192.168.70.22:5140</text>
+  <text class="label" x="1144" y="230">;RSYSLOG_SyslogProtocol23Format</text>
+  <text class="label" x="1144" y="272">same rsyslog flow over WireGuard tunnel</text>
+  <text class="label" x="1144" y="314">to internal-only Graylog inside the lab</text>
+
+  <line class="flow" x1="554" y1="256" x2="554" y2="400"/>
   <line class="flow" x1="554" y1="360" x2="554" y2="400" marker-end="url(#arrow)"/>
-  <line class="flow" x1="590" y1="350" x2="640" y2="350"/>
-  <text class="small" x="656" y="356">all nodes ship logs inward</text>
+  <line class="flow" x1="590" y1="334" x2="636" y2="334"/>
+  <text class="small" x="654" y="340">all nodes ship logs inward</text>
+
+  <line class="flow" x1="1100" y1="344" x2="1100" y2="360"/>
+  <line class="flow" x1="1100" y1="360" x2="780" y2="360"/>
+  <line class="flow" x1="844" y1="360" x2="780" y2="360" marker-end="url(#arrow)"/>
+  <line class="flow" x1="1100" y1="384" x2="1168" y2="384"/>
+  <text class="small" x="1190" y="390">WireGuard tunnel into lab</text>
 
   <rect class="frame" x="442" y="400" width="262" height="520"/>
   <text class="label" x="494" y="456">Graylog VM</text>

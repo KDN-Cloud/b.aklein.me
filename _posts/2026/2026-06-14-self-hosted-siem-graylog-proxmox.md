@@ -118,6 +118,8 @@ This guide covers every gotcha I hit: the MongoDB NFS crash loop, the Docker NAT
     class="diagram-image">
 </figure>
 
+My Debian and Ubuntu VPS nodes follow the same `rsyslog` pattern as the rest of the fleet. Boxes like `nexus-node` and `herald` forward `*.* @@192.168.70.22:5140;RSYSLOG_SyslogProtocol23Format` over a site-to-site WireGuard tunnel so Graylog can stay internal-only and still ingest remote system logs cleanly.
+
 **Why split storage?**
 OpenSearch and Graylog journal data live on NFS (your NAS). These are high-volume, and you want them on a large array, not eating your VM disk. MongoDB holds only Graylog's *configuration* (dashboards, inputs, stream rules), not log data, so it stays on a local named volume. MongoDB has a documented incompatibility with NFS due to file locking. Don't fight it.
 
