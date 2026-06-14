@@ -64,7 +64,7 @@
 
   <rect class="frame" x="442" y="1090" width="262" height="118"/>
   <text class="label" x="482" y="1150">Reverse Proxy</text>
-  <text class="small" x="482" y="1192">logs.domain.com</text>
+  <text class="small" x="482" y="1192">logs.domain.cloud</text>
   <line class="flow" x1="704" y1="1144" x2="760" y2="1144"/>
   <text class="small" x="784" y="1150">TLS termination + external entrypoint</text>
   <text class="small" x="784" y="1188">public URL for the Graylog UI</text>
