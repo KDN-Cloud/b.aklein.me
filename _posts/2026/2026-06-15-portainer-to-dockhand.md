@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Goodbye Portainer, Hello Dockhand"
-date: 2025-06-13
+date: 2025-06-15
 tags:
 - docker
 - docker-compose
