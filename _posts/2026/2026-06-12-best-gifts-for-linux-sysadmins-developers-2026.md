@@ -18,6 +18,13 @@ tags:
   - devops gifts
   - sre gifts
   - linux humor
+  - it gifts
+  - gifts for sysadmins
+  - gifts for developers
+  - gifts for sre
+  - programmer merch
+  - linux merch
+  - funny sysadmin gifts
 description: "Looking for the best gifts for Linux sysadmins, developers, and DevOps engineers in 2026? Here are the funniest, most relatable pieces of developer merch that actually get the joke."
 ---
 

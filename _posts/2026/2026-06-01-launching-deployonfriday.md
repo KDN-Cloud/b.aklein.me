@@ -15,6 +15,13 @@ tags:
   - personal-brand
   - print-on-demand
   - engineering-humor
+  - developer-merch
+  - sysadmin-humor
+  - linux-humor
+  - etsy-store
+  - terminal-aesthetic
+  - programmer-humor
+  - tech-shirt-brand
 ---
 
 I've been in infrastructure long enough to have opinions about Friday deployments. Strong ones. So when the idea for a tech humor merch store came up, the name wrote itself: **DeployOnFriday**.

@@ -18,6 +18,13 @@ tags:
   - funny tech shirt
   - it humor
   - computer science shirt
+  - sysadmin merch
+  - developer apparel
+  - coder merch
+  - programming humor
+  - software engineer shirt
+  - dev humor
+  - terminal humor
 description: "Most developer merch is generic. These funny developer t-shirts are written by an actual engineer with 20+ years in the trenches — and they actually get the joke."
 ---
 

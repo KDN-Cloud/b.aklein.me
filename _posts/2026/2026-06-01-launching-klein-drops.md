@@ -14,6 +14,13 @@ tags:
   - personal-brand
   - print-on-demand
   - cosmic-aesthetic
+  - dj-merch
+  - music-merch
+  - ufo-merch
+  - alien-merch
+  - spiritual-merch
+  - cosmic-merch
+  - artist-brand
 ---
 
 Not everything I build involves Ansible or a terminal window.

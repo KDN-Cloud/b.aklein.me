@@ -15,6 +15,13 @@ tags:
   - website-delivery
   - linux-infrastructure
   - site-reliability-engineering
+  - sre-consulting
+  - infrastructure-consulting
+  - security-automation
+  - observability-consulting
+  - cloud-consulting
+  - linux-consulting
+  - nevada-consulting
 ---
 
 I've been doing this work for a long time — long enough that "freelancing on the side" stopped being an accurate description of what was actually happening. Infrastructure audits, security tooling, CRM deployments, website builds for personal, brand, and business websites — the work was real, the clients were real, and at some point it made sense to make the business real too.

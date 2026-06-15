@@ -20,6 +20,13 @@ tags:
   - vultr
   - infrastructure-as-code
   - crm-hosting
+  - vps-hardening
+  - ubuntu-vps
+  - cloudflare-dns
+  - crowdsec-bouncer
+  - self-hosted-crm
+  - twentycrm
+  - small-business-infrastructure
 ---
 
 My wife needed a CRM for her business. She didn't ask for anything elaborate — just
