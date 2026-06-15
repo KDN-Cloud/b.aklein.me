@@ -2,7 +2,7 @@
 layout: post
 toc: true
 promote_deployonfriday: true
-title: "I Built a Homelab SIEM with Graylog on Proxmox: Here's Everything I Learned the Hard Way"
+title: "How I Built a Homelab SIEM with Graylog on Proxmox"
 date: 2026-06-14
 lastmod: 2026-06-14
 author: Anthony Klein
