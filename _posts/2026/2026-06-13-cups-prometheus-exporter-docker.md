@@ -1,5 +1,6 @@
 ---
 layout: post
+toc: true
 #comments: false
 promote_deployonfriday: true
 title: "Monitoring CUPS with Prometheus: I Wrote the Exporter That Didn't Exist"

@@ -1,5 +1,6 @@
 ---
 layout: post
+toc: true
 title: "Dock and Roll: Why I Ditched Portainer"
 promote_deployonfriday: true
 date: 2026-06-15

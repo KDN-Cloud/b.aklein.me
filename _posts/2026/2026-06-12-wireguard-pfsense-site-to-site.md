@@ -1,5 +1,6 @@
 ---
 title: 'WireGuard on pfSense: Remote Access, VLANs, and Site-to-Site to Vultr'
+toc: true
 promote_deployonfriday: true
 promote_affiliate: true
 date: 2026-06-12

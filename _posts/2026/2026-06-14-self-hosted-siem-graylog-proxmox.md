@@ -1,5 +1,6 @@
 ---
 layout: post
+toc: true
 promote_deployonfriday: true
 title: "I Built a Homelab SIEM with Graylog on Proxmox: Here's Everything I Learned the Hard Way"
 date: 2026-06-14
@@ -395,7 +396,7 @@ networks:
 
 > **Why the `wait-for-it` entrypoint is there:** Graylog likes to come up fast and then complain if OpenSearch is not actually answering yet. Letting `tini` wait for `opensearch:9200` saves you from a noisy cold-start race.
 
-> **About the extra ports:** I expose `9200`, `12201/tcp`, and `5044/tcp` because I like having room for direct checks and future inputs. If you know you will never use them, close them and keep the surface area tighter.
+> **About the extra ports:** I expose `9200`, `12201/tcp`, and `5044/tcp` inside the lab so I have room for direct checks and future inputs over trusted local networks and WireGuard-connected paths. These are not meant to be public internet-facing ports. If you know you will never use them, close them and keep the surface area tighter.
 
 ---
 

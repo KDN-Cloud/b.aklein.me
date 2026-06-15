@@ -1,5 +1,6 @@
 ---
 title: 'Postfix with LDAP'
+toc: true
 promote_deployonfriday: true
 description: How I configured Postfix to use LDAP lookup tables for virtual domains, mailboxes, and aliases, plus what still makes sense in a modern mail stack.
 date: 2016-01-08

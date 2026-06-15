@@ -89,6 +89,56 @@ article h3, h3 {
   box-shadow: 0 0 12px rgba(181, 232, 83, 0.14);
 }
 
+.post-toc {
+  margin: 1.6rem 0 2.2rem;
+  padding: 1rem 1.15rem 1.05rem;
+  border: 1px solid rgba(181, 232, 83, 0.16);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(10, 16, 10, 0.82), rgba(7, 11, 7, 0.94));
+  box-shadow: 0 0 18px rgba(181, 232, 83, 0.05);
+}
+
+.post-toc-title {
+  margin-bottom: 0.7rem;
+  color: #b5e853;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.post-toc-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-toc-item + .post-toc-item {
+  margin-top: 0.35rem;
+}
+
+.post-toc-link,
+.post-toc-link:visited {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: rgba(234, 234, 234, 0.92);
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.post-toc-link::before {
+  content: ">>";
+  color: #b5e853;
+}
+
+.post-toc-link:hover,
+.post-toc-link:focus {
+  color: #9fdaff;
+  text-shadow: 0 0 8px rgba(99, 192, 245, 0.22);
+}
+
 .code-block-shell {
   position: relative;
 }
@@ -437,6 +487,16 @@ article h3, h3 {
 }
 
 @media (max-width: 760px) {
+  .post-toc {
+    padding: 0.9rem 0.95rem 0.95rem;
+  }
+
+  .post-toc-link,
+  .post-toc-link:visited {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
   .diagram-figure {
     margin-left: -16px;
     margin-right: -16px;

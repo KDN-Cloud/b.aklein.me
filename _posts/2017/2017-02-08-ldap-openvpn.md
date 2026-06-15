@@ -1,5 +1,6 @@
 ---
 title: 'Using LDAP authentication with OpenVPN'
+toc: true
 promote_deployonfriday: true
 date: 2017-02-08
 lastmod: 2026-06-12

@@ -1,5 +1,6 @@
 ---
 layout: post
+toc: true
 title: "Ditching Linktree: Host Your Own Link Hub on GitHub Pages"
 date: 2026-06-07
 author: Anthony Klein

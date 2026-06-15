@@ -59,6 +59,55 @@
     })();
 
     (function () {
+      const tocBlocks = document.querySelectorAll('.post-toc[data-toc-root]');
+      if (!tocBlocks.length) return;
+
+      const slugCounts = new Map();
+      const slugify = (value) => {
+        const base = value
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\\s-]/g, '')
+          .replace(/\\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '') || 'section';
+
+        const count = slugCounts.get(base) || 0;
+        slugCounts.set(base, count + 1);
+        return count ? `${base}-${count + 1}` : base;
+      };
+
+      tocBlocks.forEach((toc) => {
+        const rootSelector = toc.getAttribute('data-toc-root');
+        const root = rootSelector ? document.querySelector(rootSelector) : null;
+        const list = toc.querySelector('.post-toc-list');
+        if (!root || !list) return;
+
+        const headings = Array.from(root.querySelectorAll('h2'));
+        if (!headings.length) return;
+
+        headings.forEach((heading) => {
+          if (!heading.id) {
+            heading.id = slugify(heading.textContent || heading.innerText || 'section');
+          }
+
+          const item = document.createElement('li');
+          item.className = 'post-toc-item';
+
+          const link = document.createElement('a');
+          link.className = 'post-toc-link';
+          link.href = `#${heading.id}`;
+          link.textContent = heading.textContent;
+
+          item.appendChild(link);
+          list.appendChild(item);
+        });
+
+        toc.hidden = false;
+      });
+    })();
+
+    (function () {
       const links = document.querySelectorAll('#main_content a[href]');
       if (!links.length) return;
 

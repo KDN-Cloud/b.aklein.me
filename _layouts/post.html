@@ -24,7 +24,13 @@ layout: default
   {% endif %}
 </p>
 
-{{ content }}
+{% if page.toc %}
+  {% include post-toc.html %}
+{% endif %}
+
+<div id="post-body" class="post-body">
+  {{ content }}
+</div>
 
 {% if page.promote_affiliate %}
   {% include affiliate-callout.html %}
