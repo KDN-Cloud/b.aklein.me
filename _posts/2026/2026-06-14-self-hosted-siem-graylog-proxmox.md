@@ -50,7 +50,15 @@ tags:
   - opensearch-docker
   - graylog-docker
   - graylog-7
+  - graylog-7-0-6
+  - graylog-7-1-3
   - graylog-opensearch
+  - graylog-upgrade
+  - graylog-downgrade
+  - graylog-ui-bug
+  - content-stream
+  - mongodb-index
+  - mongodb-sessions
   - pfsense
   - pfsense-logging
   - pfsense-syslog
@@ -323,7 +331,7 @@ services:
       - "9200:9200"
 
   graylog:
-    image: graylog/graylog:7.1.3
+    image: graylog/graylog:7.0.6
     container_name: graylog
     hostname: graylog
     restart: unless-stopped
@@ -373,7 +381,17 @@ networks:
 
 > **Why TCP for syslog, not UDP?** When Docker NATs traffic through the bridge network, UDP packets lose their source IP. Every log entry looks like it came from the Docker host. Using TCP (`@@` in rsyslog) preserves the real originating source IP in Graylog. This one will drive you crazy if you miss it.
 
-> **Version note:** This is much closer to what I actually run now: Graylog `7.1.3`, OpenSearch `2.19.0`, and MongoDB `7.0.37`. I still pin all three on purpose. Graylog's compatibility matrix now supports the OpenSearch `2.19.x` line for Graylog `7.1.x`, but I still do not let these float.
+> **Version note:** The compose file here reflects what I actually run now: Graylog `7.0.6`, OpenSearch `2.19.0`, and MongoDB `7.0.37`. I pin all three on purpose. Graylog's compatibility matrix may say newer combinations are supported, but I still do not let this stack float.
+
+> **A note on Graylog `7.1.3` as of June 2026:** I upgraded to `7.1.3` during the writing of this guide and immediately regretted it. In my lab, Graylog `7.1.x` started making UI calls to Enterprise content stream API endpoints that do not exist in the free open source build. The result was a wall of HTTP `400` errors on page load, dashboards that stopped behaving, search that became flaky, and enough `Could not load content stream` noise to make the UI functionally broken. It even behaved differently in an incognito window because the normal browser session was carrying the cached mess around like a souvenir.
+
+> When I downgraded back to `7.0.6`, Graylog would not start cleanly until I fixed the MongoDB sessions index that `7.1.3` had changed. The command that got me out of the ditch was:
+>
+> ```javascript
+> db.sessions.dropIndex("session_id_1")
+> ```
+>
+> After that, `7.0.6` booted cleanly and rebuilt the index the way it expects. So for now, `7.0.6` is the safe pinned version in this guide. I am not moving back to `7.1.x` until I can verify the content stream issue is actually fixed and the MongoDB session schema stops playing games during downgrade.
 
 > **Why the `wait-for-it` entrypoint is there:** Graylog likes to come up fast and then complain if OpenSearch is not actually answering yet. Letting `tini` wait for `opensearch:9200` saves you from a noisy cold-start race.
 
@@ -733,6 +751,12 @@ If rsyslog starts but produces no output on a specific host, AppArmor may be blo
 
 **Source IPs all showing as the Docker host IP**
 You're using UDP syslog (`@` in rsyslog). Switch to TCP (`@@`). UDP loses source IPs through Docker's bridge NAT, so every log entry will look like it came from the same host. TCP fixes this.
+
+**Graylog `7.1.x` UI suddenly throws content stream errors everywhere**
+If you upgraded into `7.1.x` and the web UI starts spraying `Could not load content stream` errors, failing dashboards, or repeated HTTP `400` responses tied to Enterprise-only content stream endpoints, back out and pin `7.0.6` for now. That was the clean answer in my lab.
+
+**Graylog downgrade back to `7.0.6` will not start after testing `7.1.3`**
+Check the MongoDB `sessions` index. In my case, dropping `db.sessions.dropIndex("session_id_1")` let `7.0.6` start and recreate what it needed. This is exactly the kind of upgrade path that reminds you to pin versions and back up MongoDB before touching anything.
 
 ---
 
