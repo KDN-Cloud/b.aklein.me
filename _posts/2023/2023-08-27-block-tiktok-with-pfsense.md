@@ -183,6 +183,24 @@ You'll also want a firewall rule blocking outbound TCP/UDP 853 (DoT) to anything
 
 ---
 
+## Part 3.5: Decide Whether This Applies to the Whole Network or Just One Segment
+
+This is the part people usually skip until someone in the house asks why *everything* got weird.
+
+If you apply these blocks globally, every device using your pfSense resolver and traversing your firewall gets the same treatment. That might be exactly what you want. It might also be overkill.
+
+If your network is already segmented, and it probably should be, this gets a lot cleaner. Apply stricter blocking to a kids VLAN, guest VLAN, or school-device segment first. Leave your admin or lab VLAN alone until you've confirmed the lists are not causing collateral damage. TikTok's CDN footprint can overlap with services you do not immediately associate with TikTok, especially once you start blocking aggressively at the IP and ASN layers.
+
+The practical way to think about it:
+
+- **DNSBL** usually makes sense network-wide.
+- **IP and ASN blocking** are where you should be more deliberate if you run segmented networks.
+- **DoH and DoT blocking** should be tested per segment before you call it done.
+
+If you are running separate firewall rules per VLAN, make sure the deny logic actually applies to the interfaces you care about. A perfect block list attached to the wrong place is still a no-op.
+
+---
+
 ## Part 4: Force Update + Verify
 
 After saving everything:
@@ -200,6 +218,19 @@ nslookup tiktok.com
 You should get back the DNSBL VIP (something like `10.10.10.1` or whatever your DNSBL WebServer/VIP is configured to) instead of a real IP.
 
 Navigating to `tiktok.com` in a browser should hit the pfBlockerNG block page. On mobile, the TikTok app will open but videos won't load.
+
+### Quick verification checklist
+
+If you want to be sure the block is actually doing what you think it is doing, this is the shortest useful test path:
+
+1. Force update pfBlockerNG.
+2. Clear active states for any device that already had TikTok open.
+3. Confirm `nslookup tiktok.com` returns the DNSBL VIP, not a public IP.
+4. Try opening `tiktok.com` in a browser on Wi-Fi.
+5. Open the TikTok app on Wi-Fi and verify the feed does not load.
+6. Check pfBlockerNG logs to confirm domains or IPs are actually being matched.
+
+That last one matters. Do not stop at "the app looks broken." Make sure pfSense is the reason it is broken.
 
 ---
 
@@ -235,6 +266,29 @@ After you force-update pfBlockerNG rules, existing network connections that were
 
 To close those connections immediately, go to Diagnostics, States, and clear or filter states for TikTok IP ranges. You can filter by destination IP to find active TikTok connections and reset them specifically rather than flushing everything. This is worth doing right after a force update if you want the blocking to take effect immediately rather than waiting for sessions to expire naturally.
 
+If you are testing from one phone and want to keep it surgical, clear states just for that client IP. That is usually faster and a lot less annoying than punting every active state on the firewall because one app refuses to let go.
+
+## If TikTok Still Works, Check These First
+
+If the app is still loading normally after all of this, the failure is usually one of a handful of boring things:
+
+- **The phone is on cellular, not Wi-Fi.**
+- **Unbound is not the active resolver.**
+- **The device is using a hardcoded external DNS server.**
+- **DoH or DoT is still open.**
+- **Existing states were never cleared.**
+- **The pfBlockerNG feeds updated, but the matching rule did not land where you expected.**
+
+The fastest troubleshooting flow is:
+
+1. Confirm the client is actually on your Wi-Fi.
+2. Run `nslookup tiktok.com` from that same network.
+3. Check pfBlockerNG DNSBL reports for `tiktok.com`, `tiktokv.com`, or ByteDance-related hits.
+4. Check firewall logs for blocked destination IPs from the client.
+5. Temporarily disable cellular and any VPN client on the phone while testing.
+
+If none of that shows hits, you are not blocking the traffic path the device is actually using.
+
 ## Honest Limitations Worth Knowing
 
 A few things this setup does not cover that are worth being upfront about.
@@ -252,6 +306,12 @@ Neither of these are reasons not to do this. DNSBL plus IP blocking plus ASN blo
 TikTok's infrastructure is not static. ByteDance rotates domains and CDN endpoints regularly. A static custom list will drift over time. I've seen the byteimg.com and ibyteimg.com subdomains change on me. The M4jx repo is updated from live traffic captures and is currently the best maintained source I've found for this. Pair it with the IP blocklists and you've got solid coverage without having to babysit it.
 
 For reference on what TikTok's full network footprint looks like, [netify.ai's TikTok page](https://www.netify.ai/resources/applications/tiktok) has good detail on domains, IPs, and ASNs.
+
+## Final Advice
+
+If you only do one thing here, use the maintained M4jx feeds and let them update automatically. If you do two things, add IP blocking on top of DNSBL. If you do the whole job properly, include DoH, DoT, ASN blocking, and a state reset after rollout.
+
+That is the difference between "TikTok seems flaky on my network" and "TikTok is actually blocked."
 
 ---
 
