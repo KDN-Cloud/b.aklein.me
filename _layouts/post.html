@@ -24,6 +24,18 @@ layout: default
   {% endif %}
 </p>
 
+<div class="post-actions">
+  <button
+    type="button"
+    class="post-share-button"
+    data-share-button
+    data-share-title="{{ page.title | escape }}"
+    data-share-url="{{ page.url | absolute_url }}">
+    <span class="post-share-icon" aria-hidden="true">#</span>
+    <span class="post-share-label">Share</span>
+  </button>
+</div>
+
 {% if page.toc %}
   {% include post-toc.html %}
 {% endif %}

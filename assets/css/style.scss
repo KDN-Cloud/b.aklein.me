@@ -80,6 +80,46 @@ article h3, h3 {
   color: rgba(234, 234, 234, 0.92);
 }
 
+.post-actions {
+  margin: 0.85rem 0 1.2rem;
+}
+
+.post-share-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 13px;
+  border: 1px solid rgba(181, 232, 83, 0.2);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(181, 232, 83, 0.08), rgba(181, 232, 83, 0.03));
+  color: #b5e853;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(181, 232, 83, 0.14);
+  transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.post-share-button:hover,
+.post-share-button:focus {
+  border-color: rgba(159, 218, 255, 0.34);
+  color: #d7eeff;
+  box-shadow: 0 0 12px rgba(159, 218, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.post-share-button.is-done {
+  border-color: rgba(181, 232, 83, 0.42);
+  color: #d6ff8f;
+}
+
+.post-share-icon {
+  display: inline-block;
+  font-weight: bold;
+  color: #9fdaff;
+}
+
 .content-divider {
   display: block;
   width: 100%;

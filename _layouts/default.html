@@ -59,6 +59,65 @@
     })();
 
     (function () {
+      const buttons = document.querySelectorAll('[data-share-button]');
+      if (!buttons.length) return;
+
+      const copyText = async (text) => {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'absolute';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        const copied = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return copied;
+      };
+
+      buttons.forEach((button) => {
+        const label = button.querySelector('.post-share-label');
+        const defaultText = label ? label.textContent : 'Share';
+        const title = button.getAttribute('data-share-title') || document.title;
+        const url = button.getAttribute('data-share-url') || window.location.href;
+
+        button.addEventListener('click', async () => {
+          try {
+            if (navigator.share) {
+              await navigator.share({ title, url });
+              if (label) label.textContent = 'Shared';
+            } else {
+              await copyText(url);
+              if (label) label.textContent = 'Copied';
+            }
+          } catch (error) {
+            if (error && error.name === 'AbortError') {
+              return;
+            }
+
+            try {
+              await copyText(url);
+              if (label) label.textContent = 'Copied';
+            } catch (copyError) {
+              if (label) label.textContent = 'Unavailable';
+            }
+          }
+
+          button.classList.add('is-done');
+          window.setTimeout(() => {
+            if (label) label.textContent = defaultText;
+            button.classList.remove('is-done');
+          }, 1800);
+        });
+      });
+    })();
+
+    (function () {
       const tocBlocks = document.querySelectorAll('.post-toc[data-toc-root]');
       if (!tocBlocks.length) return;
 
