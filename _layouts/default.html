@@ -59,11 +59,8 @@
     })();
 
     (function () {
-      const root = document.querySelector('#post-body');
-      if (!root) return;
-
-      const tocLinks = document.querySelectorAll('.post-toc-link[href^="#"]');
-      if (!tocLinks.length) return;
+      const tocBlocks = document.querySelectorAll('.post-toc[data-toc-root]');
+      if (!tocBlocks.length) return;
 
       const slugCounts = new Map();
       const slugify = (value) => {
@@ -80,12 +77,33 @@
         return count ? `${base}-${count + 1}` : base;
       };
 
-      const headings = Array.from(root.querySelectorAll('h2'));
-      headings.forEach((heading) => {
-        const desired = slugify(heading.textContent || heading.innerText || 'section');
-        if (!heading.id) {
-          heading.id = desired;
-        }
+      tocBlocks.forEach((toc) => {
+        const rootSelector = toc.getAttribute('data-toc-root');
+        const root = rootSelector ? document.querySelector(rootSelector) : null;
+        const list = toc.querySelector('.post-toc-list');
+        if (!root || !list) return;
+
+        const headings = Array.from(root.querySelectorAll('h2'));
+        if (!headings.length) return;
+
+        headings.forEach((heading) => {
+          if (!heading.id) {
+            heading.id = slugify(heading.textContent || heading.innerText || 'section');
+          }
+
+          const item = document.createElement('li');
+          item.className = 'post-toc-item';
+
+          const link = document.createElement('a');
+          link.className = 'post-toc-link';
+          link.href = `#${heading.id}`;
+          link.textContent = heading.textContent;
+
+          item.appendChild(link);
+          list.appendChild(item);
+        });
+
+        toc.hidden = false;
       });
     })();
 
