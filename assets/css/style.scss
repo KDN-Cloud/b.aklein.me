@@ -130,6 +130,22 @@ article h3, h3 {
   color: #d6ff8f;
 }
 
+.is-env-highlighted .env-comment {
+  color: #7f8c8d;
+}
+
+.is-env-highlighted .env-key {
+  color: #8bd5ff;
+}
+
+.is-env-highlighted .env-eq {
+  color: #ffb86c;
+}
+
+.is-env-highlighted .env-value {
+  color: #c8f78f;
+}
+
 .diagram-figure {
   margin: 1.35rem 0 1.7rem;
 }

@@ -86,6 +86,65 @@
       const blocks = document.querySelectorAll('#main_content pre');
       if (!blocks.length) return;
 
+      const escapeHtml = (value) => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      const looksLikeEnvBlock = (code) => {
+        if (!code) return false;
+
+        const className = code.className || '';
+        if (/(^|\\s)language-env(\\s|$)/.test(className)) {
+          return true;
+        }
+
+        const lines = code.textContent.split('\n');
+        let assignmentCount = 0;
+
+        for (const rawLine of lines) {
+          const line = rawLine.trim();
+          if (!line || line.startsWith('#')) continue;
+          if (/^[A-Z0-9_]+=/.test(line)) {
+            assignmentCount += 1;
+            continue;
+          }
+          return false;
+        }
+
+        return assignmentCount >= 2;
+      };
+
+      const highlightEnvBlock = (code) => {
+        const lines = code.textContent.replace(/\n$/, '').split('\n');
+        const rendered = lines.map((rawLine) => {
+          const trimmed = rawLine.trim();
+
+          if (!trimmed) {
+            return '';
+          }
+
+          if (trimmed.startsWith('#')) {
+            return `<span class="env-comment">${escapeHtml(rawLine)}</span>`;
+          }
+
+          const match = rawLine.match(/^([A-Z0-9_]+)(=)(.*)$/);
+          if (!match) {
+            return escapeHtml(rawLine);
+          }
+
+          const [, key, eq, value] = match;
+          return [
+            `<span class="env-key">${escapeHtml(key)}</span>`,
+            `<span class="env-eq">${escapeHtml(eq)}</span>`,
+            `<span class="env-value">${escapeHtml(value)}</span>`
+          ].join('');
+        }).join('\n');
+
+        code.innerHTML = rendered + '\n';
+        code.classList.add('is-env-highlighted');
+      };
+
       const copyText = async (text) => {
         if (navigator.clipboard && window.isSecureContext) {
           await navigator.clipboard.writeText(text);
@@ -107,6 +166,11 @@
       blocks.forEach((block) => {
         if (block.classList.contains('ascii-diagram')) {
           return;
+        }
+
+        const code = block.querySelector('code');
+        if (looksLikeEnvBlock(code)) {
+          highlightEnvBlock(code);
         }
 
         if (block.parentElement && block.parentElement.classList.contains('code-block-shell')) {
