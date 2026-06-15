@@ -82,6 +82,10 @@ article h3, h3 {
 
 .post-actions {
   margin: 0.85rem 0 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .post-share-button {
@@ -114,10 +118,26 @@ article h3, h3 {
   color: #d6ff8f;
 }
 
+.post-share-button-reddit,
+.post-share-button-reddit:visited {
+  text-decoration: none;
+}
+
+.post-share-button-reddit:hover,
+.post-share-button-reddit:focus {
+  border-color: rgba(255, 126, 48, 0.42);
+  color: #ffe3d2;
+  box-shadow: 0 0 12px rgba(255, 126, 48, 0.1);
+}
+
 .post-share-icon {
   display: inline-block;
   font-weight: bold;
   color: #9fdaff;
+}
+
+.post-share-button-reddit .post-share-icon {
+  color: #ff7e30;
 }
 
 .content-divider {

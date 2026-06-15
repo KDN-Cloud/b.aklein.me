@@ -34,6 +34,15 @@ layout: default
     <span class="post-share-icon" aria-hidden="true">&#8599;</span>
     <span class="post-share-label">Share</span>
   </button>
+  <a
+    class="post-share-button post-share-button-reddit"
+    href="https://www.reddit.com/submit?url={{ page.url | absolute_url | uri_escape }}&title={{ page.title | uri_escape }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    title="Share on Reddit">
+    <span class="post-share-icon" aria-hidden="true">r/</span>
+    <span class="post-share-label">Reddit</span>
+  </a>
 </div>
 
 {% if page.toc %}
