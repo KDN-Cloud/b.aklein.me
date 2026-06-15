@@ -665,7 +665,7 @@ I also keep a separate Grafana dashboard that is less about Graylog the service 
 
 *Custom Graylog analytics dashboard focused on log volume, host breakdown, recent messages, and the kinds of security-ish events that make you stop what you are doing and look closer.*
 
-If you want to steal the dashboard and tune it to your own environment, I exported the JSON here: [graylog-log-analytics-dashboard.json](/assets/grafana/graylog-log-analytics-dashboard.json). Import it into Grafana, swap in your own datasource, then adjust panel queries to match your field names and whatever weirdness your lab specializes in.
+If you want to use the dashboard and tune it to your own environment, I exported the JSON here: [graylog-log-analytics-dashboard.json](/assets/grafana/graylog-log-analytics-dashboard.json). Import it into Grafana, swap in your own datasource, then adjust panel queries to match your field names and whatever weirdness your lab specializes in.
 
 ---
 
