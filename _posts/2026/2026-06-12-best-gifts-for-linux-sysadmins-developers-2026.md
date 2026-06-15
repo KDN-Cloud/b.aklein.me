@@ -56,7 +56,7 @@ This design is for everyone who has ever given full read/write/execute permissio
 
 Available as a t-shirt, poster, mug, sticker, and more.
 
-**[→ Shop chmod 777 and Pray](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop chmod 777 and Pray](https://www.etsy.com/shop/DeployOnFriday?search_query=777)**
 
 
 
@@ -72,7 +72,7 @@ For the engineers who handle everything by deleting it from the filesystem and m
 
 Available on t-shirts, mugs, hoodies, stickers.
 
-**[→ Shop rm -rf /feelings](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop rm -rf /feelings](https://www.etsy.com/shop/DeployOnFriday?search_query=feelings)**
 
 
 
@@ -89,7 +89,7 @@ The most honest developer shirt ever made. Every senior engineer will laugh beca
 
 Available on t-shirts, mugs, tank tops, hoodies, muscle tanks, black coffee mugs.
 
-**[→ Shop Senior Developer: Still Googles Everything](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop Senior Developer: Still Googles Everything](https://www.etsy.com/shop/DeployOnFriday?search_query=still+googles)**
 
 
 
@@ -101,7 +101,7 @@ Nobody deploys on a Friday. Everybody deploys on a Friday. This badge is for the
 
 Available on t-shirts, mugs, travel mugs, stickers.
 
-**[→ Shop I Survived a Friday Deploy](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop I Survived a Friday Deploy](https://www.etsy.com/shop/DeployOnFriday?search_query=survived+a+friday+deploy)**
 
 
 
@@ -120,7 +120,7 @@ Paired with a seriously rendered Victorian engraving of the most glorious sandwi
 
 Available on t-shirts, mugs, posters, stickers, magnets.
 
-**[→ Shop Sudo Make Me a Sandwich](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop Sudo Make Me a Sandwich](https://www.etsy.com/shop/DeployOnFriday?search_query=sandwich)**
 
 
 
@@ -132,7 +132,7 @@ Dorothy had ruby slippers. You have localhost.
 
 Available on t-shirts, hoodies, mugs, tote bags, tank tops, posters, travel mugs.
 
-**[→ Shop There's No Place Like 127.0.0.1](https://www.etsy.com/shop/DeployOnFriday)**
+**[→ Shop There's No Place Like 127.0.0.1](https://www.etsy.com/shop/DeployOnFriday?search_query=no+place#items)**
 
 
 
