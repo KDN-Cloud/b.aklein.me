@@ -651,13 +651,21 @@ Set **Rotation strategy** to `Index Size` at `4GB` and **Retention strategy** to
 
 ### Optional: Grafana Visibility
 
-Once Graylog is actually taking traffic, I like to keep one Grafana view up that tells me whether the stack is calm or about to get weird. Throughput, journal pressure, JVM behavior, process memory, and OpenSearch writes tell the story fast without digging through five different menus.
+Once Graylog is actually taking traffic, I like to keep two Grafana views handy. One tells me whether the stack itself is calm or about to get weird. The other tells me what the logs are actually doing across the lab. Between the two, I can usually tell pretty fast whether I have a Graylog problem, a host problem, or just one noisy box being dramatic again.
 
 ![Grafana dashboard showing Graylog Prometheus metrics across throughput, journal, JVM, process, and OpenSearch panels](/assets/images/graylog-grafana-overview.png)
 
 *Example Grafana view built from Graylog's built-in Prometheus exporter, tracking message throughput, journal usage, JVM behavior, and OpenSearch output health.*
 
 Graylog documents the built-in Prometheus exporter here: [Operational Metrics](https://go2docs.graylog.org/current/interacting_with_your_log_data/metrics.html). That is the real source I would trust first. If you want a public Grafana starting point, the community dashboard [9122 - Graylog](https://grafana.com/grafana/dashboards/13569-9122-graylog/) is worth looking at for ideas, but I would treat it as inspiration and not a hard dependency.
+
+I also keep a separate Grafana dashboard that is less about Graylog the service and more about the actual logs moving through the lab. That one gives me a faster read on message volume, noisy hosts, pfSense chatter, auth failures, and whether something in the fleet has decided to start screaming into the void.
+
+![Custom Grafana dashboard for Graylog analytics showing total messages, host breakdown, security events, and recent log activity](/assets/images/graylog-log-analytics-dashboard.png)
+
+*Custom Graylog analytics dashboard focused on log volume, host breakdown, recent messages, and the kinds of security-ish events that make you stop what you are doing and look closer.*
+
+If you want to steal the dashboard and tune it to your own environment, I exported the JSON here: [graylog-log-analytics-dashboard.json](/assets/grafana/graylog-log-analytics-dashboard.json). Import it into Grafana, swap in your own datasource, then adjust panel queries to match your field names and whatever weirdness your lab specializes in.
 
 ---
 
