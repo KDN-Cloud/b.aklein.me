@@ -100,6 +100,7 @@ article h3, h3 {
 
 .post-toc-title {
   margin-bottom: 0.7rem;
+  padding-left: 0.4rem;
   color: #b5e853;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-size: 12px;
@@ -109,7 +110,7 @@ article h3, h3 {
 
 .post-toc-list {
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 0.35rem;
   list-style: none;
 }
 
@@ -122,6 +123,7 @@ article h3, h3 {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
+  padding-left: 0.2rem;
   color: rgba(234, 234, 234, 0.92);
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-size: 13px;
@@ -130,6 +132,8 @@ article h3, h3 {
 
 .post-toc-link::before {
   content: ">";
+  display: inline-block;
+  width: 0.75rem;
   color: #b5e853;
 }
 
