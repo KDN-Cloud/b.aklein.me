@@ -1,6 +1,24 @@
-<aside class="post-toc" data-toc-root="#post-body" aria-label="Table of contents" hidden>
-  <div class="post-toc-title">[ jump_to ]</div>
-  <nav class="post-toc-nav">
-    <ul class="post-toc-list"></ul>
-  </nav>
-</aside>
+{% assign toc_lines = page.content | newline_to_br | split: '<br />' %}
+{% assign toc_count = 0 %}
+{% capture toc_items %}
+  {% for line in toc_lines %}
+    {% assign stripped = line | strip %}
+    {% assign prefix = stripped | slice: 0, 3 %}
+    {% if prefix == '## ' %}
+      {% assign title = stripped | remove_first: '## ' | strip %}
+      {% assign anchor = title | slugify %}
+      {% assign toc_count = toc_count | plus: 1 %}
+      <li class="post-toc-item"><a class="post-toc-link" href="#{{ anchor }}">{{ title }}</a></li>
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+{% if toc_count > 0 %}
+  <aside class="post-toc" aria-label="Table of contents">
+    <div class="post-toc-title">[ jump_to ]</div>
+    <nav class="post-toc-nav">
+      <ul class="post-toc-list">
+        {{ toc_items }}
+      </ul>
+    </nav>
+  </aside>
+{% endif %}

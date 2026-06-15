@@ -90,12 +90,12 @@ article h3, h3 {
 }
 
 .post-toc {
-  margin: 1.6rem 0 2.2rem;
-  padding: 1rem 1.15rem 1.05rem;
-  border: 1px solid rgba(181, 232, 83, 0.16);
+  margin: 1.3rem 0 2rem;
+  padding: 0.9rem 1rem 0.95rem;
+  border: 1px solid rgba(181, 232, 83, 0.12);
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(10, 16, 10, 0.82), rgba(7, 11, 7, 0.94));
-  box-shadow: 0 0 18px rgba(181, 232, 83, 0.05);
+  background: rgba(8, 12, 8, 0.46);
+  box-shadow: inset 0 0 0 1px rgba(181, 232, 83, 0.04);
 }
 
 .post-toc-title {
@@ -114,7 +114,7 @@ article h3, h3 {
 }
 
 .post-toc-item + .post-toc-item {
-  margin-top: 0.35rem;
+  margin-top: 0.28rem;
 }
 
 .post-toc-link,
@@ -124,12 +124,12 @@ article h3, h3 {
   gap: 0.55rem;
   color: rgba(234, 234, 234, 0.92);
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  font-size: 14px;
+  font-size: 13px;
   text-decoration: none;
 }
 
 .post-toc-link::before {
-  content: ">>";
+  content: ">";
   color: #b5e853;
 }
 
