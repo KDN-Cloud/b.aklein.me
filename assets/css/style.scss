@@ -91,7 +91,7 @@ article h3, h3 {
 
 .post-toc {
   margin: 1.3rem 0 2rem;
-  padding: 0.9rem 1.05rem 0.95rem 1.2rem;
+  padding: 0.95rem 1.1rem 1rem 1.45rem;
   border: 1px solid rgba(181, 232, 83, 0.12);
   border-radius: 14px;
   background: rgba(8, 12, 8, 0.46);
@@ -100,7 +100,7 @@ article h3, h3 {
 
 .post-toc-title {
   margin-bottom: 0.7rem;
-  padding-left: 0.6rem;
+  padding-left: 0.75rem;
   color: #b5e853;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-size: 12px;
@@ -110,7 +110,7 @@ article h3, h3 {
 
 .post-toc-list {
   margin: 0;
-  padding: 0 0 0 0.7rem;
+  padding: 0 0 0 0.85rem;
   list-style: none;
 }
 
@@ -123,7 +123,7 @@ article h3, h3 {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  padding-left: 0.35rem;
+  padding-left: 0.45rem;
   color: rgba(234, 234, 234, 0.92);
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-size: 13px;
@@ -492,24 +492,20 @@ article h3, h3 {
 
 @media (max-width: 760px) {
   .post-toc {
-    padding: 0.88rem 0.9rem 0.92rem 1rem;
+    padding: 0.9rem 0.95rem 0.96rem 1.18rem;
   }
 
   .post-toc-title {
-    padding-left: 0.45rem;
+    padding-left: 0.62rem;
   }
 
   .post-toc-list {
-    padding-left: 0.55rem;
+    padding-left: 0.72rem;
   }
 
   .post-toc-link,
   .post-toc-link:visited {
-    padding-left: 0.25rem;
-  }
-
-  .post-toc {
-    padding: 0.88rem 0.9rem 0.92rem 1rem;
+    padding-left: 0.35rem;
   }
 
   .post-toc-link,
