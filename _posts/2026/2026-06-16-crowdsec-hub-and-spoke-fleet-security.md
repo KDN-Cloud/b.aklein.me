@@ -358,13 +358,13 @@ My public Debian and Ubuntu VPS nodes do not talk to the CrowdSec hub over the p
 That means the same patterns still apply:
 
 ```yaml
-CROWDSEC_LAPI_URL=http://10.69.0.1:8888
+CROWDSEC_LAPI_URL=http://10.6.0.1:8888
 ```
 
 and:
 
 ```yaml
-api_url: http://10.69.0.1:8888/
+api_url: http://10.6.0.1:8888/
 ```
 
 If the box is remote, the only thing that changes is the trusted path to the hub. The behavior does not.
@@ -530,7 +530,7 @@ docker exec crowdsec cscli bouncers add thelounge-bouncer
 Example config:
 
 ```yaml
-crowdsec_lapi_url: http://10.69.0.1:8888
+crowdsec_lapi_url: http://10.6.0.1:8888
 crowdsec_lapi_key: <bouncer-key>
 cloudflare_config:
   accounts:
