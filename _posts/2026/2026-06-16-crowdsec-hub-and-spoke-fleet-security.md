@@ -599,6 +599,89 @@ and CrowdSec uses it for the real-time "something just got banned" path.
 
 ---
 
+## CrowdSec Local Web UI
+
+For day-to-day visibility, I also run [TheDuffman85/crowdsec-web-ui](https://github.com/TheDuffman85/crowdsec-web-ui).
+
+This is not the part that makes decisions. It is the part that makes it easier to see what CrowdSec is doing without living in `cscli` all day.
+
+That matters more than you might think, especially in a quieter environment like mine. Most of my services are internal-only, and only a few are meaningfully exposed. So the noise floor is lower than what you would see on a fully public fleet. That is exactly why I like having the local web UI. When the signal is quieter, a clean dashboard helps you notice real patterns faster.
+
+The local UI gives me:
+
+- a quick dashboard view
+- alert browsing
+- decision browsing
+- LAPI status at a glance
+- a cleaner visual way to check whether the system is awake or just being blessedly boring for once
+
+Example dashboard:
+
+![CrowdSec local web UI dashboard showing alerts, decisions, LAPI health, and activity history](/assets/images/crowdsec-web-ui-dashboard.png)
+
+My Compose layout is pretty simple, but I would strongly recommend keeping anything sensitive abstracted into env files or secrets instead of hardcoding it in plain text forever.
+
+Sanitized example:
+
+```yaml
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    restart: unless-stopped
+    environment:
+      - CUSTOM_HOSTNAME=gatekeeper-master
+      - COLLECTIONS=crowdsecurity/linux crowdsecurity/sshd crowdsecurity/nginx-proxy-manager crowdsecurity/whitelist-good-actors crowdsecurity/base-http-scenarios firix/authentik crowdsecurity/pgsql
+      - PARSERS=crowdsecurity/docker-logs crowdsecurity/cri-logs crowdsecurity/sshd-logs
+      - LAPI_LISTEN_ADDR=0.0.0.0
+      - LAPI_LISTEN_PORT=8888
+      - METRICS_LISTEN_ADDR=0.0.0.0
+      - CROWDSEC_LAPI_URL=http://127.0.0.1:8888
+      - TRUSTED_IPS=127.0.0.1,<wireguard-cidr>,<lan-cidrs>,<trusted-public-ip>
+    volumes:
+      - /home/ak/crowdsec/config:/etc/crowdsec
+      - /home/ak/crowdsec/data:/var/lib/crowdsec/data
+      - /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/syslog:/var/log/syslog:ro
+      - /var/log/kern.log:/var/log/kern.log:ro
+      - /var/log/crowdsec-fleet.log:/var/log/crowdsec-fleet.log:ro
+    ports:
+      - "8888:8888"
+      - "6060:6060"
+    networks:
+      - crowdsec_net
+
+  crowdsec-ui:
+    image: ghcr.io/theduffman85/crowdsec-web-ui:latest
+    container_name: crowdsec-ui
+    restart: unless-stopped
+    environment:
+      - CROWDSEC_URL=http://crowdsec:8888
+      - CROWDSEC_USER=<ui-machine-user>
+      - CROWDSEC_PASSWORD=<ui-machine-password>
+      - TRUSTED_IPS=<trusted-ui-subnets>
+    ports:
+      - "8181:3000"
+    networks:
+      - crowdsec_net
+    depends_on:
+      - crowdsec
+
+networks:
+  crowdsec_net:
+    driver: bridge
+```
+
+A few notes:
+
+- I keep the UI local and trusted. It is not something I would throw onto the public internet raw.
+- Put it behind your reverse proxy and your existing auth layer if you want browser access beyond the box itself.
+- The UI is great for visibility, but `cscli` is still the source of truth when you want exact answers.
+
+That is the balance I like. The UI gives me fast eyes. The CLI gives me certainty.
+
+---
+
 ## CrowdSec Daily Digest, the Morning Summary
 
 The digest is separate from the real-time alerts.
