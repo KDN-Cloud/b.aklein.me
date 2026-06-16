@@ -282,7 +282,7 @@ When I add a new host, I think in two roles:
 - **Watcher**: the CrowdSec agent, usually in Docker for my Linux nodes
 - **Enforcer**: the native firewall bouncer
 
-For a new Linux node, the agent Compose file looks roughly like this:
+For a new Linux node, the agent Compose file looks more like this in my world:
 
 ```yaml
 services:
@@ -290,29 +290,35 @@ services:
     image: crowdsecurity/crowdsec:latest
     container_name: crowdsec-agent
     restart: unless-stopped
+    ports:
+      - "6060:6060"
     environment:
-      CROWDSEC_LAPI_URL: http://192.168.70.84:8888
-      DISABLE_LOCAL_API: "true"
-      AGENT_USERNAME: herald-agent
-      AGENT_PASSWORD: <generated-machine-password>
-      COLLECTIONS: >
-        crowdsecurity/linux
-        crowdsecurity/sshd
-        crowdsecurity/whitelist-good-actors
-        crowdsecurity/base-http-scenarios
+      - METRICS_LISTEN_ADDR=0.0.0.0:6060
+      - CROWDSEC_LAPI_URL=http://<lapi-lan-ip>:8888
+      - DISABLE_LOCAL_API=true
+      - AGENT_USERNAME=<node-agent-name>
+      - AGENT_PASSWORD=<generated-machine-password>
+      - COLLECTIONS=crowdsecurity/linux crowdsecurity/sshd crowdsecurity/whitelist-good-actors crowdsecurity/base-http-scenarios
     volumes:
-      - ./config:/etc/crowdsec
-      - ./data:/var/lib/crowdsec/data
       - /var/log:/var/log:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /home/<user>/crowdsec/data:/var/lib/crowdsec/data
+      - /home/<user>/crowdsec/config:/etc/crowdsec
+      - /srv/<reverse-proxy-log-path>:/npm-logs:ro
+      - /home/<user>/crowdsec/config/acquis.d:/etc/crowdsec/acquis.d:ro
 ```
 
 Important details:
 
 - `DISABLE_LOCAL_API=true` keeps the node in agent mode. It reports upward and does not pretend to be its own little island.
 - The username and password come from the machine registration created on GateKeeper.
+- `METRICS_LISTEN_ADDR` gives me a predictable place to scrape agent metrics if I want them.
 - I mount both normal logs and Docker logs because most of my nodes have a mix of services.
+- The reverse proxy log mount is there because some of the most useful detections start with whatever is smacking into Nginx Proxy Manager all day.
+- The `acquis.d` mount matters once you want the agent to read more than the defaults and stop pretending every node logs the same way.
+
+If your host is simpler than that, great, use fewer mounts. If it is doing real work, the more complete version tends to age better.
 
 Then I install the firewall bouncer on the host:
 
