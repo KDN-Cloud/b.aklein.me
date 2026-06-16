@@ -62,6 +62,18 @@ tags:
 
 Most CrowdSec guides are fine right up until you have more than one machine.
 
+Before CrowdSec, I was doing what a lot of us do. I ran Fail2Ban.
+
+And to be fair to Fail2Ban, it did its job well. It is simple, dependable, and it has saved plenty of boxes from the usual background nonsense of the internet. If all you need is "watch a log, match a pattern, ban an IP on this host," Fail2Ban still makes a lot of sense.
+
+I also spent years with OSSEC in the mix as a host-based intrusion detection layer. That taught me a lot, and for a long time it was a useful way to watch what was happening on the box itself.
+
+The problem was not that Fail2Ban was bad. The problem was that my environment stopped being one box with one job.
+
+Once I had a real fleet, a public VPS, internal services, WireGuard-connected nodes, Cloudflare in front of some things, and a growing pile of logs from different systems, I wanted something that felt less like a local patch and more like an actual security layer. That is where CrowdSec started to make more sense. Shared decisions, better visibility, broader detection logic, and a cleaner path to fleet-wide enforcement.
+
+These days the split is pretty clean. CrowdSec handles the app and service side of the equation across the fleet, and pfSense handles the broader network edge everywhere else. That division has worked a lot better for me than trying to make one tool pretend it should own every layer.
+
 Single-node installs are easy. You run the Security Engine locally, keep the Local API on the same box, bolt on a bouncer, and call it a day. That works until your lab grows teeth. Then every node becomes its own little island. An IP can get banned on one machine and still stroll into the next one like nothing happened.
 
 That was the part I wanted to fix.
