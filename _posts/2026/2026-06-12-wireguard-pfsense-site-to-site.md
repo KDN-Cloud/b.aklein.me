@@ -806,6 +806,8 @@ ansible-playbook playbooks/wireguard_peer.yml -e "peer_name=bob-laptop tunnel=fu
 
 The role queries pfSense for existing peers, finds the next available IP automatically, registers the peer via the REST API, renders the config, and outputs both a QR code PNG and a terminal QR code you can scan immediately. The whole thing runs in seconds.
 
+One small reality check from the field: after the role does its job, pfSense can still leave that familiar little `Apply Changes` prompt sitting in the GUI. I have never treated that as a problem. If anything, it feels like pfSense giving the new peer one last nod before letting it into the club. The automation handles the real work, and that final click is basically just the human sign-off. There may be a way to automate even that last approval, but it is so trivial that I have not bothered chasing it.
+
 **Deploying WireGuard to a VPS**
 
 For VPS nodes the workflow is two steps. First provision the peer config, then deploy WireGuard to the host using the generated config:
