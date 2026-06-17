@@ -262,6 +262,85 @@ article h3, h3 {
   color: #c8f78f;
 }
 
+.highlight,
+.highlighter-rouge .highlight,
+.highlighter-rouge pre,
+.highlighter-rouge code {
+  color: #e8edf2;
+}
+
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cp,
+.highlight .cs {
+  color: #7f8c8d;
+}
+
+.highlight .k,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .nt {
+  color: #ff9e64;
+}
+
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sa,
+.highlight .sb,
+.highlight .sc,
+.highlight .dl {
+  color: #c3e88d;
+}
+
+.highlight .na,
+.highlight .nb,
+.highlight .nc,
+.highlight .nd,
+.highlight .ne,
+.highlight .nf,
+.highlight .nl,
+.highlight .nn,
+.highlight .nx,
+.highlight .py,
+.highlight .nv,
+.highlight .vc,
+.highlight .vg,
+.highlight .vi {
+  color: #82aaff;
+}
+
+.highlight .o,
+.highlight .ow,
+.highlight .p {
+  color: #89ddff;
+}
+
+.highlight .m,
+.highlight .mb,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .il {
+  color: #f78c6c;
+}
+
+.highlight .gh,
+.highlight .gu,
+.highlight .gp,
+.highlight .go {
+  color: #b5e853;
+}
+
+.highlight .err {
+  color: #ff6b6b;
+  background: transparent;
+}
+
 .diagram-figure {
   margin: 1.35rem 0 1.7rem;
 }
