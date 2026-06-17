@@ -765,24 +765,22 @@ The tasks file is the full workflow in sequence: dependency checks, key generati
 
 The template uses the `tunnel` variable to pull the correct `AllowedIPs` value straight from the `wireguard.allowed_ips` map in vars. The preshared key block only renders if one was generated:
 
-{% raw %}
-```jinja2
-# {{ peer_name }}
+{% highlight ini %}
+# &#123;&#123; peer_name &#125;&#125;
 [Interface]
-PrivateKey = {{ peer_privkey }}
-Address = {{ peer_ip }}/{{ wireguard.vpn_peer_mask }}
-DNS = {{ wireguard.dns_servers }}
+PrivateKey = &#123;&#123; peer_privkey &#125;&#125;
+Address = &#123;&#123; peer_ip &#125;&#125;/&#123;&#123; wireguard.vpn_peer_mask &#125;&#125;
+DNS = &#123;&#123; wireguard.dns_servers &#125;&#125;
 
 [Peer]
-PublicKey = {{ wireguard.pfsense_wg_pubkey }}
-{% if peer_psk %}
-PresharedKey = {{ peer_psk }}
-{% endif %}
-AllowedIPs = {{ wireguard.allowed_ips[tunnel] }}
-Endpoint = {{ wireguard.pfsense_endpoint }}
-PersistentKeepalive = {{ wireguard.keepalive }}
-```
-{% endraw %}
+PublicKey = &#123;&#123; wireguard.pfsense_wg_pubkey &#125;&#125;
+&#123;% if peer_psk %&#125;
+PresharedKey = &#123;&#123; peer_psk &#125;&#125;
+&#123;% endif %&#125;
+AllowedIPs = &#123;&#123; wireguard.allowed_ips[tunnel] &#125;&#125;
+Endpoint = &#123;&#123; wireguard.pfsense_endpoint &#125;&#125;
+PersistentKeepalive = &#123;&#123; wireguard.keepalive &#125;&#125;
+{% endhighlight %}
 
 **Running it**
 
