@@ -4,6 +4,7 @@ toc: true
 promote_deployonfriday: true
 promote_affiliate: true
 date: 2026-06-12
+lastmod: 2026-06-17
 description: How I replaced OpenVPN with WireGuard on my Netgate 6100, set up split-tunnel and full-tunnel peer templates across VLANs, and extended it to site-to-site tunnels with two Vultr VPS nodes (Ubuntu and Debian), automated end-to-end with Ansible.
 tags:
 - wireguard
