@@ -413,9 +413,21 @@ systemctl start wg-quick@wg0
 
 Back in pfSense, add a peer entry for the VPS with its public key. The allowed IPs should include the VPS tunnel address and any subnets on the VPS side that homelab traffic needs to reach. For nodes that are purely outbound clients of the homelab, just the tunnel IP is sufficient.
 
-For routing to work in both directions, add static routes in pfSense under System, Routing, Static Routes. For Nexus, pfSense already knows about `10.6.0.22` since it lives in the same `10.6.0.0/24` tunnel subnet. For Herald on `10.7.0.0/24`, you need a static route pointing that subnet at the WireGuard interface gateway so pfSense knows to send traffic for that range through the tunnel rather than out the default WAN gateway.
+This is the part where WireGuard is usually a lot cleaner than older VPN setups.
 
-You may need to add the gateway manually under System, Routing, Gateways first, pointing at the peer tunnel IP, before the static route option becomes available.
+In my case, I did **not** end up needing to add manual static routes in pfSense for the site-to-site portion. Once the tunnel peers were defined correctly and the appropriate internal networks were listed in `AllowedIPs` on each side, the routing behavior lined up the way it should. That is one of the nicer parts of WireGuard. It tends to make the routing intent much more explicit and much less awkward than the old OpenVPN style of piling on extra route logic until everyone is confused.
+
+For these site-to-site peers, think of `AllowedIPs` as both the access list and the routing hint. If pfSense and the VPS peer both know which remote subnets belong across the tunnel, traffic usually follows the right path without extra manual routing.
+
+That said, I would not claim static routes are never needed. In more unusual layouts, especially when you start mixing dedicated tunnel subnets, asymmetric peer definitions, or more complex downstream networks behind a peer, you may still need to define routes manually under **System > Routing** so pfSense knows exactly where to send a remote range.
+
+The practical takeaway is this:
+
+- start with correct `AllowedIPs` on both sides
+- test traffic in both directions
+- only reach for manual static routes if the routing still is not behaving after the peer definitions are correct
+
+That is very different from older VPN guidance where adding routes was almost assumed from the beginning.
 
 ### Verifying the Tunnel
 
@@ -460,7 +472,7 @@ From either VPS, ping a homelab host to confirm the return path works:
 ping 192.168.1.1
 ```
 
-If both directions work, routing is correct. One direction working and the other not usually means a static route is missing or the `AllowedIPs` on one side doesn't include the right subnets.
+If both directions work, routing is correct. If one direction works and the other does not, the first thing I would check is `AllowedIPs` on both sides before assuming you need manual static routes. In most WireGuard setups, especially clean point-to-point or site-to-site peer definitions like this, that is where the problem usually lives.
 
 ### Aliases That Save Sanity
 
