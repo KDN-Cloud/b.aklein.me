@@ -154,7 +154,3 @@ Every agent gets the updated whitelist with the current home IP, and CrowdSec is
 This sounds obvious in hindsight. If you are validating a parser that fires on SSH events, do not run your test commands from inside an SSH session on that same host. Log in through WireGuard from a lab machine first, or use the out-of-band console before you need to.
 
 The parser works great now. And I have not banned myself since.
-
----
-
-[ > aklein.me ]
