@@ -48,7 +48,7 @@ tags:
 
 Here is something nobody puts in their CrowdSec tutorials: you can absolutely ban yourself.
 
-I was in the middle of validating my custom OpenSSH 9.8 parser on `nexus-node`, my public-facing Vultr VPS. The parser rewrites the `sshd-session` program field back to `sshd` so that `crowdsecurity/sshd-logs` can pick up events correctly on newer OpenSSH builds. To test it I was running `logger` commands to simulate brute force log lines, checking that GateKeeper was receiving and parsing them correctly.
+I was in the middle of validating my custom OpenSSH 9.8 parser on `nexus-node`, my public-facing Vultr VPS. The parser rewrites the `sshd-session` program field back to `sshd` so that `crowdsecurity/sshd-logs` can pick up events correctly on newer OpenSSH builds. To test it I was running `logger` commands to simulate brute force log lines — checking that the events were flowing through rsyslog into Graylog correctly, and that GateKeeper was receiving and parsing them on the CrowdSec side at the same time. One `logger` command, two consumers.
 
 The problem is that I was doing all of this from inside an active SSH session on that same server.
 
@@ -158,4 +158,3 @@ The parser works great now. And I have not banned myself since.
 ---
 
 [ > aklein.me ]
-
