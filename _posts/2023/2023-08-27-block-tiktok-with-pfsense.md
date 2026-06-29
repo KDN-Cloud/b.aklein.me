@@ -317,6 +317,6 @@ That is the difference between "TikTok seems flaky on my network" and "TikTok is
 
 ## Result
 
-<img src="https://raw.githubusercontent.com/KDN-Cloud/b.aklein.me/main/img/tiktok-blocked.png" alt="tiktok blocked">
+![TikTok blocked]({{ site.baseurl }}/assets/images/tiktok-blocked.png)
 
 DNS blocked at the firewall, IP ranges dropped, ASN ranges covered, DoH neutered. That's a dead app.
