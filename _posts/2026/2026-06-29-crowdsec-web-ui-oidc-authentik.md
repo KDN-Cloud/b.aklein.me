@@ -2,6 +2,7 @@
 layout: post
 promote_deployonfriday: true
 title: "CrowdSec Web UI Now Has Native OIDC. Here's How to Wire It Into Authentik."
+toc: true
 date: 2026-06-29
 author: Anthony Klein
 description: "How I configured CrowdSec Web UI's new native OIDC authentication with Authentik, including the OAuth2/OpenID provider setup, the volume mount gotcha that wipes your config on every redeploy, and enabling the Prometheus Metrics page end to end."
