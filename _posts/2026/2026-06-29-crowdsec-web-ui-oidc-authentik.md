@@ -164,7 +164,7 @@ If that returns a JSON blob with `authorization_endpoint`, `token_endpoint`, and
 
 ## Update Your Compose Stack
 
-Here is the full updated service block. The key additions are `AUTH_ENABLED=true` and `CROWDSEC_PROMETHEUS_URL`, plus the volume mount that keeps your data alive across redeploys.
+Here is the full updated service block. The key addition is `CROWDSEC_PROMETHEUS_URL`, plus the volume mount that keeps your data alive across redeploys.
 
 ```yaml
   crowdsec-ui:
@@ -177,8 +177,9 @@ Here is the full updated service block. The key additions are `AUTH_ENABLED=true
       - CROWDSEC_USER=crowdsec-ui
       - CROWDSEC_PASSWORD=your-password-here
 
-      # Dashboard auth
-      - AUTH_ENABLED=true
+      # AUTH_ENABLED=true is the default for new installs — only needed
+      # if migrating from an older version that predates dashboard auth
+      # - AUTH_ENABLED=true
 
       # Prometheus metrics (optional but worth enabling)
       - CROWDSEC_PROMETHEUS_URL=http://crowdsec:6060/metrics
@@ -235,7 +236,7 @@ Bring the stack up:
 docker compose up -d crowdsec-ui
 ```
 
-Hit the UI in the browser. Because this is a new install with `AUTH_ENABLED=true`, you will land on a setup page to create the first local administrator account. Go through it. This local account is your break-glass fallback. Keep it.
+Hit the UI in the browser. Because this is a new install, auth is enabled by default and you will land on a setup page to create the first local administrator account. Go through it. This local account is your break-glass fallback. Keep it.
 
 Once you are logged in, go to **Settings** and scroll down to the **OIDC (SSO)** section.
 
@@ -347,7 +348,7 @@ One thing worth knowing: the GitHub releases and the `main` branch README can be
 | Prometheus endpoint (internal) | `http://crowdsec:6060/metrics` |
 | Prometheus endpoint (external scrape) | `http://<host-ip>:6060/metrics` |
 | CrowdSec metrics level | `full` |
-| Auth env var | `AUTH_ENABLED=true` |
+| `AUTH_ENABLED` | Default `true` for new installs, only set explicitly when migrating older installs |
 
 ---
 
