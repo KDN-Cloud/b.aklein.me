@@ -348,7 +348,7 @@ One thing worth knowing: the GitHub releases and the `main` branch README can be
 | Prometheus endpoint (internal) | `http://crowdsec:6060/metrics` |
 | Prometheus endpoint (external scrape) | `http://<host-ip>:6060/metrics` |
 | CrowdSec metrics level | `full` |
-| `AUTH_ENABLED` | Default `true` for new installs, only set explicitly when migrating older installs |
+| CrowdSec Auth | `true` by default — omit `AUTH_ENABLED` unless migrating an older install |
 
 ---
 
