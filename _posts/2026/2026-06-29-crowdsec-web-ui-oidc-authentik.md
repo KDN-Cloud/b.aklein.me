@@ -149,6 +149,8 @@ Once the application is saved, go back to the provider detail page. The Client I
 
 Your OIDC issuer URL is built from the application slug you set above:
 
+{% include note.html content="You can ignore the slug I use in my setup and use a more accurate slug name below." %}
+
 ```
 https://auth.lab.example.cloud/application/o/crowdsec-web-ui/
 ```
