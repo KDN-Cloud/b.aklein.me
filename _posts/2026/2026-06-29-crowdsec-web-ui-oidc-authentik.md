@@ -291,6 +291,28 @@ curl http://192.168.70.84:6060/metrics | head -20
 
 You should see lines like `cs_lapi_bouncer_requests_total` and `cs_lapi_machine_requests_total`. If the endpoint is not responding, check that port `6060` is published in your CrowdSec service compose definition.
 
+```text
+# TYPE cs_active_decisions gauge
+cs_active_decisions{action="ban",origin="CAPI",reason="http:scan"} 34224
+cs_active_decisions{action="ban",origin="lists",reason="firehol_greensnow"} 5900
+cs_active_decisions{action="ban",origin="lists",reason="otx-webscanners"} 2590
+cs_active_decisions{action="ban",origin="lists",reason="tor-exit-nodes"} 2156
+# HELP cs_alerts Number of alerts (excluding CAPI).
+# TYPE cs_alerts gauge
+cs_alerts{reason="crowdsecurity/http-bad-user-agent"} 1
+# HELP cs_filesource_hits_total Total lines that were read.
+# TYPE cs_filesource_hits_total counter
+cs_filesource_hits_total{acquis_type="syslog",datasource_type="file",source="/var/log/auth.log"} 2888
+cs_filesource_hits_total{acquis_type="syslog",datasource_type="file",source="/var/log/crowdsec-fleet.log"} 246
+cs_filesource_hits_total{acquis_type="syslog",datasource_type="file",source="/var/log/syslog"} 626
+# HELP cs_info Information about Crowdsec.
+# TYPE cs_info gauge
+cs_info{version="v1.7.8-63227459"} 0
+# HELP cs_lapi_bouncer_requests_total Number of calls to each route per method grouped by bouncers.
+# TYPE cs_lapi_bouncer_requests_total counter
+cs_lapi_bouncer_requests_total{bouncer="authentik-bouncer",method="GET",route="/v1/decisions/stream"} 1393
+```
+
 ### 2. Add the Env Var to the Web UI Container
 
 In the crowdsec-ui service environment block:
