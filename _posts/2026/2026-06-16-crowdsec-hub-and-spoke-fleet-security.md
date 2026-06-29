@@ -607,6 +607,10 @@ and CrowdSec uses it for the real-time "something just got banned" path.
 
 ## CrowdSec Local Web UI
 
+<div style="border-left: 3px solid #00ff00; padding: 0.5em 1em; margin: 1em 0; background: rgba(0,255,0,0.05);">
+<strong>📌 Update — June 2026:</strong> CrowdSec Web UI now has native OIDC authentication, passkeys, and built-in dashboard auth. See <a href="/2026/06/29/crowdsec-web-ui-oidc-authentik.html">CrowdSec Web UI: Native OIDC with Authentik</a> for the full setup walkthrough including Authentik provider config, Prometheus metrics, and the volume mount you need to keep your config alive across redeploys.
+</div>
+
 For day-to-day visibility, I also run [TheDuffman85/crowdsec-web-ui](https://github.com/TheDuffman85/crowdsec-web-ui).
 
 This is not the part that makes decisions. It is the part that makes it easier to see what CrowdSec is doing without living in `cscli` all day.
