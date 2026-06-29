@@ -458,7 +458,7 @@ whitelist:
     - "127.0.0.1/32"
     - "::1/128"
   expression:
-    - "evt.Meta.source_ip == LookupHost('pfsense.kdn.cloud')[0]"
+    - "evt.Meta.source_ip == LookupHost('pfsense.example.cloud')[0]"
 ```
 
 ### 3. Cloudflare IPs
@@ -494,7 +494,7 @@ That Cloudflare list is practical, but it is also a maintenance item. Cloudflare
 For residential IPs that move around, I do not hardcode them. I resolve my DDNS record at play time in Ansible:
 
 ```yaml
-crowdsec_trusted_home_ip: "{{ lookup('community.general.dig', 'pfsense.kdn.cloud') }}"
+crowdsec_trusted_home_ip: "{{ lookup('community.general.dig', 'pfsense.example.cloud') }}"
 ```
 
 That keeps the allowlist current without me pretending my ISP respects my preferences.
@@ -831,7 +831,7 @@ That sounds minor until the first time you forget a Pi is using `pi`, another bo
 I also resolve the home IP dynamically:
 
 ```yaml
-crowdsec_trusted_home_ip: "{{ lookup('community.general.dig', 'pfsense.kdn.cloud') }}"
+crowdsec_trusted_home_ip: "{{ lookup('community.general.dig', 'pfsense.example.cloud') }}"
 ```
 
 That means the allowlist updates when the playbook runs, which is much better than discovering your IP changed because CrowdSec very thoughtfully blocked you.
