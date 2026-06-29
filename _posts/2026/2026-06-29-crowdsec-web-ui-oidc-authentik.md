@@ -117,7 +117,7 @@ In Authentik: **Admin > Applications > Providers > Create**
 - **Client Secret:** auto-generated, copy this
 - **Redirect URIs:**
   ```
-  https://crowdsec.lab.example.com/api/auth/oidc/callback
+  https://crowdsec.lab.example.cloud/api/auth/oidc/callback
   ```
 - **Signing Key:** `authentik Self-signed Certificate`
 
@@ -134,7 +134,7 @@ On the last page of the wizard you will be asked for an **Encryption Key** and a
 - **Name:** `CrowdSec Web UI`
 - **Slug:** `crowdsec-web-ui`
 - **Provider:** the one you just created
-- **Launch URL:** `https://crowdsec.lab.example.com`
+- **Launch URL:** `https://crowdsec.lab.example.cloud`
 
 Bind a group in the **Policy/Group/User Bindings** tab if you want to restrict who can even attempt to authenticate. This is separate from the role mapping inside crowdsec-web-ui itself.
 
@@ -149,13 +149,13 @@ Once the application is saved, go back to the provider detail page. The Client I
 Your OIDC issuer URL is built from the application slug you set above:
 
 ```
-https://auth.lab.example.com/application/o/crowdsec-web-ui/
+https://auth.lab.example.cloud/application/o/crowdsec-web-ui/
 ```
 
 The trailing slash is required. The app fetches `/.well-known/openid-configuration` from this URL to discover endpoints automatically. You can sanity check it in a browser before you touch any config:
 
 ```
-https://auth.lab.example.com/application/o/crowdsec-web-ui/.well-known/openid-configuration
+https://auth.lab.example.cloud/application/o/crowdsec-web-ui/.well-known/openid-configuration
 ```
 
 If that returns a JSON blob with `authorization_endpoint`, `token_endpoint`, and `jwks_uri`, you are good.
@@ -243,7 +243,7 @@ Once you are logged in, go to **Settings** and scroll down to the **OIDC (SSO)**
 
 Fill in:
 
-- **Issuer URL:** `https://auth.lab.example.com/application/o/crowdsec-web-ui/`
+- **Issuer URL:** `https://auth.lab.example.cloud/application/o/crowdsec-web-ui/`
 - **Client ID:** from the Authentik provider detail page
 - **Client Secret:** from the Authentik provider detail page
 - **Groups Claim:** `groups`
@@ -340,7 +340,7 @@ One thing worth knowing: the GitHub releases and the `main` branch README can be
 |---|---|
 | Authentik provider type | OAuth2/OpenID Provider |
 | Redirect URI | `https://your-domain/api/auth/oidc/callback` |
-| Issuer URL format | `https://auth.example.com/application/o/<slug>/` |
+| Issuer URL format | `https://auth.example.cloud/application/o/<slug>/` |
 | Trailing slash on issuer URL | Required |
 | Groups claim | `groups` |
 | Data volume | `/app/data` inside container |
