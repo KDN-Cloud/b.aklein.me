@@ -258,6 +258,8 @@ Hit **Save OIDC Settings**.
 
 Log out and hit the login page again. You should now see an SSO option alongside the password form. Click it and the OIDC flow kicks off against Authentik.
 
+![CrowdSec Web UI login]({{ site.baseurl }}/assets/images/CrowdSec-Web-UI-login.png)
+
 ---
 
 ## Enabling Prometheus Metrics
