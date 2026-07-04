@@ -152,7 +152,7 @@ services:
       - TZ=America/Los_Angeles
 ```
 
-> **Note:** Dockhand listens internally on port `3000`. The host-side port (`8080` above) is whatever you want to map it to on your system. I had other services already occupying `3000` on this host, so I mapped it to `8080` instead. If `3000` is free on your end, `"3000:3000"` works fine and matches the quick-start docs.
+{% include note.html content="Dockhand listens internally on port <code>3000</code>. The host-side port (<code>8080</code> above) is whatever you want to map it to on your system. I had other services already occupying <code>3000</code> on this host, so I mapped it to <code>8080</code> instead. If <code>3000</code> is free on your end, <code>3000:3000</code> works fine and matches the quick-start docs." %}
 
 A few other things worth noting here compared to the bare minimum version. The socket is mounted read-only (`:ro`) which is a small but meaningful hardening step — Dockhand doesn't need write access to the socket itself. `no-new-privileges:true` prevents any process inside the container from escalating privileges via `setuid` or `setgid` binaries. Credentials come from a `.env` file rather than being hardcoded, and `TZ` is set so timestamps in the UI actually reflect your local time instead of UTC. No separate database container required by default, no multi-container setup to babysit on day one. Just up and running.
 
