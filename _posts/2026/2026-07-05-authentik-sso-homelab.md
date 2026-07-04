@@ -4,7 +4,7 @@ layout: post
 toc: true
 promote_deployonfriday: true
 title: "Authentik SSO: Replacing Every Password Prompt in My Homelab"
-date: 2026-07-04
+date: 2026-07-05
 author: Anthony Klein
 description: "How I deployed Authentik as the SSO layer for my entire homelab, replacing per-service logins with a single identity provider across 20+ self-hosted services using proxy providers, OIDC, LDAP, and SCIM."
 tags:
