@@ -3,6 +3,7 @@ layout: post
 #comments: false
 promote_deployonfriday: true
 title: "Writing a Custom CrowdSec Parser for OpenSSH 9.8's Process Rename"
+toc: true
 date: 2026-07-04
 author: Anthony Klein
 description: "OpenSSH 9.8 quietly renamed sshd to sshd-session and broke CrowdSec's SSH brute force detection fleet-wide. Here's the custom s00-raw parser I wrote to fix it, why it works, and how I rolled it out with Ansible."
