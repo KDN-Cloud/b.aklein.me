@@ -208,7 +208,7 @@ On the Dockhand side, go to **Settings > Authentication > SSO / OIDC** and hit *
 
 Enable the provider, save, and then make sure the top-level **Authentication** toggle in Settings is set to **ON** — that's the master switch that enforces login for all access.
 
-> **Note:** Authentication is off by default on a fresh Dockhand install. That's intentional — it lets you get in and configure things before locking yourself out. Just don't forget to flip it on before you expose the UI to anything beyond localhost.
+{% include note.html content="Authentication is off by default on a fresh Dockhand install. That is intentional as it lets you get in and configure things before locking yourself out. Just do not forget to flip it on before you expose the UI to anything beyond localhost." %}
 
 Once it's set up, the Dockhand login page gives you the option to sign in with your OIDC provider or with a local user. I keep a local admin account as a fallback in case Authentik is ever unreachable, which has saved me at least once during an Authentik upgrade.
 
