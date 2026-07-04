@@ -131,7 +131,7 @@ This post is about what changed, why it broke detection, and the custom `s00-raw
 
 I covered the `sshd-session` problem briefly in the [fleet-wide CrowdSec hub-and-spoke post](https://b.aklein.me/2026/06/16/crowdsec-hub-and-spoke-fleet-security.html). This is the deeper version.
 
-{% include note.html content="**Update (July 2026):** The upstream `crowdsecurity/sshd-logs` parser (v3.1) now handles `sshd-session` natively alongside `sshd` in its filter. If you are running a current CrowdSec install with an up-to-date collection, you likely do not need the shim described here. That said, not everyone upgrades on a schedule, and plenty of homelab installs are running versions that predate the fix. If you hit this problem and your collection is behind, the approach below still works. The broader technique of a targeted `s00-raw` rewrite to fix a parser compatibility issue without forking the upstream collection is worth understanding regardless of version." %}
+{% include note.html content="<b>Update (July 2026):</b> The upstream `crowdsecurity/sshd-logs` parser (v3.1) now handles `sshd-session` natively alongside `sshd` in its filter. If you are running a current CrowdSec install with an up-to-date collection, you likely do not need the shim described here. That said, not everyone upgrades on a schedule, and plenty of homelab installs are running versions that predate the fix. If you hit this problem and your collection is behind, the approach below still works. The broader technique of a targeted `s00-raw` rewrite to fix a parser compatibility issue without forking the upstream collection is worth understanding regardless of version." %}
 
 ---
 
