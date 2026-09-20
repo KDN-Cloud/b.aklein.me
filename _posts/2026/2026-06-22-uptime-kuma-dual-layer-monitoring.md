@@ -4,7 +4,7 @@ layout: post
 promote_deployonfriday: true
 title: "Two-Layer Uptime Monitoring with Uptime Kuma: Internal Pi4 and External VPS"
 date: 2026-06-22
-author: Anthony Klein
+author: AK
 description: "How I run two Uptime Kuma instances to cover blind spots that a single monitor can't see — a Pi4 on the Lab VLAN for internal service checks, and a Vultr VPS over a WireGuard split tunnel for external perspective and internet connectivity monitoring."
 tags:
   - uptime-kuma

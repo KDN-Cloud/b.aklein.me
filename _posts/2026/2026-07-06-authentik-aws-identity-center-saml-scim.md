@@ -4,7 +4,7 @@ toc: true
 promote_deployonfriday: true
 title: "Connecting Authentik to AWS Identity Center with SAML and SCIM"
 date: 2026-07-06
-author: Anthony Klein
+author: AK
 description: "A real account of wiring Authentik into AWS Identity Center as an external IdP using SAML for authentication and SCIM for user and group provisioning, including the frustrating CSRF issue that blocked everything until I added the correct AWS regional endpoint."
 tags:
   - authentik
@@ -332,4 +332,3 @@ AUTHENTIK_CSRF_TRUSTED_ORIGINS="https://auth.lab.example.com,https://us-east-1.s
 ```
 
 Adjust the region to match your Identity Center instance. That is it. Everything else in the setup is straightforward once you know where the pieces go.
-

@@ -5,7 +5,7 @@ promote_deployonfriday: true
 title: "Writing a Custom CrowdSec Parser for OpenSSH 9.8's Process Rename"
 toc: true
 date: 2026-07-04
-author: Anthony Klein
+author: AK
 description: "OpenSSH 9.8 quietly renamed sshd to sshd-session and broke CrowdSec's SSH brute force detection fleet-wide. Here's the custom s00-raw parser I wrote to fix it, why it works, and how I rolled it out with Ansible."
 tags:
   - crowdsec
@@ -348,4 +348,3 @@ If you are on an older install, or if you hit a similar parser compatibility iss
 The thing I keep coming back to with this one is how quiet the failure was. No alert, no error, no indication that anything was wrong. If I had not been actively checking whether detections were flowing after the OpenSSH upgrade, I might have gone weeks without noticing. Silent failures in a security layer are the worst kind.
 
 The fix was nine lines of YAML. Upstream eventually agreed. Hopefully this saves someone the time it took me to figure out why the alert count dropped off after a routine package update, whether that is on a current install or one that has not seen an upgrade in a while.
-

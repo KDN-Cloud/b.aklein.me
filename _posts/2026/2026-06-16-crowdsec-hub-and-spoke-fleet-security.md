@@ -5,7 +5,7 @@ toc: true
 promote_deployonfriday: true
 date: 2026-06-16
 lastmod: 2026-06-16
-author: Anthony Klein
+author: AK
 description: >
   How I run CrowdSec across a mixed homelab and VPS fleet using a central LAPI hub,
   per-node agents, firewall and Cloudflare bouncers, custom OpenSSH 9.8 parser fixes,

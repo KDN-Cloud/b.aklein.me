@@ -2,7 +2,7 @@ title: "AK // SYS LOG"
 lang: en-US
 locale: en_US
 author:
-  name: "Anthony Klein"
+  name: "AK"
   email: github@aklein.pro
   github: KDN-Cloud
   github_handle: variablenix
@@ -15,7 +15,7 @@ location:
   country: "US"
 tagline: "Systems notes across IT infrastructure, SRE, automation, and self-hosted architecture."
 logo: /assets/favicon.svg
-image: /assets/images/og-sys-log.png
+image: /assets/images/og-sys-log-ak.png
 keywords:
   - systems administration
   - IT infrastructure
@@ -69,7 +69,7 @@ plugins:
   - jekyll-sitemap
 
 social:
-  name: "Anthony Klein"
+  name: "AK"
   links:
     - https://aklein.me
     - https://aklein.pro/
@@ -106,7 +106,7 @@ defaults:
       type: posts
     values:
       layout: post
-      author: Anthony Klein
+      author: AK
       comments: true
 
 google_analytics: G-17GC5WKY29

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: AK // SYS LOG
-author: Anthony Klein
+author: AK
 description: Systems notes, architecture blueprints, and operational runbooks across systems administration, IT infrastructure, SRE, and self-hosted platforms.
 keywords:
   - systems administration

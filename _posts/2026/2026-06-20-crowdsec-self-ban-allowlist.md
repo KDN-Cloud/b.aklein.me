@@ -4,7 +4,7 @@ layout: post
 promote_deployonfriday: true
 title: "I Banned Myself From My Own Server and Had to Use the VPS Console to Get Back In"
 date: 2026-06-20
-author: Anthony Klein
+author: AK
 description: "A CrowdSec war story: how I got locked out of my own VPS during parser testing, what the recovery looked like, and the DDNS-based trusted IP allowlist setup that makes sure it never happens again."
 tags:
   - crowdsec

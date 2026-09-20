@@ -5,7 +5,7 @@ toc: true
 promote_deployonfriday: true
 title: "Authentik SSO: Replacing Every Password Prompt in My Homelab"
 date: 2026-07-05
-author: Anthony Klein
+author: AK
 description: "How I deployed Authentik as the SSO layer for my entire homelab, replacing per-service logins with a single identity provider across 20+ self-hosted services using proxy providers, OIDC, LDAP, and SCIM."
 tags:
   - authentik
@@ -650,4 +650,3 @@ This is part of an ongoing series covering how I run Authentik across the KDN La
 
 - [CrowdSec Web UI Now Has Native OIDC. Here's How to Wire It Into Authentik.](https://b.aklein.me/2026/06/29/crowdsec-web-ui-oidc-authentik.html)
 - [Dock and Roll: Why I Ditched Portainer](https://b.aklein.me/2026/06/15/portainer-to-dockhand.html) (includes Dockhand OIDC integration with Authentik)
-

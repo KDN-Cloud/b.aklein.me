@@ -5,7 +5,7 @@ toc: true
 promote_deployonfriday: true
 title: "Monitoring CUPS with Prometheus: I Wrote the Exporter That Didn't Exist"
 date: 2026-06-13
-author: Anthony Klein
+author: AK
 description: "How I built a lightweight Prometheus exporter for CUPS print server metrics, containerized it with Docker Compose, published it to GitHub Container Registry, and wired it into Grafana — because nothing else existed that did this cleanly."
 tags:
   - cups
