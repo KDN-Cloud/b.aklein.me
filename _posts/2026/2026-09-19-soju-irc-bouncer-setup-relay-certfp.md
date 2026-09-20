@@ -4,39 +4,28 @@ toc: true
 promote_deployonfriday: true
 title: "How I Set Up Soju as a Persistent IRC Bouncer for Relay"
 date: 2026-09-19
-author: Anthony Klein
-description: "A complete guide to installing and configuring the Soju IRC bouncer on Debian or Ubuntu with native TLS, Let's Encrypt DNS-01 certificates, Relay, SASL PLAIN, CertFP/SASL EXTERNAL, automatic renewal, Soju-TUI administration, and the troubleshooting lessons that made the final setup reliable."
+author: AK
+description: "How I set up the Soju IRC bouncer with Relay on Debian/Ubuntu: TLS, Let's Encrypt renewal, SASL, CertFP, Soju-TUI, and practical troubleshooting."
 tags:
   - soju
-  - soju-irc
-  - soju-bouncer
   - soju-setup
-  - soju-install
-  - soju-configuration
-  - soju-tutorial
-  - soju-guide
   - sojuctl
   - soju-tui
   - irc
   - irc-bouncer
-  - irc-bouncer-setup
   - irc-client
   - ircv3
   - relay
   - relay-irc
-  - relay-soju
   - persistent-irc
   - irc-history
-  - irc-backlog
   - bouncerserv
   - sasl
   - sasl-plain
   - sasl-external
   - certfp
-  - irc-certfp
   - client-certificate
   - tls
-  - irc-tls
   - letsencrypt
   - certbot
   - dns-01
@@ -47,13 +36,11 @@ tags:
   - ubuntu
   - linux
   - self-hosted
-  - self-hosting
   - homelab
   - vps
   - wireguard
   - docker
   - reverse-proxy
-  - terminal-ui
   - tui
   - sysadmin
   - devops
@@ -77,7 +64,7 @@ The final setup is simple. Getting there was not. The documentation tells you wh
 
 This post covers the entire build from a fresh Debian or Ubuntu server to a working Relay cutover, including native TLS, Let's Encrypt with DNS-01, SASL PLAIN, CertFP/SASL EXTERNAL, certificate renewal, Soju-TUI, and the failure modes that cost me the most time.
 
-I also keep a sanitized Relay + Soju runbook as my operational reference. This post is the readable start-to-finish version; the runbook is where I keep the complete command reference and rollback procedure.
+I also maintain a public [Relay + Soju runbook](https://github.com/variablenix/relay-soju-runbook) with the setup procedure, administration commands, and rollback steps. I wrote this post to explain the decisions and the problems I hit along the way. Keep the runbook handy when you are actually at the terminal.
 
 ---
 
@@ -96,6 +83,10 @@ That separation is the whole point. I can restart or replace the Relay container
 It also explains most of the confusing fields later in the setup. Relay is not authenticating directly to NickServ anymore. It authenticates to Soju, and Soju authenticates upstream.
 
 ## Before You Start
+
+I use Relay here because it is my client. Soju also works with other compatible IRC clients: connect them to the bouncer's hostname and TLS port using the Soju credentials. A standalone desktop or terminal client connects directly to Soju, so you can skip Relay's browser/backend layer.
+
+The commands below target Debian/Ubuntu with systemd. The same architecture applies on other Linux distributions, but package availability, paths, service commands, and renewal scheduling can differ. Check your distribution's Soju package and installed manuals before following along.
 
 The examples below use placeholders. Replace them with values from your environment:
 
@@ -184,15 +175,17 @@ The package creates the `soju` system account and a systemd service. I kept Soju
 
 Pointing Soju directly at the symlinks under `/etc/letsencrypt/live` can turn into a permissions mess. I copy the current certificate into a root-owned directory readable by the `soju` group:
 
+Run `sudo certbot certificates` first. Replace `<CERTIFICATE_NAME>` below with the actual lineage directory name it reports, which may include a suffix such as `-0001`.
+
 ```bash
 sudo install -d -o root -g soju -m 0750 /etc/soju/tls
 
 sudo install -o root -g soju -m 0644 \
-  /etc/letsencrypt/live/<SOJU_HOST>/fullchain.pem \
+  /etc/letsencrypt/live/<CERTIFICATE_NAME>/fullchain.pem \
   /etc/soju/tls/fullchain.pem
 
 sudo install -o root -g soju -m 0640 \
-  /etc/letsencrypt/live/<SOJU_HOST>/privkey.pem \
+  /etc/letsencrypt/live/<CERTIFICATE_NAME>/privkey.pem \
   /etc/soju/tls/privkey.pem
 ```
 
@@ -263,14 +256,15 @@ Do not move on until that ends with `Verify return code: 0 (ok)`. Disabling cert
 
 Certbot renewing the original certificate is only half the job. Soju is using the protected copy under `/etc/soju/tls`, so that copy needs to be refreshed too.
 
+Use the same certificate lineage from the initial copy for `SOURCE` below. The [Certbot renewal documentation](https://eff-certbot.readthedocs.io/en/stable/using.html#renewing-certificates) explains how deploy hooks run after a successful renewal.
+
 Create `/etc/letsencrypt/renewal-hooks/deploy/soju-copy-cert`:
 
 ```sh
 #!/bin/sh
 set -eu
 
-DOMAIN="<SOJU_HOST>"
-SOURCE="/etc/letsencrypt/live/$DOMAIN"
+SOURCE="/etc/letsencrypt/live/<CERTIFICATE_NAME>"
 DEST="/etc/soju/tls"
 
 if [ -n "${RENEWED_LINEAGE:-}" ] && [ "$RENEWED_LINEAGE" != "$SOURCE" ]; then
@@ -294,7 +288,16 @@ sudo /etc/letsencrypt/renewal-hooks/deploy/soju-copy-cert
 sudo certbot renew --dry-run
 ```
 
-Soju reloads its configuration and TLS certificate on `SIGHUP`. The packaged systemd reload handles that without dropping its database, message store, or listeners.
+The direct hook test checks the copy and Soju reload. The dry run checks Certbot's renewal flow; it does not run deploy hooks by default. Soju reloads its TLS certificate on `SIGHUP`, which the packaged systemd reload uses. Changes to the database, message-store location, or listeners require a restart.
+
+Finally, confirm that renewal is actually scheduled:
+
+```bash
+sudo systemctl list-timers --all | grep -i certbot
+sudo systemctl status certbot.timer --no-pager
+```
+
+If your Certbot installation uses cron or another scheduler, verify that instead. Keep one renewal scheduler active, and monitor the certificate served on TCP/6697 for expiry. Issuing a certificate successfully today does not prove renewal will happen later.
 
 ## Create a Soju User
 
@@ -354,7 +357,7 @@ sudo sojuctl -config /etc/soju/config \
   '<IRC_ACCOUNT_PASSWORD>'
 ```
 
-That is the only place the upstream account password belongs. It is not the Soju password, and it is not the generic IRC server `PASS` field.
+This is where Soju stores the upstream account credentials for SASL PLAIN. Keep them separate from the Soju login and the generic IRC server `PASS` field. You may also use the account password for a one-time NickServ identification when enrolling a certificate, as covered below.
 
 ### Option 2: CertFP with SASL EXTERNAL
 
@@ -598,7 +601,7 @@ Only pin a server certificate when you deliberately connect to a self-signed ser
 
 ### Hidden IRC PASS State Can Survive Long After You Forget It
 
-I also had an old server `PASS` value stored on one network. The UI did not display the secret again, which was correct, but that made the stale value easy to forget. It interfered with registration after the upstream network changed.
+I also had an old server `PASS` value stored on one network. The UI did not display the secret again, which was correct, but that made the stale value easy to forget. It was a likely contributor to registration failures after the upstream network changed, though the evidence did not isolate it as the sole cause.
 
 If the server does not require `PASS`, clear it without deleting the whole network:
 
@@ -650,7 +653,12 @@ man sojuctl
 sudo sojuctl -config /etc/soju/config help
 ```
 
-The official [Soju manual](https://soju.im/doc/soju.1.html) and [sojuctl manual](https://soju.im/doc/sojuctl.1.html) are the source of truth for the installed release's concepts. Package versions and available commands can differ between distributions.
+The official [Soju manual](https://soju.im/doc/soju.1.html) and [sojuctl manual](https://soju.im/doc/sojuctl.1.html) explain the configuration and administration model. For version-specific syntax, prefer the manuals installed with your package; the online documentation can describe a newer release.
+
+For a repeat deployment or recovery, I keep these two references in the [public runbook](https://github.com/variablenix/relay-soju-runbook):
+
+- [Setup and migration guide](https://github.com/variablenix/relay-soju-runbook/blob/main/relay-soju-setup-and-migration.md): installation, TLS renewal, authentication, cutover checks, and rollback.
+- [Administration cheat sheet](https://github.com/variablenix/relay-soju-runbook/blob/main/soju-admin-cheatsheet.md): shell helpers and everyday user, network, channel, SASL, and certificate operations.
 
 ## Was It Worth It?
 
