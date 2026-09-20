@@ -418,6 +418,10 @@ Seeing `SASL PLAIN` in Relay's diagnostics is correct. It describes Relay's imme
 
 ## Register and Test the Soju Client Certificate
 
+The order matters here. Generate the certificate, connect with it, register it with NickServ, then reconnect upstream to test automatic login:
+
+![CertFP setup: generate, connect, register with NickServ, reconnect Soju, and verify automatic login](/assets/images/soju-certfp-flow.svg)
+
 For a CertFP network, connect through Soju and identify to the upstream account once using that network's documented NickServ syntax:
 
 ```irc

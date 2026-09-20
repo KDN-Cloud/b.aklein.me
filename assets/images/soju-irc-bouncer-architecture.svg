@@ -1,59 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
-  <title id="title">Relay and Soju IRC bouncer architecture</title>
-  <desc id="desc">Relay connects to Soju using TLS and SASL PLAIN. Soju maintains persistent TLS connections to IRC networks using SASL PLAIN or SASL EXTERNAL with CertFP. Soju-TUI administers Soju locally through sojuctl and the private admin socket.</desc>
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0d1117"/>
-      <stop offset="1" stop-color="#151b23"/>
-    </linearGradient>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff"/>
-    </marker>
-    <style>
-      .box { fill:#161b22; stroke:#30363d; stroke-width:2 }
-      .accent { fill:#0d419d; stroke:#58a6ff }
-      .title { fill:#f0f6fc; font:700 27px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif }
-      .body { fill:#c9d1d9; font:18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif }
-      .small { fill:#8b949e; font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif }
-      .tiny { fill:#8b949e; font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif }
-      .label { fill:#58a6ff; font:600 17px ui-monospace,SFMono-Regular,Consolas,monospace }
-      .line { stroke:#58a6ff; stroke-width:4; fill:none; marker-end:url(#arrow) }
-      .admin { stroke:#3fb950; stroke-width:3; fill:none; stroke-dasharray:8 7; marker-end:url(#arrow) }
-    </style>
-  </defs>
-  <rect width="1200" height="500" rx="24" fill="url(#bg)"/>
-  <text x="60" y="58" class="title">Persistent IRC with Relay + Soju</text>
-  <text x="60" y="88" class="small">Three separate connections, each with its own job and authentication</text>
-
-  <rect x="55" y="150" width="280" height="190" rx="18" class="box"/>
-  <text x="195" y="205" text-anchor="middle" class="title">Relay</text>
-  <text x="195" y="240" text-anchor="middle" class="body">Web / desktop / mobile</text>
-  <text x="195" y="278" text-anchor="middle" class="small">Can restart without dropping</text>
-  <text x="195" y="303" text-anchor="middle" class="small">the upstream IRC session</text>
-
-  <rect x="460" y="135" width="280" height="220" rx="18" class="box accent"/>
-  <text x="600" y="195" text-anchor="middle" class="title">Soju</text>
-  <text x="600" y="232" text-anchor="middle" class="body">Persistent IRC bouncer</text>
-  <text x="600" y="270" text-anchor="middle" class="small">Users, networks, channels,</text>
-  <text x="600" y="295" text-anchor="middle" class="small">backlog, SASL, CertFP</text>
-  <text x="600" y="327" text-anchor="middle" class="small">Native IRC/TLS on 6697</text>
-
-  <rect x="865" y="150" width="280" height="190" rx="18" class="box"/>
-  <text x="1005" y="205" text-anchor="middle" class="title">IRC networks</text>
-  <text x="1005" y="240" text-anchor="middle" class="body">Ergo, InspIRCd, and others</text>
-  <text x="1005" y="278" text-anchor="middle" class="small">Soju stays connected and</text>
-  <text x="1005" y="303" text-anchor="middle" class="small">keeps channels joined</text>
-
-  <path d="M 335 245 L 448 245" class="line"/>
-  <text x="392" y="205" text-anchor="middle" class="label">TLS</text>
-  <text x="392" y="228" text-anchor="middle" class="small">SASL PLAIN</text>
-
-  <path d="M 740 245 L 853 245" class="line"/>
-  <text x="797" y="190" text-anchor="middle" class="label">TLS</text>
-  <text x="797" y="214" text-anchor="middle" class="tiny">SASL PLAIN or</text>
-  <text x="797" y="235" text-anchor="middle" class="tiny">EXTERNAL (CertFP)</text>
-
-  <rect x="410" y="410" width="380" height="60" rx="18" class="box"/>
-  <text x="600" y="447" text-anchor="middle" class="body">Soju-TUI → sojuctl → admin socket</text>
-  <path d="M 600 408 L 600 365" class="admin"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="1010" viewBox="0 0 640 1010" role="img" aria-labelledby="title desc">
+<title id="title">Relay and Soju: two separate IRC connections</title>
+<desc id="desc">Relay connects to Soju with TLS and SASL PLAIN using Soju credentials. Soju maintains upstream TLS connections using the IRC account password or client CertFP. Local administration uses sojuctl and the private admin socket.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#e6edf3}.heading{font-size:28px;font-weight:700}.detail{font-size:22px;fill:#c2ccd7}.label{font-size:24px;fill:#79bdff;font-weight:700}.box{fill:#161e29;stroke:#47566b;stroke-width:2}.arrow{stroke:#79bdff;stroke-width:3;fill:none;marker-end:url(#arrow)}</style><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10" fill="#79bdff"/></marker></defs>
+<rect width="640" height="1010" rx="24" fill="#0d141d"/>
+<text x="36" y="52" class="heading">Persistent IRC with Relay + Soju</text>
+<text x="36" y="88" class="detail">Two IRC connections. Separate credentials.</text>
+<rect x="36" y="120" width="568" height="120" rx="16" class="box"/>
+<text x="64" y="162" class="heading">Relay backend</text>
+<text x="64" y="200" class="detail">Serves your web, desktop, and mobile clients</text>
+<path d="M84 256V366" class="arrow"/>
+<text x="120" y="286" class="label">TLS · SASL PLAIN</text>
+<text x="120" y="322" class="detail">Soju username/network + Soju password</text>
+<text x="120" y="355" class="detail">Reconnects when Relay restarts</text>
+<rect x="36" y="388" width="568" height="150" rx="16" fill="#153d68" stroke="#79bdff" stroke-width="2"/>
+<text x="64" y="432" class="heading">Soju bouncer</text>
+<text x="64" y="469" class="label">Keeps upstream connections alive</text>
+<text x="64" y="506" class="detail">Saved networks, joined channels, and backlog</text>
+<path d="M84 556V686" class="arrow"/>
+<text x="120" y="589" class="label">TLS · upstream authentication</text>
+<text x="120" y="626" class="detail">SASL PLAIN: IRC account + password</text>
+<text x="120" y="663" class="detail">Or EXTERNAL: registered client CertFP</text>
+<rect x="36" y="708" width="568" height="112" rx="16" class="box"/>
+<text x="64" y="752" class="heading">IRC networks</text>
+<text x="64" y="789" class="detail">Soju stays connected while Relay restarts</text>
+<rect x="36" y="858" width="568" height="116" rx="16" class="box"/>
+<text x="64" y="899" class="label">Local Soju administration</text>
+<text x="64" y="940" class="detail">Soju-TUI → sojuctl → private admin socket</text>
 </svg>
