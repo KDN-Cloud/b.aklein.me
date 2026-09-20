@@ -54,15 +54,15 @@ tags:
   - variablenix
 ---
 
-I have used IRC long enough to know that the connection you care about is always the one that drops while you are away.
+I wanted to update my IRC client without disconnecting from every network. Simple enough ask, right?
 
-Relay gave me the IRC client experience I wanted across the web, desktop, and mobile, but I still had one architectural problem: Relay was making the upstream IRC connections itself. Updating or redeploying Relay meant disconnecting from every network, losing continuity, and making everyone else watch me quit and rejoin.
+Relay gave me the IRC client experience I wanted across the web, desktop, and mobile, but it was making the upstream IRC connections itself. Updating or redeploying Relay meant disconnecting from every network and making everyone else watch me quit and rejoin.
 
 That is what pushed me toward [Soju](https://soju.im/). Soju is a modern IRC bouncer that sits between Relay and the IRC networks. Relay can come and go, while Soju keeps the real upstream connections alive, keeps channels joined, and stores the backlog.
 
 The final setup is simple. Getting there was not. The documentation tells you what the individual settings do, but it is easy to mix up which password belongs to which connection, which certificate a fingerprint refers to, or which process you are actually reconnecting. I managed to hit all three.
 
-This post covers the entire build from a fresh Debian or Ubuntu server to a working Relay cutover, including native TLS, Let's Encrypt with DNS-01, SASL PLAIN, CertFP/SASL EXTERNAL, certificate renewal, Soju-TUI, and the failure modes that cost me the most time.
+Here is the full setup, from installing Soju on Debian or Ubuntu to moving Relay over to it. I'll cover TLS and certificate renewal, both SASL options, Soju-TUI, and the things that tripped me up along the way.
 
 I also maintain a public [Relay + Soju runbook](https://github.com/variablenix/relay-soju-runbook) with the setup procedure, administration commands, and rollback steps. I wrote this post to explain the decisions and the problems I hit along the way. Keep the runbook handy when you are actually at the terminal.
 
@@ -70,7 +70,7 @@ I also maintain a public [Relay + Soju runbook](https://github.com/variablenix/r
 
 ## What I Was Building
 
-The important thing to understand is that this is not one connection. It is three separate connections with three separate jobs:
+There are three connections to keep straight:
 
 ![Relay connecting through Soju to persistent IRC networks](/assets/images/soju-irc-bouncer-architecture.svg)
 
@@ -106,7 +106,7 @@ The examples below use placeholders. Replace them with values from your environm
 
 I prefer a private path between Relay and Soju: site-to-site WireGuard, a private network, or a Docker-reachable host address. TCP/6697 should be reachable from Relay, not necessarily from the whole internet.
 
-Back up Relay's persistent data before changing an existing network. The safe migration pattern is to prepare Soju first, then edit the existing Relay network in place. Deleting and recreating Relay networks throws away useful client-side state for no reason.
+Back up Relay's persistent data before changing an existing network. Get Soju ready first, then edit the network you already have in Relay. There is no reason to delete it and lose your saved channel and UI settings.
 
 ## DNS, TLS, and the Reverse Proxy Question
 
@@ -156,7 +156,7 @@ sudo certbot certonly \
   -d <SOJU_HOST>
 ```
 
-If you use another DNS provider, use its supported Certbot or ACME plugin. The exact flag names differ, but the pattern is the same. I would avoid manual DNS validation for a service I expect to keep running; it turns every renewal into a calendar event and a future outage.
+If you use another DNS provider, use its supported Certbot or ACME plugin. The exact flag names differ, but the process is the same. I would avoid manual DNS validation here unless you automate it with hooks. Having to remember a TXT record change at every renewal is exactly the sort of maintenance I will eventually forget.
 
 ## Install Soju
 
@@ -173,7 +173,7 @@ The package creates the `soju` system account and a systemd service. I kept Soju
 
 ## Give Soju a Protected Copy of the Certificate
 
-Pointing Soju directly at the symlinks under `/etc/letsencrypt/live` can turn into a permissions mess. I copy the current certificate into a root-owned directory readable by the `soju` group:
+Pointing Soju directly at the symlinks under `/etc/letsencrypt/live` can turn into a permissions mess. I copy the current certificate into a root-owned directory readable by the `soju` group.
 
 Run `sudo certbot certificates` first. Replace `<CERTIFICATE_NAME>` below with the actual lineage directory name it reports, which may include a suffix such as `-0001`.
 
@@ -319,7 +319,7 @@ Passwords passed as command arguments can appear in shell history or process lis
 
 ## Add Networks Without Fighting the Existing Connections
 
-I staged each network disabled first. That let me configure authentication without having Soju compete with Relay's old direct connection for the same nickname.
+I created each network with `-enabled false` first. That gave me time to configure authentication without having Soju compete with Relay's old direct connection for the same nickname.
 
 ```bash
 sudo sojuctl -config /etc/soju/config \
@@ -347,7 +347,7 @@ Relay always authenticates to Soju with the Soju credentials in this setup. This
 
 ### Option 1: SASL PLAIN
 
-For an IRC network where I wanted Soju to store the NickServ account credentials:
+For password authentication, save the upstream NickServ account credentials in Soju:
 
 ```bash
 sudo sojuctl -config /etc/soju/config \
@@ -373,7 +373,7 @@ sudo sojuctl -config /etc/soju/config \
 
 `certfp generate` enables SASL EXTERNAL. There is no `sasl set-external` command in current Soju releases.
 
-The word “fingerprint” is overloaded here, and this caused me real trouble:
+This is where the naming gets confusing. There are two different fingerprints, and mixing them up caused me real trouble:
 
 - `certfp fingerprint` shows the **client certificate** Soju presents to the IRC network for SASL EXTERNAL.
 - `network update -certfp ...` pins the **IRC server certificate** and replaces normal CA validation.
@@ -436,7 +436,7 @@ sudo sojuctl -config /etc/soju/config \
   user run <SOJU_USER> network update <NETWORK>
 ```
 
-This is a deceptively important command. Reconnecting the browser only renews browser to Relay. Reconnecting Relay only renews Relay to Soju. Neither one restarts the existing upstream TLS and SASL session. CertFP is presented during the upstream handshake, so Soju must reconnect that network after the certificate is registered.
+This is the reconnect that matters. Refreshing the browser or reconnecting Relay can leave Soju's upstream connection running exactly as it was. Soju presents its client certificate during the upstream TLS handshake, so reconnect that network to test whether the newly registered certificate logs you in automatically.
 
 Verify it:
 
@@ -450,7 +450,7 @@ sudo journalctl -u soju --since '2 minutes ago' --no-pager | \
 
 The successful sequence should show Soju using the TLS client certificate, starting SASL EXTERNAL, logging into the account, and registering the connection.
 
-Some IRC servers recognize the account without reporting it to Soju in the exact form `sojuctl` expects. If the status is ambiguous, use `/whois`, NickServ account status, `CERT LIST`, and the Soju log together. A configured certificate proves configuration; it does not by itself prove that the fresh login succeeded.
+Some IRC servers recognize the account without reporting it to Soju in the exact form `sojuctl` expects. If the status is unclear, check `/whois`, NickServ account status, `CERT LIST`, and the Soju log together. Seeing a certificate in the list is useful, but you still need to confirm that it worked on a fresh connection.
 
 ## Join Channels and Verify Persistence
 
@@ -467,7 +467,7 @@ sudo sojuctl -config /etc/soju/config \
   user run <SOJU_USER> channel status -network <NETWORK>
 ```
 
-My final verification was intentionally boring:
+Before calling it done, I checked the service, network, authentication, and saved channels:
 
 ```bash
 sudo systemctl is-active soju
@@ -486,9 +486,9 @@ Then I restarted only Relay and confirmed that Soju remained connected upstream.
 
 ## Soju-TUI: Sojuctl Without Memorizing Every Command
 
-`sojuctl` works well, but its commands are long and the distinction between admin context and user context is not always obvious when you are doing occasional maintenance. I built [Soju-TUI](https://github.com/variablenix/soju-tui) for people who would rather use a keyboard-driven terminal interface without giving up Soju's actual administration model.
+`sojuctl` works well, but I do not particularly want to remember a long command every time I check a network or change a setting. It is also easy to forget which commands need to run as a particular Soju user. I built [Soju-TUI](https://github.com/variablenix/soju-tui) to make those jobs easier from a terminal menu.
 
-Soju-TUI is not another bouncer and it is not an IRC client. It is a local administration frontend for `sojuctl`. It still talks to the running Soju instance through the private admin socket and shows the underlying redacted command before any mutation.
+Soju-TUI runs `sojuctl` for you. You select the user, network, or channel, fill in the relevant fields, and review the command before applying a change. Passwords are hidden in that preview. Everything still goes through Soju's private admin socket; the TUI itself does not handle your IRC connections or chat messages.
 
 It can manage:
 
@@ -498,7 +498,8 @@ It can manage:
 - SASL PLAIN and EXTERNAL/CertFP
 - Host TLS certificate details and CertFP fingerprints
 - Server status, notices, and debug state
-- Soju version-specific command availability
+
+It also checks which commands your running Soju version supports and shows the available actions.
 
 Read-only actions run immediately. Changes require confirmation, and destructive actions require an exact typed phrase. Passwords are not saved in the profile, and the TUI does not edit Soju's database or `/etc/soju/config` directly.
 
@@ -518,9 +519,9 @@ soju-tui
 
 Use the `arm64` package on AArch64. The setup step handles access to the admin socket without granting a broad passwordless sudo rule. Normal TUI operation does not silently invoke `sudo`.
 
-The first launch confirms the discovered Soju config, `sojuctl` path, hostname, admin socket, and TLS certificate paths. It saves only a non-secret local profile.
+On first launch, review the Soju config, `sojuctl` path, hostname, admin socket, and TLS certificate paths it found. The saved local profile contains no passwords.
 
-I still keep the command-line path available. A TUI should make administration easier, not make the underlying system mysterious. When troubleshooting, the redacted preview tells me exactly which `sojuctl` operation it is about to run.
+I still use `sojuctl` directly when it is convenient. The command preview in the TUI makes it easy to see what is happening and use the same operation from the shell later.
 
 ## Optional Shell Helpers
 
@@ -574,7 +575,7 @@ Put them in `.bashrc` or `.zshrc` if you want them permanently. They use the exi
 
 ## The Problems I Hit and How to Avoid Them
 
-The working setup ended up being straightforward. The difficult part was untangling stale state and similarly named fields.
+Most of my troubleshooting came down to old settings I had forgotten about and fields with names that sounded like they meant the same thing. Here is what I would check first next time.
 
 ### Three Passwords That Are Not Interchangeable
 
@@ -601,7 +602,7 @@ Only pin a server certificate when you deliberately connect to a self-signed ser
 
 ### Hidden IRC PASS State Can Survive Long After You Forget It
 
-I also had an old server `PASS` value stored on one network. The UI did not display the secret again, which was correct, but that made the stale value easy to forget. It was a likely contributor to registration failures after the upstream network changed, though the evidence did not isolate it as the sole cause.
+I also had an old server `PASS` value stored on one network. The UI hid the password, as it should, but I had forgotten there was a value saved there at all. It likely contributed to the registration failures after the upstream network changed. I cannot say it was the only cause, because I was untangling the certificate issue at the same time.
 
 If the server does not require `PASS`, clear it without deleting the whole network:
 
@@ -631,7 +632,7 @@ Update Soju network    = reconnect Soju to IRC
 
 When testing SASL changes, run `network update` for the selected Soju network and watch the journal. Otherwise you may be testing old connection state while staring at new configuration.
 
-## Backups, Updates, and Day-Two Operation
+## Backups and Ongoing Maintenance
 
 The Soju database, message store, config, TLS copy, and Certbot state all matter. At minimum, include these paths in the server's protected backup plan:
 
@@ -664,9 +665,9 @@ For a repeat deployment or recovery, I keep these two references in the [public 
 
 Yes. Once the connection layers were separated correctly, the setup became exactly as boring as infrastructure like this should be.
 
-Relay is free to be the client. I can update it, restart it, or connect from another device without tying the lifetime of the IRC session to the lifetime of the UI. Soju does the durable work: maintaining upstream connections, preserving channel state, and holding the backlog.
+I can update Relay, restart it, or connect from another device while Soju keeps the upstream connections running, the channels joined, and the backlog available. That is what I wanted in the first place.
 
-The biggest lesson was not a command. It was to stop treating “the IRC connection” as one thing. Relay authenticating to Soju, Soju authenticating to an IRC network, and NickServ associating a certificate are related, but they are not the same operation. Once I started verifying each hop independently, every confusing failure became much easier to explain.
+What finally made troubleshooting easier was checking each connection separately. Can Relay log into Soju? Can Soju connect upstream? Does the IRC network accept the certificate? Working through those questions in order was a lot more useful than changing passwords and reconnecting things until something happened.
 
 If you are building the same setup, start with the architecture, keep the password and certificate roles separate, stage networks disabled, and always reconnect the hop you actually changed. That will save you most of the time I spent learning it the hard way.
 
