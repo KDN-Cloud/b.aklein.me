@@ -664,7 +664,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "source:moonlab OR source:dockerlab OR source:stargate OR source:grafana OR source:vaultwarden OR source:authentik OR source:kubelife OR source:minecraft OR source:gatekeeper OR source:rpi4 OR source:nexus OR source:proxmox",
+                        "query": "source:moonlab OR source:dockerlab OR source:stargate OR source:grafana OR source:aegis OR source:authentik OR source:kubelife OR source:minecraft OR source:gatekeeper OR source:rpi4 OR source:nexus OR source:proxmox",
                         "timeField": "timestamp"
                       }
                     },
